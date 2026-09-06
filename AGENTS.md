@@ -14,6 +14,8 @@ Whenever a Lua script introduces a new error type, error string, or failure reas
 
 For basic Lua operations that may be reused (for example definition lookup, card type or race checks, and line or battle-state scans), prefer an existing shared helper. When none exists, add a generic helper to the appropriate shared library rather than a function named for one ability or card. Keep ability-specific functions only for rules that are genuinely unique to that ability.
 
+Keep Lua functions focused on one responsibility. When a function combines collection, state selection, mutation, and action creation, split it into small, clearly named helpers so the logic is readable and maintainable. Reuse generic helpers for shared operations; keep ability-specific helpers only for unique game rules.
+
 ## Conditional Complexity (C# and Lua)
 
 In C# and Lua, do not nest `if` statements more than three levels deep. Do not create an `if` / `else if` / `else if` chain with more than three conditional branches. When a rule would exceed either limit, use guard clauses, a clearly named helper, or table-driven dispatch instead.

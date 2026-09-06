@@ -225,6 +225,93 @@ function static_bind_execute(state, source_card, event_data, helpers)
     return actions, nil
 end
 
+-- ability: lux_maxima
+-- The selected Aura decides the one configured Darkborn Aura code to remove.
+-- Every on-field Aura with that exact code is then removed and reconciled.
+function lux_maxima_execute(state, source_card, event_data, helpers)
+    local battle = helpers.lib_battle_common
+    local target_card = (event_data or {}).defender_card
+    if target_card == nil then
+        return {}, "lux_maxima requires a target Darkborn Aura"
+    end
+
+    local source_side = helpers.find_card_side(state, source_card)
+    if source_side == nil or source_side == "unknown" then
+        return {}, "lux_maxima source card is not on a battle line"
+    end
+
+    local diana_card = helpers.find_line_card_by_code(
+        state[source_side .. "_front_line"], "diana")
+    if diana_card == nil then
+        diana_card = helpers.find_line_card_by_code(
+            state[source_side .. "_back_line"], "diana")
+    end
+    if diana_card == nil then
+        return {}, "lux_maxima requires Diana on the battlefield"
+    end
+
+    local target_line_key = (event_data or {}).defender_line_key
+    local target_line = target_line_key ~= nil and state[target_line_key] or nil
+    if target_line == nil then
+        return {}, "lux_maxima target must be on a battle line"
+    end
+
+    local config = lib_ability_config.get_ability_config("lux_maxima") or {}
+    local allowed_codes = config.counterable_darkborn_aura_codes or {}
+    if not lib_ability_aura.is_configured_darkborn_aura(state, target_card, allowed_codes) then
+        return {}, "lux_maxima target must be a configured Darkborn Aura"
+    end
+
+    local selected_aura_code = target_card.item_definition_code_name
+    local aura_targets = lib_ability_aura.find_configured_darkborn_auras(
+        state, allowed_codes, selected_aura_code)
+    if #aura_targets == 0 then
+        return {}, "lux_maxima target must be a configured Darkborn Aura"
+    end
+
+    local actions = {
+        source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
+            ",ability=lux_maxima,target=" .. target_card.inventory_item_id ..
+            ",selected=" .. diana_card.inventory_item_id ..
+            ",target_code=" .. selected_aura_code ..
+            ",target_count=" .. tostring(#aura_targets),
+    }
+    local diana_expose_action = helpers.expose_ability_selected_card(state, diana_card)
+    if diana_expose_action ~= nil then table.insert(actions, diana_expose_action) end
+
+    local removed_sources = {}
+    for _, aura_target in ipairs(aura_targets) do
+        local aura_code = aura_target.card.item_definition_code_name
+        if removed_sources[aura_code] == nil then
+            removed_sources[aura_code] = {
+                id = aura_target.card.inventory_item_id,
+                side = aura_target.side,
+            }
+        end
+        battle.remove_card_from_line(aura_target.line, aura_target.card.inventory_item_id)
+        local target_void_key = aura_target.side .. "_the_void"
+        if state[target_void_key] == nil then state[target_void_key] = {} end
+        table.insert(state[target_void_key], aura_target.card)
+    end
+
+    local aura_actions = lib_ability_aura.refresh_active_auras(
+        state, "aura_removed", removed_sources)
+    for _, aura_action in ipairs(aura_actions) do
+        table.insert(actions, aura_action)
+    end
+    for _, aura_target in ipairs(aura_targets) do
+        battle.append_card_sent_to_void_action(actions, aura_target.side, aura_target.card)
+    end
+
+    battle.remove_card_from_line(state[source_side .. "_front_line"], source_card.inventory_item_id)
+    battle.remove_card_from_line(state[source_side .. "_back_line"], source_card.inventory_item_id)
+    local source_void_key = source_side .. "_the_void"
+    if state[source_void_key] == nil then state[source_void_key] = {} end
+    table.insert(state[source_void_key], source_card)
+    battle.append_card_sent_to_void_action(actions, source_side, source_card)
+    return actions, nil
+end
+
 -- ability: lightning_strike
 -- Azura strikes the selected enemy and, when available, one adjacent enemy on
 -- the same battle line. Only 1- and 2-star targets are stunned: their queued attack is

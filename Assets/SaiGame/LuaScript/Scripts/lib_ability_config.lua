@@ -78,6 +78,18 @@ function get_ability_config(ability_key)
             requires_target_card = true,
             resolves_without_attack = true,
         },
+        lux_maxima = {
+            handler_group = "lightborn",
+            target_positions = {
+                "own_backline",
+                "enemy_backline",
+            },
+            requires_target_card = true,
+            resolves_without_attack = true,
+            counterable_darkborn_aura_codes = {
+                abyssal_mist = true,
+            },
+        },
         skeleton_shield = {
             handler_group = "darkborn",
             target_positions = { "own_frontline" },

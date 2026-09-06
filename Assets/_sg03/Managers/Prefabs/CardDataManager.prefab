@@ -82,6 +82,8 @@ MonoBehaviour:
   - Assets/_sg03/Card/Data/Character/Lightborn/LightElf/azura/abilities/static_bind.asset
   - Assets/_sg03/Card/Data/Character/Lightborn/LightElf/azura/volt_heart.asset
   - Assets/_sg03/Card/Data/Character/Lightborn/LightElf/common/zelene.asset
+  - Assets/_sg03/Card/Data/Character/Lightborn/lumina/diana/diana.asset
+  - Assets/_sg03/Card/Data/Character/Lightborn/lumina/diana/lux_maxima.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/abilities/back_stab.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/abilities/goblin_shaman/brute_call.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/abilities/goblin_shaman/totem_pulse.asset
