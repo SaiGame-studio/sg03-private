@@ -2,7 +2,7 @@
 
 - **Loại Thẻ**: [`ability`](../../../04_abilities.md)
 - **Mã thẻ bài**: `titan_spear_sweep`
-- **Số sao**: 2
+- **Số sao**: 4
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
 - **Vị trí nhắm mục tiêu**: Hàng trước của phe đối thủ; một Character đồng minh kề Titan
 - **Thẻ Nhân Vật Yêu Cầu**: [Titan](../titan.md)

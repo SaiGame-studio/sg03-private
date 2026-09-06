@@ -78,7 +78,7 @@ function back_stab_execute(state, source_card, event_data, helpers)
     -- Use the shared calculation so Back Stab always matches the client preview:
     -- Goblin Grunt's base_stats.atk plus Back Stab's base_stats.atk_added.
     local source_item_def = helpers.find_item_def(state.item_defs, source_card.item_definition_code_name)
-    local damage = battle.get_attack_damage(state, source_item_def, source_side .. "_back_line")
+    local damage = battle.get_attack_damage(state, source_item_def, source_side .. "_back_line", source_card)
     battle.dlog("[ability] back_stab: goblin_grunt=" .. grunt_card.inventory_item_id .. " target=" .. defender.inventory_item_id .. " damage=" .. damage)
 
     local expose_action = helpers.expose_ability_selected_card(state, grunt_card)

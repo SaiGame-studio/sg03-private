@@ -1,6 +1,7 @@
 require "lib_battle_common"
 require "lib_ability_config"
 require "lib_ability_core"
+require "lib_ability_aura"
 require "lib_battle_ai"
 require "lib_battle_entity_ai"
 require "enemy_ai_core"
@@ -107,7 +108,7 @@ local function resolve_attack_plan(state, plan_entry)
 end
 
 local function compute_attack_damage(state, resolved)
-    return lib_battle_common.get_attack_damage(state, resolved.attacker_def, resolved.attacker_line_key)
+    return lib_battle_common.get_attack_damage(state, resolved.attacker_def, resolved.attacker_line_key, resolved.attacker_card)
 end
 
 -- Phase 1: store pending_attack so future alpha-defend reactions can read/modify it.
@@ -226,7 +227,7 @@ local function execute_omega_attack_alpha_hp_plan(state, plan_entry)
     -- reveal-before-damage ordering used for card-vs-card combat.
     lib_battle_common.append_client_action(state, "omega_card_expose:" .. attacker_card.inventory_item_id)
 
-    local damage = lib_battle_common.get_attack_damage(state, attacker_def, attacker_line_key)
+    local damage = lib_battle_common.get_attack_damage(state, attacker_def, attacker_line_key, attacker_card)
     lib_battle_common.dlog("[alpha_defending_end] omega attacking alpha_hp directly: damage=" .. damage)
 
     state.alpha_hp = (state.alpha_hp or 0) - damage
@@ -293,6 +294,13 @@ local function main()
     -- ── Re-plan omega's next attack after executing this round's plan ─────
     local next_plan_err = lib_battle_entity_ai.run_plan_attack(state)
     if next_plan_err ~= nil then output.error = next_plan_err ; return end
+
+    if state.metadata ~= nil and state.metadata.next_move == "alpha_turn" then
+        local aura_actions = lib_ability_aura.refresh_active_auras(state, "omega_end_turn")
+        for _, action in ipairs(aura_actions) do
+            lib_battle_common.append_client_action(state, action)
+        end
+    end
 
     lib_battle_common.append_client_action(state, "alpha_take_lamp")
 

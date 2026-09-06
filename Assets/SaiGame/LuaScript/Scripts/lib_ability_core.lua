@@ -14,8 +14,14 @@
 --      and require that library from every regular script that loads `lib_ability_core`.
 
 
+local DEFAULT_CHARACTER_PASSIVES = {
+    misthy = "mist_execution",
+    azure_blade = "twin_reaper",
+    lyra = "scout_strike",
+}
+
 -- Parses card.metadata.abilities into an array of trimmed, non-empty keys.
--- Falls back to item_def.metadata.abilities when the card instance does not carry abilities.
+-- Falls back to item_def.metadata.abilities or default character passives when the card instance does not carry abilities.
 local function _get_ability_keys(source_card, item_defs)
     if source_card == nil then return {} end
     local raw = source_card.metadata ~= nil and source_card.metadata.abilities or nil
@@ -26,6 +32,9 @@ local function _get_ability_keys(source_card, item_defs)
                 break
             end
         end
+    end
+    if (raw == nil or raw == "") and source_card.item_definition_code_name ~= nil then
+        raw = DEFAULT_CHARACTER_PASSIVES[source_card.item_definition_code_name]
     end
     if raw == nil or raw == "" then return {} end
     local keys = {}
@@ -72,13 +81,7 @@ end
 
 -- Looks up an item definition from state.item_defs by item_code.
 local function _find_item_def(item_defs, code)
-    if item_defs == nil or code == nil then return nil end
-    for _, item_def in ipairs(item_defs) do
-        if item_def.item_code == code then
-            return item_def
-        end
-    end
-    return nil
+    return lib_battle_common.find_item_def(item_defs, code)
 end
 
 -- Returns one base stat from a card's item definition, for example
@@ -330,15 +333,18 @@ function deal_damage_to_character(state, attacker_card, target_card, damage, tar
 end
 
 local function _get_ability_library(handler_group)
-    if handler_group == "human" then return lib_ability_human end
-    if handler_group == "darkborn" then return lib_ability_darkborn end
-    if handler_group == "lightborn" then return lib_ability_lightborn end
-    if handler_group == "natureborn" then return lib_ability_natureborn end
-    if handler_group == "advanced" then return lib_ability_advanced end
-    if handler_group == "mid_game" then return lib_ability_mid_game end
-    if handler_group == "xena" then return lib_ability_xena end
-    if handler_group == "character_passives" then return lib_ability_character_passives end
-    return nil
+    local libraries = {
+        human = lib_ability_human,
+        darkborn = lib_ability_darkborn,
+        lightborn = lib_ability_lightborn,
+        natureborn = lib_ability_natureborn,
+        advanced = lib_ability_advanced,
+        mid_game = lib_ability_mid_game,
+        xena = lib_ability_xena,
+        character_passives = lib_ability_character_passives,
+        aura = lib_ability_aura,
+    }
+    return libraries[handler_group]
 end
 
 local function _get_ability_handler(ability_key, ability_def)
@@ -469,11 +475,14 @@ end
 -- Stops and returns the first error encountered.
 -- Returns: extra_client_actions (table), err (string or nil)
 function trigger_card_ability(state, source_card, trigger_event, event_data)
-    lib_battle_common.dlog("-- [ability] trigger_card_ability ----------------------")
     local keys = _get_ability_keys(source_card, state.item_defs)
+    local card_code = source_card and source_card.item_definition_code_name or "unknown"
+    local card_id = source_card and source_card.inventory_item_id or "unknown"
     if #keys == 0 then
+        lib_battle_common.dlog("-- [ability] trigger_card_ability: card=" .. card_code .. " (id=" .. card_id .. ") event=" .. tostring(trigger_event) .. " (no abilities) ----------------------")
         return {}, nil
     end
+    lib_battle_common.dlog("-- [ability] trigger_card_ability: card=" .. card_code .. " (id=" .. card_id .. ") event=" .. tostring(trigger_event) .. " keys=" .. table.concat(keys, ",") .. " ----------------------")
 
     local all_actions = {}
 

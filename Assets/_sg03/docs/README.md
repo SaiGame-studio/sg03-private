@@ -10,12 +10,13 @@ Chào mừng bạn đến với tài liệu kỹ thuật chi tiết của hệ t
 Assets/_sg03/docs/
 ├── README.md                      # Chỉ mục & Cấu trúc thư mục (File này)
 │
-├── 00_world_and_races.md         # Bối cảnh thế giới & bốn chủng tộc chính thức
 ├── 01_game_rules.md              # Luật chơi, Các khu vực bài & Công thức tính toán
 ├── 02_architecture.md            # Kiến trúc mã nguồn Client & Server
 ├── 03_characters.md              # Danh mục Thẻ nhân vật
-├── 04_abilities.md               # Engine Kỹ năng & Cơ chế của cả 8 Ability
+├── 04_abilities.md               # Danh mục kỹ năng và hướng dẫn thực thi
 ├── 05_card_star_scaling.md       # Phân cấp sức mạnh Thẻ bài theo Cấp độ Sao (1-9 Sao)
+├── 06_card_race.md               # Bốn chủng tộc và quan hệ giữa các race
+├── 07_card_statistics.md          # Thống kê card theo race và tộc nhánh
 │
 ├── pve/                          # [DÀNH RIÊNG CHẾ ĐỘ PVE]
 │   ├── pve_overview.md           # Tổng quan chế độ PvE & Luồng trận đấu
@@ -34,12 +35,13 @@ Assets/_sg03/docs/
 
 ### Giai đoạn 1: Hệ Thống Cốt Lõi (Core Engine)
 
-1. **[Thế Giới & Bốn Chủng Tộc](00_world_and_races.md)** — Bối cảnh thế giới, bản sắc của Darkborn, Lightborn, Natureborn và Humans, cùng quy ước phân loại card.
+1. **[Chủng Tộc Card](06_card_race.md)** — Bản sắc, tộc nhánh, quy ước phân loại và vòng quan hệ giữa Darkborn, Lightborn, Natureborn và Humans.
 2. **[Luật Chơi & Cơ Chế Trận Đấu](01_game_rules.md)** — Khái niệm tổng quan, điều kiện Thắng/Thua, các khu vực bài, phase machine, công thức phòng thủ/máu, giới hạn thả nhân vật và tương tác Đèn Linh Hồn.
 3. **[Kiến Trúc Mã Nguồn & Hệ Thống](02_architecture.md)** — Kiến trúc C# Unity client (`BattleState`, `BattleScripts`, `CardSelection`, `ClientActions`, `CardSpawning`, `DeskPositionCtrl`, `LampOfSoulCtrl`), Lua 5.1 SS-GO server runtime, đồng bộ trạng thái và pipeline xử lý sự kiện.
 4. **[Danh Mục Thẻ Nhân Vật & Thông Số](03_characters.md)** — Danh mục đầy đủ các thẻ Character phân theo Darkborn, Lightborn, Natureborn và Humans.
 5. **[Hệ Thống Kỹ Năng & Hướng Dẫn Thực Thi](04_abilities.md)** — Chi tiết luồng thực thi, quy tắc kiểm tra vị trí nhắm mục tiêu và logic script của các thẻ Ability.
 6. **[Phân Cấp Sức Mạnh Thẻ Bài Theo Cấp Độ Sao](05_card_star_scaling.md)** — Mô tả sức mạnh và thang tăng trưởng chỉ số/hiệu ứng của thẻ bài theo cấp độ sao (1 đến 9 sao) chia làm 3 nhóm Early game, Mid game và Late game.
+7. **[Thống Kê Card](07_card_statistics.md)** — Tổng số Character, Ability và phân bố card theo race, tộc nhánh.
 
 ---
 

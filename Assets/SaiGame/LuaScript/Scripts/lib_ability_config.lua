@@ -25,6 +25,11 @@ function get_ability_config(ability_key)
             event = "on_attack",
             target_positions = { "enemy_frontline" },
         },
+        mist_execution = {
+            handler_group = "character_passives",
+            event = "on_attack",
+            target_positions = { "enemy_frontline", "enemy_backline" },
+        },
         eagle_eye = {
             handler_group = "human",
             target_positions = { "enemy_frontline" },
@@ -73,10 +78,27 @@ function get_ability_config(ability_key)
             requires_target_card = true,
             resolves_without_attack = true,
         },
+        lux_maxima = {
+            handler_group = "lightborn",
+            target_positions = {
+                "own_backline",
+                "enemy_backline",
+            },
+            requires_target_card = true,
+            resolves_without_attack = true,
+            counterable_darkborn_aura_codes = {
+                abyssal_mist = true,
+            },
+        },
         skeleton_shield = {
             handler_group = "darkborn",
             target_positions = { "own_frontline" },
             requires_target_card = true,
+        },
+        abyssal_mist = {
+            handler_group = "aura",
+            target_positions = { "own_frontline", "own_backline" },
+            resolves_without_attack = true,
         },
         animate_dead = {
             handler_group = "advanced",

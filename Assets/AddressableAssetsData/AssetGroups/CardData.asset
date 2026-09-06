@@ -130,6 +130,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ecbc0bdc3340f144a7d24de7e2116e7
+    m_Address: Assets/_sg03/Card/Data/Character/Lightborn/lumina/diana/diana.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7f274126714bab941a9c9c9f1aa0f9cd
     m_Address: Assets/_sg03/Card/Data/Env/abyssal_mist.asset
     m_ReadOnly: 0
@@ -170,8 +175,18 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: af4ed2c4f76fbcb41b36568a6eaecc3b
+    m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/Misthy/abyssal_mist.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b294c9150aaddb740bed376abfbffcd9
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/xena5.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: b4127af34e95ed34c96775bed9831395
+    m_Address: Assets/_sg03/Card/Data/Character/Lightborn/lumina/diana/lux_maxima.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -182,6 +197,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: bc3ec7de058d9324b99e7f17efe0c932
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/abilities/xena_awakened3.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c00689d00c4d7e44bb85b0498af7bedf
+    m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/Misthy/misthy.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

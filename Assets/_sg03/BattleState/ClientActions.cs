@@ -260,6 +260,13 @@ namespace SG03
                     i = groupEnd;
                     continue;
                 }
+                if (this.IsParallelCardAuraAction(log))
+                {
+                    int groupEnd = this.FindParallelCardAuraGroupEnd(i);
+                    yield return this.StartCoroutine(this.DispatchParallelSourceGroup(i, groupEnd));
+                    i = groupEnd;
+                    continue;
+                }
                 Coroutine actionRoutine = this.ExecuteAction(log);
                 if (actionRoutine != null) yield return actionRoutine;
                 log.MarkExecuted();
@@ -286,6 +293,51 @@ namespace SG03
         private bool IsParallelSourceAction(string actionName)
         {
             return this.IsSourceSpawnAction(actionName) || this.IsSourceToHandAction(actionName);
+        }
+
+        private bool IsParallelCardAuraAction(ClientActionLog log)
+        {
+            if (!this.IsCardAuraAction(log.ActionName)) return false;
+            return this.TryGetActionParameter(log.Parameters, "source", out _);
+        }
+
+        private bool IsCardAuraAction(string actionName)
+        {
+            return actionName == "alpha_card_aura" || actionName == "omega_card_aura";
+        }
+
+        private int FindParallelCardAuraGroupEnd(int startIndex)
+        {
+            ClientActionLog firstAction = this.actionLog[startIndex];
+            if (!this.TryGetActionParameter(firstAction.Parameters, "source", out string sourceId)) return startIndex + 1;
+
+            int endIndex = startIndex;
+            while (endIndex < this.actionLog.Count)
+            {
+                ClientActionLog action = this.actionLog[endIndex];
+                if (action.Executed || !this.IsCardAuraAction(action.ActionName)) break;
+                if (!this.TryGetActionParameter(action.Parameters, "source", out string actionSourceId)) break;
+                if (actionSourceId != sourceId) break;
+                endIndex++;
+            }
+            return endIndex;
+        }
+
+        private bool TryGetActionParameter(string parameters, string expectedKey, out string value)
+        {
+            value = null;
+            if (string.IsNullOrEmpty(parameters)) return false;
+
+            foreach (string parameter in parameters.Split(','))
+            {
+                string[] keyValue = parameter.Split('=');
+                if (keyValue.Length != 2) continue;
+                if (keyValue[0].Trim() != expectedKey) continue;
+
+                value = keyValue[1].Trim();
+                return !string.IsNullOrEmpty(value);
+            }
+            return false;
         }
 
         private int FindParallelSourceGroupEnd(int startIndex, bool isSpawnGroup)
@@ -382,6 +434,8 @@ namespace SG03
                 case "omega_hand_to_back_line": result = this.ExecuteOmegaHandToBackLine(parameters); break;
                 case "alpha_void_to_front_line": result = this.ExecuteAlphaVoidToFrontLine(parameters); break;
                 case "omega_void_to_front_line": result = this.ExecuteOmegaVoidToFrontLine(parameters); break;
+                case "alpha_void_to_back_line": result = this.ExecuteAlphaVoidToBackLine(parameters); break;
+                case "omega_void_to_back_line": result = this.ExecuteOmegaVoidToBackLine(parameters); break;
                 case "alpha_card_take_damage": result = this.ExecuteCardTakeDamage(parameters); break;
                 case "omega_card_take_damage": result = this.ExecuteCardTakeDamage(parameters); break;
                 case "alpha_card_expose": result = this.ExecuteCardExpose(parameters); break;
@@ -392,6 +446,8 @@ namespace SG03
                 case "alpha_attack_omega_hp": result = this.ExecuteAlphaAttackOmegaHp(parameters); break;
                 case "alpha_card_ability": result = this.ExecuteCardAbility(parameters); break;
                 case "omega_card_ability": result = this.ExecuteCardAbility(parameters); break;
+                case "alpha_card_aura": result = this.ExecuteCardAura(parameters); break;
+                case "omega_card_aura": result = this.ExecuteCardAura(parameters); break;
                 case "alpha_card_guarded": result = this.ExecuteCardGuarded(parameters); break;
                 case "omega_card_guarded": result = this.ExecuteCardGuarded(parameters); break;
                 case "alpha_card_swapped": result = this.ExecuteCardSwapped(parameters); break;

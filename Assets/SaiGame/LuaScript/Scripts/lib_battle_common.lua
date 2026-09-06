@@ -20,6 +20,28 @@ function check_card_type(item_defs, card, card_type)
     return false
 end
 
+-- Returns the item definition with the given item_code, or nil when absent.
+function find_item_def(item_defs, item_code)
+    if item_defs == nil or item_code == nil then return nil end
+    for _, item_def in ipairs(item_defs) do
+        if item_def.item_code == item_code then return item_def end
+    end
+    return nil
+end
+
+-- Returns true when card is a Character whose metadata.race is one of the
+-- supplied allowed_races values.
+function is_character_of_races(item_defs, card, allowed_races)
+    if card == nil or type(allowed_races) ~= "table" then return false end
+    local item_def = find_item_def(item_defs, card.item_definition_code_name)
+    local metadata = item_def ~= nil and item_def.metadata or nil
+    if metadata == nil or metadata.type ~= "character" then return false end
+    for _, allowed_race in ipairs(allowed_races) do
+        if metadata.race == allowed_race then return true end
+    end
+    return false
+end
+
 -- Clears the first slot with matching inventory_item_id from a fixed-size line.
 -- Preserves the line length by replacing the slot with {} instead of removing it.
 -- Returns true if a card was cleared, false otherwise.
@@ -41,33 +63,66 @@ end
 --   final_def            → base_stats.def from item_defs (0 if not found)
 --   total_damage_received → 0
 -- No-ops if card has no item_definition_code_name.
-function reset_card_turn_state(item_defs, reset_card)
+local function is_card_on_battlefield(state, inventory_item_id)
+    if state == nil or inventory_item_id == nil or inventory_item_id == "" then return false end
+    for _, line in ipairs({
+        state.alpha_front_line or {}, state.alpha_back_line or {},
+        state.omega_front_line or {}, state.omega_back_line or {},
+    }) do
+        for _, card in ipairs(line) do
+            if card.inventory_item_id == inventory_item_id then return true end
+        end
+    end
+    return false
+end
+
+local function get_active_persistent_bonus(state, bonuses)
+    local total = 0
+    if type(bonuses) ~= "table" then return total end
+    for source_id, bonus in pairs(bonuses) do
+        if is_card_on_battlefield(state, source_id) then
+            total = total + (tonumber(bonus) or 0)
+        else
+            bonuses[source_id] = nil
+        end
+    end
+    return total
+end
+
+function reset_card_turn_state(item_defs, reset_card, state)
     if reset_card == nil then return end
     if reset_card.item_definition_code_name == nil or reset_card.item_definition_code_name == "" then return end
+    local base_atk = 0
     local base_def = 0
     if item_defs ~= nil then
         for _, item_def in ipairs(item_defs) do
             if item_def.item_code == reset_card.item_definition_code_name then
+                base_atk = (item_def.base_stats and item_def.base_stats.atk) or 0
                 base_def = (item_def.base_stats and item_def.base_stats.def) or 0
                 break
             end
         end
     end
-    reset_card.final_def             = base_def
+    reset_card.final_atk             = base_atk + get_active_persistent_bonus(state, reset_card.persistent_atk_bonuses)
+    reset_card.final_def             = base_def + get_active_persistent_bonus(state, reset_card.persistent_def_bonuses)
     reset_card.total_damage_received = 0
 end
 
 -- Returns an attacker's planned damage. An ability with base_stats.atk_added
 -- borrows the ATK of metadata.char_code_required only when that character is
 -- present in the same side's Front Line.
-function get_attack_damage(state, attacker_def, attacker_line_key)
+function get_attack_damage(state, attacker_def, attacker_line_key, attacker_card)
     if attacker_def == nil then return 0 end
 
     local base_stats = attacker_def.base_stats or {}
     local base_atk = tonumber(base_stats.atk)
         or tonumber(attacker_def.metadata ~= nil and attacker_def.metadata.atk or nil)
         or 0
-    if base_stats.atk_added == nil then return base_atk end
+    local persistent_atk_added = get_active_persistent_bonus(
+        state,
+        attacker_card ~= nil and attacker_card.persistent_atk_bonuses or nil
+    )
+    if base_stats.atk_added == nil then return base_atk + persistent_atk_added end
 
     local required_character_code = attacker_def.metadata ~= nil and attacker_def.metadata.char_code_required
     local added_atk = tonumber(base_stats.atk_added) or 0
@@ -96,7 +151,7 @@ function get_attack_damage(state, attacker_def, attacker_line_key)
             local character_atk = tonumber(character_stats.atk)
                 or tonumber(character_def.metadata.atk)
                 or 0
-            return character_atk + added_atk
+            return character_atk + added_atk + persistent_atk_added
         end
     end
 
@@ -191,7 +246,7 @@ function reset_turn_cards(state, next_active_side)
     for _, line_data in ipairs(lines) do
         if line_data.side == next_active_side then
             for _, reset_card in ipairs(line_data.line) do
-                reset_card_turn_state(state.item_defs, reset_card)
+                reset_card_turn_state(state.item_defs, reset_card, state)
                 if reset_card.skip_next_turn == true then
                     reset_card.trigger = true
                     reset_card.skip_next_turn = nil
@@ -398,11 +453,18 @@ local function fire_on_damaged(state, attacker_card, attacker_def, defender_card
     return lib_ability_core.trigger_card_ability(state, defender_card, "on_damaged", def_event_data)
 end
 
-local function append_attack_client_actions(state, attacker_side, defender_side, attacker_card, defender_card, dmg_actions, atk_actions, def_actions)
+local function fire_pending_aura_refresh(state)
+    if state.aura_refresh_requested ~= true then return {} end
+    state.aura_refresh_requested = nil
+    return lib_ability_aura.refresh_active_auras(state, "aura_source_deployed")
+end
+
+local function append_attack_client_actions(state, attacker_side, defender_side, attacker_card, defender_card, dmg_actions, atk_actions, def_actions, aura_actions)
     append_client_action(state, attacker_side .. "_attack:" .. attacker_card.inventory_item_id .. "," .. defender_card.inventory_item_id)
     for _, action in ipairs(dmg_actions) do append_client_action(state, action) end
     for _, action in ipairs(atk_actions) do append_client_action(state, action) end
     for _, action in ipairs(def_actions) do append_client_action(state, action) end
+    for _, action in ipairs(aura_actions) do append_client_action(state, action) end
 end
 
 local function send_ability_attacker_to_void(state, attacker_card, attacker_line_key, attacker_def, attacker_side)
@@ -441,7 +503,10 @@ function card_attack_card(state, attacker_card, attacker_def, attacker_line_key,
     local def_actions, def_err = fire_on_damaged(state, attacker_card, attacker_def, defender_card, defender_def, damage_dealt)
     if def_err ~= nil then return def_err end
 
-    append_attack_client_actions(state, attacker_side, defender_side, attacker_card, defender_card, dmg_actions, atk_actions, def_actions)
+    local aura_actions = fire_pending_aura_refresh(state)
+    append_attack_client_actions(
+        state, attacker_side, defender_side, attacker_card, defender_card,
+        dmg_actions, atk_actions, def_actions, aura_actions)
 
     send_ability_attacker_to_void(state, attacker_card, attacker_line_key, attacker_def, attacker_side)
 

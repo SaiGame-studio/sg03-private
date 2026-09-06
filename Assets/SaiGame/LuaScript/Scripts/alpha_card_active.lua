@@ -1,6 +1,7 @@
 require "lib_battle_common"
 require "lib_ability_config"
 require "lib_ability_core"
+require "lib_ability_aura"
 require "lib_battle_entity_ai"
 require "enemy_ai_core"
 require "enemy_ai_goblin_shaman"
@@ -117,8 +118,8 @@ local function log_card_info(attacker_card, defender_card, attacker_def, defende
 end
 
 -- Computes final damage dealt by the attacker.
-local function compute_damage(state, attacker_def, attacker_line_key)
-    local damage_dealt = lib_battle_common.get_attack_damage(state, attacker_def, attacker_line_key)
+local function compute_damage(state, attacker_card, attacker_def, attacker_line_key)
+    local damage_dealt = lib_battle_common.get_attack_damage(state, attacker_def, attacker_line_key, attacker_card)
     lib_battle_common.dlog("[alpha_card_active] compute_damage: damage_dealt=" .. damage_dealt)
     return damage_dealt
 end
@@ -265,7 +266,7 @@ local function plan_alpha_attack(state,
     defender_card, defender_def, defender_line_key, defender_side_void)
     lib_battle_common.dlog("[alpha_card_active] == phase 1: planning action ==")
     log_card_info(attacker_card, defender_card, attacker_def, defender_def, defender_line_key, defender_side_void)
-    local damage_dealt = compute_damage(state, attacker_def, attacker_line_key)
+    local damage_dealt = compute_damage(state, attacker_card, attacker_def, attacker_line_key)
     lib_battle_common.dlog("[alpha_card_active] planned damage_dealt=" .. damage_dealt)
     local pending_atk = {}
     pending_atk.attacker_inventory_item_id = attacker_card.inventory_item_id
@@ -361,7 +362,7 @@ local function attack_omega_hp(session_id, state, attacker_card, attacker_line_k
     -- reveal-before-damage ordering used for card-vs-card combat.
     lib_battle_common.append_client_action(state, "alpha_card_expose:" .. attacker_card.inventory_item_id)
 
-    local damage = compute_damage(state, attacker_def, attacker_line_key)
+    local damage = compute_damage(state, attacker_card, attacker_def, attacker_line_key)
     lib_battle_common.dlog("[alpha_card_active] attacking omega_hp directly: damage=" .. damage)
     state.omega_hp = (state.omega_hp or 0) - damage
     lib_battle_common.dlog("[alpha_card_active] omega_hp after attack=" .. state.omega_hp)

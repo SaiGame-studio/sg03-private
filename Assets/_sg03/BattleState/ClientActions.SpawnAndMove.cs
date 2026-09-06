@@ -145,7 +145,7 @@ namespace SG03
         private IEnumerator AlphaVoidToFrontLineRoutine(string inventoryItemId, int slotIndex)
         {
             CardHolderCtrl holder = this.cardSpawning?.GetAlphaVoidToFrontLineHolder(slotIndex);
-            yield return this.StartCoroutine(this.VoidToFrontLineRoutine(
+            yield return this.StartCoroutine(this.VoidToLineRoutine(
                 inventoryItemId,
                 holder,
                 () => this.cardSpawning?.MoveAlphaVoidToFrontLine(inventoryItemId, slotIndex)));
@@ -160,13 +160,43 @@ namespace SG03
         private IEnumerator OmegaVoidToFrontLineRoutine(string inventoryItemId, int slotIndex)
         {
             CardHolderCtrl holder = this.cardSpawning?.GetOmegaVoidToFrontLineHolder(slotIndex);
-            yield return this.StartCoroutine(this.VoidToFrontLineRoutine(
+            yield return this.StartCoroutine(this.VoidToLineRoutine(
                 inventoryItemId,
                 holder,
                 () => this.cardSpawning?.MoveOmegaVoidToFrontLine(inventoryItemId, slotIndex)));
         }
 
-        private IEnumerator VoidToFrontLineRoutine(
+        private Coroutine ExecuteAlphaVoidToBackLine(string[] parameters)
+        {
+            if (!this.TryParseSourceToHand(parameters, out string inventoryItemId, out int slotIndex)) return null;
+            return this.StartCoroutine(this.AlphaVoidToBackLineRoutine(inventoryItemId, slotIndex));
+        }
+
+        private IEnumerator AlphaVoidToBackLineRoutine(string inventoryItemId, int slotIndex)
+        {
+            CardHolderCtrl holder = this.cardSpawning?.GetAlphaVoidToBackLineHolder(slotIndex);
+            yield return this.StartCoroutine(this.VoidToLineRoutine(
+                inventoryItemId,
+                holder,
+                () => this.cardSpawning?.MoveAlphaVoidToBackLine(inventoryItemId, slotIndex)));
+        }
+
+        private Coroutine ExecuteOmegaVoidToBackLine(string[] parameters)
+        {
+            if (!this.TryParseSourceToHand(parameters, out string inventoryItemId, out int slotIndex)) return null;
+            return this.StartCoroutine(this.OmegaVoidToBackLineRoutine(inventoryItemId, slotIndex));
+        }
+
+        private IEnumerator OmegaVoidToBackLineRoutine(string inventoryItemId, int slotIndex)
+        {
+            CardHolderCtrl holder = this.cardSpawning?.GetOmegaVoidToBackLineHolder(slotIndex);
+            yield return this.StartCoroutine(this.VoidToLineRoutine(
+                inventoryItemId,
+                holder,
+                () => this.cardSpawning?.MoveOmegaVoidToBackLine(inventoryItemId, slotIndex)));
+        }
+
+        private IEnumerator VoidToLineRoutine(
             string inventoryItemId,
             CardHolderCtrl holder,
             Func<Card3DCtrl> startMove)

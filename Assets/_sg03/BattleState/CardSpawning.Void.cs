@@ -12,11 +12,23 @@ namespace SG03
         public Card3DCtrl MoveOmegaVoidToFrontLine(string inventoryItemId, int slotIndex)
             => this.MoveVoidToLine(inventoryItemId, slotIndex, this.deskPosition.OmegaFrontLine, this.omegaVoidCardList, Owner.omega);
 
+        public Card3DCtrl MoveAlphaVoidToBackLine(string inventoryItemId, int slotIndex)
+            => this.MoveVoidToLine(inventoryItemId, slotIndex, this.deskPosition.AlphaBackLine, this.alphaVoidCardList, Owner.alpha);
+
+        public Card3DCtrl MoveOmegaVoidToBackLine(string inventoryItemId, int slotIndex)
+            => this.MoveVoidToLine(inventoryItemId, slotIndex, this.deskPosition.OmegaBackLine, this.omegaVoidCardList, Owner.omega);
+
         public CardHolderCtrl GetAlphaVoidToFrontLineHolder(int slotIndex)
             => this.GetVoidToLineHolder(slotIndex, this.deskPosition.AlphaFrontLine);
 
         public CardHolderCtrl GetOmegaVoidToFrontLineHolder(int slotIndex)
             => this.GetVoidToLineHolder(slotIndex, this.deskPosition.OmegaFrontLine);
+
+        public CardHolderCtrl GetAlphaVoidToBackLineHolder(int slotIndex)
+            => this.GetVoidToLineHolder(slotIndex, this.deskPosition.AlphaBackLine);
+
+        public CardHolderCtrl GetOmegaVoidToBackLineHolder(int slotIndex)
+            => this.GetVoidToLineHolder(slotIndex, this.deskPosition.OmegaBackLine);
 
         private CardHolderCtrl GetVoidToLineHolder(int slotIndex, CardHolderCtrl[] holders)
         {

@@ -48,6 +48,8 @@ MonoBehaviour:
   card3DLoader: {fileID: 0}
   cardAddresses:
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Common/kira.asset
+  - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Misthy/abyssal_mist.asset
+  - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Misthy/misthy.asset
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/abilities/demon_orbs.asset
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/abilities/demon_rite.asset
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/abilities/xena_awakened1.asset
@@ -80,6 +82,8 @@ MonoBehaviour:
   - Assets/_sg03/Card/Data/Character/Lightborn/LightElf/azura/abilities/static_bind.asset
   - Assets/_sg03/Card/Data/Character/Lightborn/LightElf/azura/volt_heart.asset
   - Assets/_sg03/Card/Data/Character/Lightborn/LightElf/common/zelene.asset
+  - Assets/_sg03/Card/Data/Character/Lightborn/lumina/diana/diana.asset
+  - Assets/_sg03/Card/Data/Character/Lightborn/lumina/diana/lux_maxima.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/abilities/back_stab.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/abilities/goblin_shaman/brute_call.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/abilities/goblin_shaman/totem_pulse.asset

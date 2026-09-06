@@ -56,6 +56,13 @@ local function find_and_remove_by_code(list, code)
     return nil
 end
 
+local function find_by_definition_code(list, code)
+    for _, item in ipairs(list or {}) do
+        if item.item_definition_code_name == code then return item end
+    end
+    return nil
+end
+
 local function find_by_inventory_item_id(list, inventory_item_id)
     for _, item in ipairs(list or {}) do
         if item.inventory_item_id == inventory_item_id then return item end
@@ -209,13 +216,20 @@ local function omega_choose_cards(state)
     for i, slot in ipairs(slots) do
         local card = find_and_remove_by_code(source, slot.code)
         if card == nil then
-            return nil, "omega preset " .. slot.key .. " (" .. slot.code .. ") not found in omega_the_source"
+            -- Automatic Void rules take precedence over the opening-hand preset,
+            -- matching Alpha's behavior for a selected card already in the Void.
+            if find_by_definition_code(state.omega_the_void, slot.code) ~= nil then
+                lib_battle_common.dlog("[init_cards] Skipped omega hand choice " .. slot.key .. " (" .. slot.code .. ") because the card is in omega_the_void")
+            else
+                return nil, "omega preset " .. slot.key .. " (" .. slot.code .. ") not found in omega_the_source"
+            end
+        else
+            card.id                = gen_id()
+            card.inventory_item_id = gen_id()
+            card.slot_index        = #hand
+            card.trigger           = false
+            table.insert(hand, card)
         end
-        card.id                = gen_id()
-        card.inventory_item_id = gen_id()
-        card.slot_index        = i - 1
-        card.trigger           = false
-        table.insert(hand, card)
     end
 
     for _, hand_card in ipairs(hand) do
@@ -241,8 +255,73 @@ local function alpha_init_cards(state)
     return nil
 end
 
--- Moves every explicitly selected void card, then every remaining Character
--- with at least four stars, out of Alpha's source before opening-hand selections or draws.
+-- Moves cards whose definition is assigned to the_void or Character with at
+-- least four stars out of a side's source before that side draws its opening hand.
+local function move_auto_void_cards(state, side)
+    local source_key = side .. "_the_source"
+    local void_key = side .. "_the_void"
+    local source = state[source_key]
+    if source == nil then
+        return source_key .. " not found in session state"
+    end
+    if state[void_key] == nil then
+        state[void_key] = {}
+    end
+
+    local function move_to_void(card, reason)
+        -- Enemy source cards are given their inventory ID only when they leave
+        -- the source. Void actions require that ID just like hand actions do.
+        if card.inventory_item_id == nil or card.inventory_item_id == "" then
+            card.inventory_item_id = gen_id()
+        end
+        table.insert(state[void_key], card)
+        lib_battle_common.append_card_sent_to_void_client_action(state, side, card)
+        lib_battle_common.dlog("[init_cards] Moved " .. side .. " card to void (" .. reason .. "): " .. card.inventory_item_id)
+    end
+
+    local defs_by_code = {}
+    for _, item_def in ipairs(state.item_defs or {}) do
+        if item_def.item_code ~= nil and item_def.item_code ~= "" then
+            defs_by_code[item_def.item_code] = item_def
+        end
+    end
+
+    local function get_card_stars(card)
+        local item_def = defs_by_code[card.item_definition_code_name]
+        local stars = item_def ~= nil and item_def.base_stats ~= nil and item_def.base_stats.star or nil
+        return tonumber(stars) or 0
+    end
+
+    local function get_auto_void_reason(card)
+        local item_def = defs_by_code[card.item_definition_code_name]
+        local metadata = item_def ~= nil and item_def.metadata or nil
+        if metadata ~= nil and metadata.location == "the_void" then
+            return "metadata.location=the_void"
+        end
+
+        local card_type = metadata ~= nil and metadata.type or nil
+        if card_type == "character" and get_card_stars(card) >= 4 then
+            return tostring(get_card_stars(card)) .. "-star character"
+        end
+
+        return nil
+    end
+
+    -- Iterate backwards while removing so every remaining source card is checked.
+    for i = #source, 1, -1 do
+        local card = source[i]
+        local reason = get_auto_void_reason(card)
+        if reason ~= nil then
+            table.remove(source, i)
+            move_to_void(card, reason)
+        end
+    end
+
+    return nil
+end
+
+-- Moves explicitly selected Alpha void cards, then lets the shared automatic
+-- Void rules process every remaining Alpha source card.
 local function alpha_init_void(state)
     lib_battle_common.dlog("[init_cards] == alpha_init_void ==")
     local preset = state.alpha_preset_metadata
@@ -264,25 +343,6 @@ local function alpha_init_void(state)
         lib_battle_common.dlog("[init_cards] Moved alpha card to void (" .. reason .. "): " .. card.inventory_item_id)
     end
 
-    local defs_by_code = {}
-    for _, item_def in ipairs(state.item_defs or {}) do
-        if item_def.item_code ~= nil and item_def.item_code ~= "" then
-            defs_by_code[item_def.item_code] = item_def
-        end
-    end
-
-    local function get_card_stars(card)
-        local item_def = defs_by_code[card.item_definition_code_name]
-        local stars = item_def ~= nil and item_def.base_stats ~= nil and item_def.base_stats.star or nil
-        return tonumber(stars) or 0
-    end
-
-    local function is_auto_void_eligible(card)
-        local item_def = defs_by_code[card.item_definition_code_name]
-        local card_type = item_def ~= nil and item_def.metadata ~= nil and item_def.metadata.type or nil
-        return card_type == "character" and get_card_stars(card) >= 4
-    end
-
     -- Explicit void choices keep preset order and may contain any card type
     -- or star level. They take precedence over opening-hand choices.
     local slot_names = { "void_card_1", "void_card_2", "void_card_3", "void_card_4", "void_card_5", "void_card_6", "void_card_7" }
@@ -299,25 +359,16 @@ local function alpha_init_void(state)
         end
     end
 
-    -- Iterate backwards while removing so every remaining source card is checked.
-    for i = #source, 1, -1 do
-        local card = source[i]
-        if is_auto_void_eligible(card) then
-            table.remove(source, i)
-            move_to_void(card, tostring(get_card_stars(card)) .. "-star character")
-        end
-    end
-
-    return nil
+    return move_auto_void_cards(state, "alpha")
 end
 
--- Draws omega's opening hand: 3 preset chosen cards + 2 random from omega_the_source.
+-- Draws omega's opening hand: selected cards plus random cards to reach five.
 -- Returns err or nil.
 local function omega_init_cards(state)
     local omega_hand, omega_err = omega_choose_cards(state)
     if omega_err ~= nil then return omega_err end
 
-    local random_hand, random_err = omega_draw_random(state, 2, #omega_hand)
+    local random_hand, random_err = omega_draw_random(state, 5 - #omega_hand, #omega_hand)
     if random_err ~= nil then return random_err end
     for _, card in ipairs(random_hand) do table.insert(omega_hand, card) end
 
@@ -346,6 +397,11 @@ local function main()
     local void_err = alpha_init_void(state)
     if void_err ~= nil then
         output.error = void_err; return
+    end
+
+    local omega_void_err = move_auto_void_cards(state, "omega")
+    if omega_void_err ~= nil then
+        output.error = omega_void_err; return
     end
 
     local alpha_err = alpha_init_cards(state)

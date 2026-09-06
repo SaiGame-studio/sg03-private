@@ -8718,6 +8718,10 @@ PrefabInstance:
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
       objectReference: {fileID: 1926114376}
+    - target: {fileID: 2906211568743924252, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -3.408
+      objectReference: {fileID: 0}
     - target: {fileID: 3224538444746627556, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
       propertyPath: m_LocalScale.x
       value: 7.7
@@ -8822,6 +8826,10 @@ PrefabInstance:
       propertyPath: m_sharedMaterial
       value: 
       objectReference: {fileID: 1524242641}
+    - target: {fileID: 6861007660675967375, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -1.659
+      objectReference: {fileID: 0}
     - target: {fileID: 8660204716586372184, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
       propertyPath: m_Name
       value: Card3D
