@@ -20,3 +20,7 @@ Cô có khả năng tạo ra sương mù theo ý muốn. Misthy dùng màn sươ
 ## Kỹ Năng Bị Động
 
 - [Mist Execution](abilities/mist_execution.md)
+
+## Thẻ Kỹ Năng Liên Kết
+
+- [Abyssal Mist](abilities/abyssal_mist.md)

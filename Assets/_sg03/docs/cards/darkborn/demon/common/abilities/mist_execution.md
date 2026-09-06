@@ -24,3 +24,7 @@ Mỗi khi Misthy hạ gục mục tiêu bằng chính đòn tấn công của m�
 ## Hiệu Quả
 
 Mist Execution đưa Abyssal Mist từ `the_void` của phe sở hữu vào một ô trống ở hàng sau phe đó. Nếu không có Abyssal Mist trong `the_void`, hàng sau đã có Abyssal Mist, hoặc hàng sau không còn ô trống, passive không tạo thêm hành động.
+
+## Thẻ Kỹ Năng Liên Kết
+
+- [Abyssal Mist](abyssal_mist.md)

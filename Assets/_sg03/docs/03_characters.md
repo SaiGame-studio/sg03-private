@@ -3,9 +3,9 @@
 Tài liệu này tổng hợp toàn bộ thẻ Character trong **SG03** theo bốn chủng tộc chính thức: **Darkborn**, **Lightborn**, **Natureborn** và **Humans**. Xem [Chủng Tộc Card](06_card_race.md) để biết bối cảnh và quy ước phân loại.
 
 > **Thống kê tổng quan thẻ bài trong game:**
-> - **Thẻ Nhân vật (Character):** 21 thẻ
+> - **Thẻ Nhân vật (Character):** 22 thẻ
 > - **Thẻ Kỹ năng [(Ability)](04_abilities.md):** 21 thẻ
-> - **Tổng số thẻ bài toàn game:** 42 thẻ
+> - **Tổng số thẻ bài toàn game:** 43 thẻ
 
 ---
 
@@ -39,12 +39,22 @@ Nằm tại thư mục [`cards/darkborn/demon/`](cards/darkborn/demon/)
 ---
 
 ## Lightborn
-Nằm tại thư mục [`cards/lightborn/light_elf/`](cards/lightborn/light_elf/)
+Nằm tại thư mục [`cards/lightborn/`](cards/lightborn/)
 
-Tộc nhánh hiện có: Light Elf. Định danh `elf` / `light_elf` là tên kỹ thuật hiện hành.
+Tộc nhánh hiện có: Light Elf và Lumina.
+
+### Light Elf
+
+Nằm tại thư mục [`cards/lightborn/light_elf/`](cards/lightborn/light_elf/)
 
 13. [Zelena](cards/lightborn/light_elf/common/zelena.md) — Số sao: 2
 14. [Azura](cards/lightborn/light_elf/azura/azura.md) — Số sao: 3
+
+### Lumina
+
+Nằm tại thư mục [`cards/lightborn/lumina/`](cards/lightborn/lumina/)
+
+15. [Diana](cards/lightborn/lumina/diana.md) — Số sao: 2
 
 ---
 
@@ -53,16 +63,16 @@ Nằm tại thư mục [`cards/natureborn/goblin/`](cards/natureborn/goblin/)
 
 Tộc nhánh hiện có: Goblin. Định danh `goblin` là tên kỹ thuật hiện hành.
 
-15. [Goblin Grunt](cards/natureborn/goblin/goblin_grunt.md) — Số sao: 1
-16. [Goblin Saboteur](cards/natureborn/goblin/goblin_saboteur.md) — Số sao: 2
-17. [Goblin Shaman](cards/natureborn/goblin/goblin_shaman.md) — Số sao: 3
-18. [Goblin Brute](cards/natureborn/goblin/goblin_brute.md) — Số sao: 4
+16. [Goblin Grunt](cards/natureborn/goblin/goblin_grunt.md) — Số sao: 1
+17. [Goblin Saboteur](cards/natureborn/goblin/goblin_saboteur.md) — Số sao: 2
+18. [Goblin Shaman](cards/natureborn/goblin/goblin_shaman.md) — Số sao: 3
+19. [Goblin Brute](cards/natureborn/goblin/goblin_brute.md) — Số sao: 4
 
 ---
 
 ## Humans
 Nằm tại thư mục [`cards/human/`](cards/human/)
 
-19. [Ren](cards/human/azure_blade.md) — Số sao: 3
-20. [Lyra](cards/human/lyra.md) — Số sao: 2
-21. [Titan](cards/human/titan.md) — Số sao: 5
+20. [Ren](cards/human/azure_blade.md) — Số sao: 3
+21. [Lyra](cards/human/lyra.md) — Số sao: 2
+22. [Titan](cards/human/titan.md) — Số sao: 5

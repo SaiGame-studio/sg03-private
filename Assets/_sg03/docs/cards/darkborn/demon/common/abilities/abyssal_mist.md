@@ -27,3 +27,7 @@ Sau khi được triển khai, Abyssal Mist không tự biến mất. Nó duy tr
 2. Đặt `trigger = true` cho Misthy.
 3. Đưa Abyssal Mist lên sân và áp dụng các hiệu ứng được khai báo trong metadata.
 4. Giữ Abyssal Mist trên sân cho đến khi một lá bài khác hủy nó.
+
+## Thẻ Kỹ Năng Liên Kết
+
+- [Mist Execution](mist_execution.md)
