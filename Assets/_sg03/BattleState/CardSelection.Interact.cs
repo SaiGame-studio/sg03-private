@@ -74,7 +74,7 @@ namespace SG03
         {
             Card3DCtrl source = this.targetingSource;
             Card3DCtrl target = this.hovered;
-            this.targeted = target;
+            this.CancelTargeting();
             this.LogTargetConfirmed(source, target);
             TargetSelected?.Invoke(source, target);
             this.DispatchAttackingScripts(source, target);
@@ -86,6 +86,7 @@ namespace SG03
             CardHolderCtrl holder = this.holderHover;
             if (source == null || holder == null) return;
             string defenderId = this.ResolveDefenderId(holder);
+            this.CancelTargeting();
             Debug.Log($"<color=#00FFAA>[Targeting] <b>{source.name}</b> → <b>{holder.name}</b> ({defenderId})</color>");
             this.battleStateCtrl?.BattleScripts?.RunAlphaAttacking(
                 source.InventoryItemId,
