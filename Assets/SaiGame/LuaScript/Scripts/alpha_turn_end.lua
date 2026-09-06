@@ -2,6 +2,7 @@ require "lib_battle_common"
 require "lib_battle_ai"
 require "lib_ability_config"
 require "lib_ability_core"
+require "lib_ability_aura"
 require "lib_battle_entity_ai"
 require "enemy_ai_core"
 require "enemy_ai_goblin_shaman"
@@ -136,6 +137,10 @@ local function main()
     if deploy_err ~= nil then
         output.error = deploy_err; return
     end
+    local aura_actions = lib_ability_aura.refresh_active_auras(state, "alpha_end_turn")
+    for _, action in ipairs(aura_actions) do
+        lib_battle_common.append_client_action(state, action)
+    end
 
     local plan_err = run_omega_attack_planning(state)
     if plan_err ~= nil then
@@ -146,7 +151,12 @@ local function main()
     -- Omega Character is triggered (for example immediately after Brute Call).
     -- Do not overwrite that transition, or those cards become ready while the
     -- state still claims Omega has the lamp.
-    if state.metadata == nil or state.metadata.next_move ~= "alpha_turn" then
+    if state.metadata ~= nil and state.metadata.next_move == "alpha_turn" then
+        local omega_end_aura_actions = lib_ability_aura.refresh_active_auras(state, "omega_end_turn")
+        for _, action in ipairs(omega_end_aura_actions) do
+            lib_battle_common.append_client_action(state, action)
+        end
+    else
         advance_turn_to_omega(state)
     end
 

@@ -84,7 +84,7 @@ function get_ability_config(ability_key)
             requires_target_card = true,
         },
         abyssal_mist = {
-            handler_group = "darkborn",
+            handler_group = "aura",
             target_positions = { "own_frontline", "own_backline" },
             resolves_without_attack = true,
         },

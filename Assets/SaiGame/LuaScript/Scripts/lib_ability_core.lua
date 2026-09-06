@@ -81,13 +81,7 @@ end
 
 -- Looks up an item definition from state.item_defs by item_code.
 local function _find_item_def(item_defs, code)
-    if item_defs == nil or code == nil then return nil end
-    for _, item_def in ipairs(item_defs) do
-        if item_def.item_code == code then
-            return item_def
-        end
-    end
-    return nil
+    return lib_battle_common.find_item_def(item_defs, code)
 end
 
 -- Returns one base stat from a card's item definition, for example
@@ -339,15 +333,18 @@ function deal_damage_to_character(state, attacker_card, target_card, damage, tar
 end
 
 local function _get_ability_library(handler_group)
-    if handler_group == "human" then return lib_ability_human end
-    if handler_group == "darkborn" then return lib_ability_darkborn end
-    if handler_group == "lightborn" then return lib_ability_lightborn end
-    if handler_group == "natureborn" then return lib_ability_natureborn end
-    if handler_group == "advanced" then return lib_ability_advanced end
-    if handler_group == "mid_game" then return lib_ability_mid_game end
-    if handler_group == "xena" then return lib_ability_xena end
-    if handler_group == "character_passives" then return lib_ability_character_passives end
-    return nil
+    local libraries = {
+        human = lib_ability_human,
+        darkborn = lib_ability_darkborn,
+        lightborn = lib_ability_lightborn,
+        natureborn = lib_ability_natureborn,
+        advanced = lib_ability_advanced,
+        mid_game = lib_ability_mid_game,
+        xena = lib_ability_xena,
+        character_passives = lib_ability_character_passives,
+        aura = lib_ability_aura,
+    }
+    return libraries[handler_group]
 end
 
 local function _get_ability_handler(ability_key, ability_def)

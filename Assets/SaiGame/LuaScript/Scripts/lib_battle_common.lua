@@ -20,6 +20,28 @@ function check_card_type(item_defs, card, card_type)
     return false
 end
 
+-- Returns the item definition with the given item_code, or nil when absent.
+function find_item_def(item_defs, item_code)
+    if item_defs == nil or item_code == nil then return nil end
+    for _, item_def in ipairs(item_defs) do
+        if item_def.item_code == item_code then return item_def end
+    end
+    return nil
+end
+
+-- Returns true when card is a Character whose metadata.race is one of the
+-- supplied allowed_races values.
+function is_character_of_races(item_defs, card, allowed_races)
+    if card == nil or type(allowed_races) ~= "table" then return false end
+    local item_def = find_item_def(item_defs, card.item_definition_code_name)
+    local metadata = item_def ~= nil and item_def.metadata or nil
+    if metadata == nil or metadata.type ~= "character" then return false end
+    for _, allowed_race in ipairs(allowed_races) do
+        if metadata.race == allowed_race then return true end
+    end
+    return false
+end
+
 -- Clears the first slot with matching inventory_item_id from a fixed-size line.
 -- Preserves the line length by replacing the slot with {} instead of removing it.
 -- Returns true if a card was cleared, false otherwise.

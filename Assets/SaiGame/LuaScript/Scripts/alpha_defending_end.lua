@@ -1,6 +1,7 @@
 require "lib_battle_common"
 require "lib_ability_config"
 require "lib_ability_core"
+require "lib_ability_aura"
 require "lib_battle_ai"
 require "lib_battle_entity_ai"
 require "enemy_ai_core"
@@ -293,6 +294,13 @@ local function main()
     -- ── Re-plan omega's next attack after executing this round's plan ─────
     local next_plan_err = lib_battle_entity_ai.run_plan_attack(state)
     if next_plan_err ~= nil then output.error = next_plan_err ; return end
+
+    if state.metadata ~= nil and state.metadata.next_move == "alpha_turn" then
+        local aura_actions = lib_ability_aura.refresh_active_auras(state, "omega_end_turn")
+        for _, action in ipairs(aura_actions) do
+            lib_battle_common.append_client_action(state, action)
+        end
+    end
 
     lib_battle_common.append_client_action(state, "alpha_take_lamp")
 

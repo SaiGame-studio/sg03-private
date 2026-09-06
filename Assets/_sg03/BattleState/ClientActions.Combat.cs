@@ -255,6 +255,37 @@ namespace SG03
             if (selectedCard != null) yield return this.StartCoroutine(this.WaitForCard(selectedCard));
         }
 
+        private Coroutine ExecuteCardAura(string[] parameters)
+        {
+            if (parameters == null || parameters.Length == 0) return null;
+
+            string sourceId = null;
+            string targetId = null;
+            foreach (string parameter in parameters)
+            {
+                string[] keyValue = parameter.Split('=');
+                if (keyValue.Length != 2) continue;
+
+                string key = keyValue[0].Trim().ToLowerInvariant();
+                string value = keyValue[1].Trim();
+                if (key == "source") sourceId = value;
+                else if (key == "target") targetId = value;
+            }
+
+            if (string.IsNullOrEmpty(sourceId) || string.IsNullOrEmpty(targetId)) return null;
+            return this.StartCoroutine(this.CardAuraRoutine(sourceId, targetId));
+        }
+
+        private IEnumerator CardAuraRoutine(string sourceId, string targetId)
+        {
+            Card3DCtrl sourceCard = this.cardSpawning?.FindCardById(sourceId);
+            Card3DCtrl targetCard = this.cardSpawning?.FindCardById(targetId);
+            if (sourceCard != null) sourceCard.AbilityActive();
+            if (sourceCard != null) yield return this.StartCoroutine(this.WaitForCard(sourceCard));
+            if (targetCard != null) targetCard.AbilityActive();
+            if (targetCard != null) yield return this.StartCoroutine(this.WaitForCard(targetCard));
+        }
+
         private bool TryGetAbilityTargetSourcePosition(string targetId, out Vector3 targetPosition)
         {
             targetPosition = default;

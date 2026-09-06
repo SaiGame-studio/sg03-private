@@ -10,6 +10,14 @@ Treat `Assets/SaiGame/` as a read-only dependency. Implement project-specific be
 
 Whenever a Lua script introduces a new error type, error string, or failure reason, add the corresponding entry to `Assets/SaiGame/LuaScript/Scripts/LuaErrorCatalog.md` as part of the same change.
 
+## Lua Shared Helpers
+
+For basic Lua operations that may be reused (for example definition lookup, card type or race checks, and line or battle-state scans), prefer an existing shared helper. When none exists, add a generic helper to the appropriate shared library rather than a function named for one ability or card. Keep ability-specific functions only for rules that are genuinely unique to that ability.
+
+## Conditional Complexity (C# and Lua)
+
+In C# and Lua, do not nest `if` statements more than three levels deep. Do not create an `if` / `else if` / `else if` chain with more than three conditional branches. When a rule would exceed either limit, use guard clauses, a clearly named helper, or table-driven dispatch instead.
+
 ## Game Content Naming
 
 When creating or editing game content, use English for every official character and skill name. Vietnamese may be used only in descriptive text or explanatory notes, never as an official name, identifier, or card title.

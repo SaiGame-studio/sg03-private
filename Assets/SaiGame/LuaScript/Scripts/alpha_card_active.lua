@@ -1,6 +1,7 @@
 require "lib_battle_common"
 require "lib_ability_config"
 require "lib_ability_core"
+require "lib_ability_aura"
 require "lib_battle_entity_ai"
 require "enemy_ai_core"
 require "enemy_ai_goblin_shaman"

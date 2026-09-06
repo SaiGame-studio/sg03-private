@@ -1,6 +1,7 @@
 require "lib_battle_common"
 require "lib_ability_config"
 require "lib_ability_core"
+require "lib_ability_aura"
 require "lib_ability_human"
 require "lib_ability_darkborn"
 require "lib_ability_lightborn"
@@ -108,6 +109,10 @@ local function main()
     end
 
     append_alpha_deploy_client_actions(state, old_location)
+    local aura_actions = lib_ability_aura.refresh_active_auras(state, "alpha_deploy")
+    for _, action in ipairs(aura_actions) do
+        lib_battle_common.append_client_action(state, action)
+    end
 
     state.action     = (state.action or 0) + 1
     state.updated_at = ctx.timestamp
