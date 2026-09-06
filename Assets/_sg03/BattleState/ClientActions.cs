@@ -297,8 +297,13 @@ namespace SG03
 
         private bool IsParallelCardAuraAction(ClientActionLog log)
         {
-            if (log.ActionName != "alpha_card_aura") return false;
+            if (!this.IsCardAuraAction(log.ActionName)) return false;
             return this.TryGetActionParameter(log.Parameters, "source", out _);
+        }
+
+        private bool IsCardAuraAction(string actionName)
+        {
+            return actionName == "alpha_card_aura" || actionName == "omega_card_aura";
         }
 
         private int FindParallelCardAuraGroupEnd(int startIndex)
@@ -310,7 +315,7 @@ namespace SG03
             while (endIndex < this.actionLog.Count)
             {
                 ClientActionLog action = this.actionLog[endIndex];
-                if (action.Executed || action.ActionName != "alpha_card_aura") break;
+                if (action.Executed || !this.IsCardAuraAction(action.ActionName)) break;
                 if (!this.TryGetActionParameter(action.Parameters, "source", out string actionSourceId)) break;
                 if (actionSourceId != sourceId) break;
                 endIndex++;
