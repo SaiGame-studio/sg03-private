@@ -16,6 +16,7 @@ Assets/_sg03/docs/
 ├── 04_abilities.md               # Danh mục kỹ năng và hướng dẫn thực thi
 ├── 05_card_star_scaling.md       # Phân cấp sức mạnh Thẻ bài theo Cấp độ Sao (1-9 Sao)
 ├── 06_card_race.md               # Bốn chủng tộc và quan hệ giữa các race
+├── 07_card_statistics.md          # Thống kê card theo race và tộc nhánh
 │
 ├── pve/                          # [DÀNH RIÊNG CHẾ ĐỘ PVE]
 │   ├── pve_overview.md           # Tổng quan chế độ PvE & Luồng trận đấu
@@ -40,6 +41,7 @@ Assets/_sg03/docs/
 4. **[Danh Mục Thẻ Nhân Vật & Thông Số](03_characters.md)** — Danh mục đầy đủ các thẻ Character phân theo Darkborn, Lightborn, Natureborn và Humans.
 5. **[Hệ Thống Kỹ Năng & Hướng Dẫn Thực Thi](04_abilities.md)** — Chi tiết luồng thực thi, quy tắc kiểm tra vị trí nhắm mục tiêu và logic script của các thẻ Ability.
 6. **[Phân Cấp Sức Mạnh Thẻ Bài Theo Cấp Độ Sao](05_card_star_scaling.md)** — Mô tả sức mạnh và thang tăng trưởng chỉ số/hiệu ứng của thẻ bài theo cấp độ sao (1 đến 9 sao) chia làm 3 nhóm Early game, Mid game và Late game.
+7. **[Thống Kê Card](07_card_statistics.md)** — Tổng số Character, Ability và phân bố card theo race, tộc nhánh.
 
 ---
 

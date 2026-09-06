@@ -2,12 +2,7 @@
 
 ## Danh Mục Kỹ Năng Theo Chủng Tộc
 
-Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability theo bốn chủng tộc chính thức.
-
-> **Thống kê tổng quan thẻ bài trong game:**
-> - **Thẻ Nhân vật [(Character)](03_characters.md):** 22 thẻ
-> - **Thẻ Kỹ năng (Ability):** 22 thẻ
-> - **Tổng số thẻ bài toàn game:** 44 thẻ
+Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability theo bốn chủng tộc chính thức. Xem [Thống Kê Card](07_card_statistics.md) để biết tổng số card và phân bố theo chủng tộc, tộc nhánh.
 
 ### Darkborn
 
@@ -29,7 +24,10 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 - [Mist Execution](cards/darkborn/demon/common/abilities/mist_execution.md): bị động
 
 ### Lightborn
-11. [Holy Glow](cards/lightborn/abilities/holy_glow.md): 1 sao
+
+#### Light Elf
+
+11. [Holy Glow](cards/lightborn/light_elf/abilities/holy_glow.md): 1 sao
 12. [Lightning Strike](cards/lightborn/light_elf/azura/abilities/lightning_strike.md): 3 sao
 13. [Static Bind](cards/lightborn/light_elf/azura/abilities/static_bind.md): 4 sao
 
