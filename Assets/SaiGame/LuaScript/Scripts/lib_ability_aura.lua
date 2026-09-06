@@ -10,7 +10,7 @@ end
 
 local function get_aura_refresh_events(ability_key)
     local events_by_aura = {
-        abyssal_mist = { "alpha_deploy", "alpha_end_turn", "omega_end_turn" },
+        abyssal_mist = { "alpha_end_turn", "omega_end_turn", "aura_source_deployed" },
     }
     return events_by_aura[ability_key] or {}
 end
@@ -49,9 +49,17 @@ local function abyssal_mist_field_lines(state)
     }
 end
 
-local function create_aura_effect_action(side, source_id, target_id, ability_key)
+local function create_aura_effect_action(side, source_id, target_card, ability_key)
     return side .. "_card_aura:source=" .. source_id ..
-        ",ability=" .. ability_key .. ",target=" .. target_id
+        ",ability=" .. ability_key .. ",target=" .. target_card.inventory_item_id ..
+        ",final_atk=" .. tostring(target_card.final_atk or 0) ..
+        ",final_def=" .. tostring(target_card.final_def or 0)
+end
+
+local function create_aura_result_action(side, source_id, ability_key, checked_cards, eligible_cards, affected_cards)
+    return side .. "_card_aura:source=" .. source_id .. ",ability=" .. ability_key ..
+        ",checked_cards=" .. checked_cards .. ",eligible_cards=" .. eligible_cards ..
+        ",affected_cards=" .. affected_cards
 end
 
 -- Several active Mists may stay on the battlefield, but only the primary
@@ -62,6 +70,7 @@ function abyssal_mist_refresh_aura(state, lifecycle_event)
     local source_ids = state.abyssal_mist_source_ids
     local active_sources = {}
     local source_by_id = {}
+    local source_side_by_id = {}
     for _, line_data in ipairs(abyssal_mist_field_lines(state)) do
         for _, card in ipairs(line_data.line) do
             local has_id = card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
@@ -70,6 +79,7 @@ function abyssal_mist_refresh_aura(state, lifecycle_event)
                 if card.abyssal_mist_active == true then
                     table.insert(active_sources, card)
                     source_by_id[card.inventory_item_id] = card
+                    source_side_by_id[card.inventory_item_id] = line_data.side
                 end
             end
         end
@@ -82,13 +92,20 @@ function abyssal_mist_refresh_aura(state, lifecycle_event)
     end
 
     local primary_id = primary_source ~= nil and primary_source.inventory_item_id or nil
+    local primary_side = primary_id ~= nil and source_side_by_id[primary_id] or nil
     local def_added = primary_source ~= nil and (tonumber(primary_source.abyssal_mist_def_added) or 0) or 0
     local atk_added = primary_source ~= nil and (tonumber(primary_source.abyssal_mist_atk_added) or 0) or 0
-    local misthy_id = primary_source ~= nil and primary_source.abyssal_mist_misthy_id or nil
     local actions = {}
+    local checked_card_count = 0
+    local eligible_card_count = 0
+    local affected_card_count = 0
 
     for _, line_data in ipairs(abyssal_mist_field_lines(state)) do
         for _, target_card in ipairs(line_data.line) do
+            checked_card_count = checked_card_count + 1
+            local is_eligible = primary_id ~= nil and lib_battle_common.is_character_of_races(
+                state.item_defs, target_card, { "darkborn", "natureborn" })
+            if is_eligible then eligible_card_count = eligible_card_count + 1 end
             local old_def_bonus = 0
             if target_card.persistent_def_bonuses ~= nil then
                 for source_id, _ in pairs(source_ids) do
@@ -98,8 +115,7 @@ function abyssal_mist_refresh_aura(state, lifecycle_event)
             end
 
             local new_def_bonus = 0
-            if primary_id ~= nil and lib_battle_common.is_character_of_races(
-                state.item_defs, target_card, { "darkborn", "natureborn" }) then
+            if is_eligible then
                 target_card.persistent_def_bonuses = target_card.persistent_def_bonuses or {}
                 target_card.persistent_def_bonuses[primary_id] = def_added
                 new_def_bonus = def_added
@@ -116,17 +132,28 @@ function abyssal_mist_refresh_aura(state, lifecycle_event)
                     target_card.persistent_atk_bonuses[source_id] = nil
                 end
             end
-            local new_atk_bonus = target_card.inventory_item_id == misthy_id and atk_added or 0
+            local new_atk_bonus = target_card.item_definition_code_name == "misthy" and atk_added or 0
             if new_atk_bonus > 0 then
                 target_card.persistent_atk_bonuses = target_card.persistent_atk_bonuses or {}
                 target_card.persistent_atk_bonuses[primary_id] = new_atk_bonus
             end
             local atk_bonus_changed = old_atk_bonus ~= new_atk_bonus
+            if atk_bonus_changed then
+                local item_def = lib_battle_common.find_item_def(state.item_defs, target_card.item_definition_code_name)
+                local base_atk = item_def ~= nil and tonumber((item_def.base_stats or {}).atk) or 0
+                target_card.final_atk = math.max(0, (target_card.final_atk or base_atk) - old_atk_bonus + new_atk_bonus)
+            end
             if primary_id ~= nil and (def_bonus_changed or atk_bonus_changed) then
                 table.insert(actions, create_aura_effect_action(
-                    line_data.side, primary_id, target_card.inventory_item_id, "abyssal_mist"))
+                    line_data.side, primary_id, target_card, "abyssal_mist"))
+                affected_card_count = affected_card_count + 1
             end
         end
+    end
+    if primary_id ~= nil then
+        table.insert(actions, create_aura_result_action(
+            primary_side, primary_id, "abyssal_mist", checked_card_count,
+            eligible_card_count, affected_card_count))
     end
     return actions
 end

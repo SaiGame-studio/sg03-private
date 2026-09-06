@@ -372,6 +372,8 @@ namespace SG03
             this.ApplyDefaultColors();
 
             string displayName = this.fallbackName;
+            // The card-face AtkText/DefText always show base_stats. Runtime buffs,
+            // including Abyssal Mist, belong only to the battle stat UI and damage preview.
             int displayAtk = this.fallbackStats?.atk ?? 0;
             int displayDef = this.fallbackStats?.def ?? 0;
             int displayStars = this.fallbackStats?.star ?? 0;

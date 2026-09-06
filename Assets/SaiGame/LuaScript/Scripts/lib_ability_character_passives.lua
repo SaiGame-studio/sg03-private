@@ -186,6 +186,17 @@ function mist_execution_execute(state, source_card, event_data, helpers)
     abyssal_mist_card.face_up = true
     abyssal_mist_card.expose = true
     abyssal_mist_card.defeated_from_line_key = nil
+    local atk_added = tonumber(helpers.get_card_stat(state, abyssal_mist_card, "atk_added"))
+    local def_added = tonumber(helpers.get_card_stat(state, abyssal_mist_card, "def_added"))
+    if atk_added ~= nil and atk_added > 0 and def_added ~= nil and def_added > 0 then
+        abyssal_mist_card.abyssal_mist_active = true
+        abyssal_mist_card.abyssal_mist_atk_added = atk_added
+        abyssal_mist_card.abyssal_mist_def_added = def_added
+        abyssal_mist_card.abyssal_mist_misthy_id = source_card.inventory_item_id
+        state.aura_refresh_requested = true
+    else
+        battle.dlog("[ability] mist_execution: Abyssal Mist has invalid aura stats")
+    end
     back_line[empty_slot_index] = abyssal_mist_card
 
     battle.dlog("[ability] mist_execution: Misthy=" .. source_card.inventory_item_id ..

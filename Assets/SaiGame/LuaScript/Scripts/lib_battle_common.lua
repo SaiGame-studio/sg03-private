@@ -92,15 +92,18 @@ end
 function reset_card_turn_state(item_defs, reset_card, state)
     if reset_card == nil then return end
     if reset_card.item_definition_code_name == nil or reset_card.item_definition_code_name == "" then return end
+    local base_atk = 0
     local base_def = 0
     if item_defs ~= nil then
         for _, item_def in ipairs(item_defs) do
             if item_def.item_code == reset_card.item_definition_code_name then
+                base_atk = (item_def.base_stats and item_def.base_stats.atk) or 0
                 base_def = (item_def.base_stats and item_def.base_stats.def) or 0
                 break
             end
         end
     end
+    reset_card.final_atk             = base_atk + get_active_persistent_bonus(state, reset_card.persistent_atk_bonuses)
     reset_card.final_def             = base_def + get_active_persistent_bonus(state, reset_card.persistent_def_bonuses)
     reset_card.total_damage_received = 0
 end
@@ -450,11 +453,18 @@ local function fire_on_damaged(state, attacker_card, attacker_def, defender_card
     return lib_ability_core.trigger_card_ability(state, defender_card, "on_damaged", def_event_data)
 end
 
-local function append_attack_client_actions(state, attacker_side, defender_side, attacker_card, defender_card, dmg_actions, atk_actions, def_actions)
+local function fire_pending_aura_refresh(state)
+    if state.aura_refresh_requested ~= true then return {} end
+    state.aura_refresh_requested = nil
+    return lib_ability_aura.refresh_active_auras(state, "aura_source_deployed")
+end
+
+local function append_attack_client_actions(state, attacker_side, defender_side, attacker_card, defender_card, dmg_actions, atk_actions, def_actions, aura_actions)
     append_client_action(state, attacker_side .. "_attack:" .. attacker_card.inventory_item_id .. "," .. defender_card.inventory_item_id)
     for _, action in ipairs(dmg_actions) do append_client_action(state, action) end
     for _, action in ipairs(atk_actions) do append_client_action(state, action) end
     for _, action in ipairs(def_actions) do append_client_action(state, action) end
+    for _, action in ipairs(aura_actions) do append_client_action(state, action) end
 end
 
 local function send_ability_attacker_to_void(state, attacker_card, attacker_line_key, attacker_def, attacker_side)
@@ -493,7 +503,10 @@ function card_attack_card(state, attacker_card, attacker_def, attacker_line_key,
     local def_actions, def_err = fire_on_damaged(state, attacker_card, attacker_def, defender_card, defender_def, damage_dealt)
     if def_err ~= nil then return def_err end
 
-    append_attack_client_actions(state, attacker_side, defender_side, attacker_card, defender_card, dmg_actions, atk_actions, def_actions)
+    local aura_actions = fire_pending_aura_refresh(state)
+    append_attack_client_actions(
+        state, attacker_side, defender_side, attacker_card, defender_card,
+        dmg_actions, atk_actions, def_actions, aura_actions)
 
     send_ability_attacker_to_void(state, attacker_card, attacker_line_key, attacker_def, attacker_side)
 

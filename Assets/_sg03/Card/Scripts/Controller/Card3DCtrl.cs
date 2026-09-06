@@ -45,6 +45,7 @@ namespace SG03
         [SerializeField] private bool               isTrigger;
         [SerializeField] private bool               isHover;
         [SerializeField] private Card3DCtrl         attacker;
+        private int runtimeAtk = -1;
         private bool isFullDetail;
         private bool showFinalDefOnlyOnHover;
 
@@ -285,11 +286,17 @@ namespace SG03
 
         private bool HasAccumulatedDamage()
         {
+            BattleCardSlot slot = this.GetBattleSlot();
+            return slot != null && slot.total_damage_received > 0;
+        }
+
+        private BattleCardSlot GetBattleSlot()
+        {
             this.LoadBattleStateCtrl();
             BattleState state = this.battleStateCtrl?.BattleState;
-            if (state == null || string.IsNullOrEmpty(this.inventoryItemId)) return false;
+            if (state == null || string.IsNullOrEmpty(this.inventoryItemId)) return null;
 
-            BattleCardSlot slot = this.FindBattleSlot(state.AlphaHand)
+            return this.FindBattleSlot(state.AlphaHand)
                 ?? this.FindBattleSlot(state.AlphaFrontLine)
                 ?? this.FindBattleSlot(state.AlphaBackLine)
                 ?? this.FindBattleSlot(state.AlphaTheVoid)
@@ -298,7 +305,6 @@ namespace SG03
                 ?? this.FindBattleSlot(state.OmegaFrontLine)
                 ?? this.FindBattleSlot(state.OmegaBackLine)
                 ?? this.FindBattleSlot(state.OmegaTheVoid);
-            return slot != null && slot.total_damage_received > 0;
         }
 
         private BattleCardSlot FindBattleSlot(BattleCardSlot[] slots)
@@ -575,6 +581,14 @@ namespace SG03
         /// Pass stats parsed from <c>ItemDefinitionData.base_stats</c>.
         /// </summary>
         public void SetFallbackStats(CardBaseStats stats) => this.card.SetFallbackStats(stats);
+
+        public void SetAuraAtk(int finalAtk)
+        {
+            // Do not write aura ATK to Card3D.AtkText: the card face always shows base ATK.
+            // runtimeAtk is consumed exclusively by AtkUI and combat damage preview.
+            this.runtimeAtk = finalAtk;
+            this.RefreshAtkUiVisibility();
+        }
 
         /// <summary>
         /// Sets the description shown in DescriptionText. Pass
@@ -886,7 +900,12 @@ namespace SG03
 
             int addedAttack = this.definition?.GetBaseStatInt("atk_added") ?? 0;
             if (!this.definition.TryGetBaseStat("atk_added", out _))
+            {
+                if (this.runtimeAtk >= 0) return this.runtimeAtk;
+                BattleCardSlot slot = this.GetBattleSlot();
+                if (slot != null && slot.final_atk > 0) return slot.final_atk;
                 return Mathf.Max(0, this.definition.GetBaseStatInt("atk"));
+            }
 
             string requiredCharacterCode = this.definition.metadata?.char_code_required;
             if (string.IsNullOrWhiteSpace(requiredCharacterCode)) return 0;
@@ -930,6 +949,7 @@ namespace SG03
             if (this.inventoryItemId != id)
             {
                 this.SetAttacker(null);
+                this.runtimeAtk = -1;
             }
             this.inventoryItemId = id;
         }

@@ -261,6 +261,7 @@ namespace SG03
 
             string sourceId = null;
             string targetId = null;
+            int? finalAtk = null;
             foreach (string parameter in parameters)
             {
                 string[] keyValue = parameter.Split('=');
@@ -268,20 +269,26 @@ namespace SG03
 
                 string key = keyValue[0].Trim().ToLowerInvariant();
                 string value = keyValue[1].Trim();
-                if (key == "source") sourceId = value;
-                else if (key == "target") targetId = value;
+                switch (key)
+                {
+                    case "source": sourceId = value; break;
+                    case "target": targetId = value; break;
+                    case "final_atk": if (int.TryParse(value, out int atk)) finalAtk = atk; break;
+                }
             }
 
-            if (string.IsNullOrEmpty(sourceId) || string.IsNullOrEmpty(targetId)) return null;
-            return this.StartCoroutine(this.CardAuraRoutine(sourceId, targetId));
+            if (string.IsNullOrEmpty(sourceId)) return null;
+            return this.StartCoroutine(this.CardAuraRoutine(sourceId, targetId, finalAtk));
         }
 
-        private IEnumerator CardAuraRoutine(string sourceId, string targetId)
+        private IEnumerator CardAuraRoutine(string sourceId, string targetId, int? finalAtk)
         {
             Card3DCtrl sourceCard = this.cardSpawning?.FindCardById(sourceId);
             Card3DCtrl targetCard = this.cardSpawning?.FindCardById(targetId);
             if (sourceCard != null) sourceCard.AbilityActive();
             if (sourceCard != null) yield return this.StartCoroutine(this.WaitForCard(sourceCard));
+            if (targetCard != null && finalAtk.HasValue)
+                targetCard.SetAuraAtk(finalAtk.Value);
             if (targetCard != null) targetCard.AbilityActive();
             if (targetCard != null) yield return this.StartCoroutine(this.WaitForCard(targetCard));
         }
