@@ -28,6 +28,15 @@ Sau khi được triển khai, Abyssal Mist không tự biến mất. Nó duy tr
 3. Đưa Abyssal Mist lên sân và áp dụng các hiệu ứng được khai báo trong metadata.
 4. Giữ Abyssal Mist trên sân cho đến khi một lá bài khác hủy nó.
 
+## Khi Bị Hủy
+
+- Đưa Abyssal Mist vào `the_void` của phe sở hữu.
+- Hủy toàn bộ buff mà Abyssal Mist đang áp dụng cho các Character.
+
 ## Thẻ Kỹ Năng Liên Kết
 
 - [Mist Execution](mist_execution.md)
+
+## Danh Sách Thẻ Khắc Chế
+
+- [Lux Maxima](../../../../../cards/lightborn/lumina/diana/lux_maxima.md)

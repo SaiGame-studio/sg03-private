@@ -54,7 +54,7 @@ Nằm tại thư mục [`cards/lightborn/light_elf/`](cards/lightborn/light_elf/
 
 Nằm tại thư mục [`cards/lightborn/lumina/`](cards/lightborn/lumina/)
 
-15. [Diana](cards/lightborn/lumina/diana.md) — Số sao: 2
+15. [Diana](cards/lightborn/lumina/diana/diana.md) — Số sao: 2
 
 ---
 

@@ -5,9 +5,9 @@
 Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability theo bốn chủng tộc chính thức.
 
 > **Thống kê tổng quan thẻ bài trong game:**
-> - **Thẻ Nhân vật [(Character)](03_characters.md):** 21 thẻ
-> - **Thẻ Kỹ năng (Ability):** 21 thẻ
-> - **Tổng số thẻ bài toàn game:** 42 thẻ
+> - **Thẻ Nhân vật [(Character)](03_characters.md):** 22 thẻ
+> - **Thẻ Kỹ năng (Ability):** 22 thẻ
+> - **Tổng số thẻ bài toàn game:** 44 thẻ
 
 ### Darkborn
 
@@ -33,16 +33,20 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 12. [Lightning Strike](cards/lightborn/light_elf/azura/abilities/lightning_strike.md): 3 sao
 13. [Static Bind](cards/lightborn/light_elf/azura/abilities/static_bind.md): 4 sao
 
+#### Lumina
+
+14. [Lux Maxima](cards/lightborn/lumina/diana/lux_maxima.md): 2 sao
+
 ### Natureborn
-14. [Totem Pulse](cards/natureborn/goblin/abilities/totem_pulse.md): 2 sao
-15. [Back Stab](cards/natureborn/goblin/abilities/back_stab.md): 2 sao
-16. [Brute Call](cards/natureborn/goblin/abilities/brute_call.md): 3 sao
+15. [Totem Pulse](cards/natureborn/goblin/abilities/totem_pulse.md): 2 sao
+16. [Back Stab](cards/natureborn/goblin/abilities/back_stab.md): 2 sao
+17. [Brute Call](cards/natureborn/goblin/abilities/brute_call.md): 3 sao
 
 ### Humans
 - [Twin Reaper](cards/human/abilities/twin_reaper.md): bị động
 - [Scout Strike](cards/human/abilities/scout_strike.md): bị động
-17. [Spinning Slash](cards/human/abilities/spinning_slash.md): 4 sao
-18. [Cross Guard](cards/human/abilities/cross_guard.md): 2 sao
-19. [Eagle Eye](cards/human/abilities/eagle_eye.md): 2 sao
-20. [Titan Fall](cards/human/abilities/titan_fall.md): 5 sao
-21. [Spear Sweep](cards/human/abilities/titan_spear_sweep.md): 4 sao
+18. [Spinning Slash](cards/human/abilities/spinning_slash.md): 4 sao
+19. [Cross Guard](cards/human/abilities/cross_guard.md): 2 sao
+20. [Eagle Eye](cards/human/abilities/eagle_eye.md): 2 sao
+21. [Titan Fall](cards/human/abilities/titan_fall.md): 5 sao
+22. [Spear Sweep](cards/human/abilities/titan_spear_sweep.md): 4 sao
