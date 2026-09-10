@@ -241,17 +241,19 @@ function plan_attack(state)
     end
 
     local remaining_def = (defender.final_def or 0) - (defender.total_damage_received or 0)
+    local misthy_damage = get_omega_character_attack_damage(state, misthy)
+    if misthy_damage >= remaining_def then
+        lib_battle_common.dlog("[entity_ai] the_bent_spoon_1.plan_attack: Misthy finishes " ..
+            defender.inventory_item_id .. " without a setup attack")
+        append_omega_attack_plan(state, misthy, defender)
+        return nil
+    end
+
     local setup_attacker = find_safe_misthy_setup_attacker(state, remaining_def)
     if setup_attacker ~= nil then
         lib_battle_common.dlog("[entity_ai] the_bent_spoon_1.plan_attack: setup Misthy kill with " ..
             setup_attacker.inventory_item_id .. " damage=" .. get_omega_character_attack_damage(state, setup_attacker))
         append_omega_attack_plan(state, setup_attacker, defender)
-        return nil
-    end
-
-    if get_omega_character_attack_damage(state, misthy) >= remaining_def then
-        lib_battle_common.dlog("[entity_ai] the_bent_spoon_1.plan_attack: Misthy finishes " .. defender.inventory_item_id)
-        append_omega_attack_plan(state, misthy, defender)
         return nil
     end
 

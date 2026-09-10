@@ -458,6 +458,11 @@ local function trigger_abyssal_mist_after_misthy_defeat(state, attacker_side, at
         return {}, nil
     end
 
+    if lib_ability_aura.has_active_abyssal_mist(state, attacker_side) then
+        dlog("[ability] abyssal_mist: " .. attacker_side .. " already has an active Abyssal Mist")
+        return {}, nil
+    end
+
     for _, source_card in ipairs(state[attacker_side .. "_back_line"] or {}) do
         if source_card.item_definition_code_name == "abyssal_mist" and source_card.abyssal_mist_active ~= true then
             local actions, err = lib_ability_core.trigger_ability_by_key(

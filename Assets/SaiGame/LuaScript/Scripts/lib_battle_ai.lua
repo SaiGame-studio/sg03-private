@@ -323,6 +323,7 @@ function ensure_omega_hand_draw_capacity(state, front_line, back_line, hand, dep
     local hand_size = lib_battle_common.get_hand_size()
     local deployed = {}
     for _, card_id in ipairs(deployed_ids) do deployed[card_id] = true end
+    local character_deployed = #(front_deployed or {}) > 0
 
     local remaining_cards = 0
     for _, card in ipairs(hand or {}) do
@@ -338,14 +339,19 @@ function ensure_omega_hand_draw_capacity(state, front_line, back_line, hand, dep
         local is_available = card.id ~= nil and card.id ~= "" and deployed[card.id] ~= true
         if is_available and not is_excluded then
             local is_character = lib_battle_common.check_card_type(state.item_defs, card, "character")
-            local target_line = is_character and front_line or back_line
-            local deployed_list = is_character and front_deployed or back_deployed
-            local placed_ids, placed_cards = _fill_line_slots(target_line, { card }, false)
-            if #placed_ids > 0 then
-                deployed[card.id] = true
-                table.insert(deployed_ids, card.id)
-                table.insert(deployed_list, placed_cards[1])
-                remaining_cards = remaining_cards - 1
+            -- Hand-capacity cleanup must not bypass the one-Character-per-turn
+            -- deployment limit already observed by the enemy-specific planner.
+            if not is_character or not character_deployed then
+                local target_line = is_character and front_line or back_line
+                local deployed_list = is_character and front_deployed or back_deployed
+                local placed_ids, placed_cards = _fill_line_slots(target_line, { card }, false)
+                if #placed_ids > 0 then
+                    deployed[card.id] = true
+                    table.insert(deployed_ids, card.id)
+                    table.insert(deployed_list, placed_cards[1])
+                    remaining_cards = remaining_cards - 1
+                    if is_character then character_deployed = true end
+                end
             end
         end
     end

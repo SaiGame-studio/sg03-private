@@ -115,6 +115,19 @@ local function collect_abyssal_mist_sources(state)
     return sources
 end
 
+-- Returns whether the specified side already has an active Abyssal Mist in
+-- its back line. Ability activation and enemy planners use this to enforce
+-- the one-active-Abyssal-Mist-per-side rule.
+function has_active_abyssal_mist(state, side)
+    for _, card in ipairs(state[side .. "_back_line"] or {}) do
+        if card.item_definition_code_name == "abyssal_mist"
+            and card.abyssal_mist_active == true then
+            return true
+        end
+    end
+    return false
+end
+
 local function get_abyssal_mist_context(state, sources, removed_source)
     local primary_source = sources.by_id[state.abyssal_mist_primary_source_id]
     if primary_source == nil then
