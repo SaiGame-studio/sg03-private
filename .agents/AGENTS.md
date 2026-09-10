@@ -21,4 +21,8 @@
 - An Omega AI must, whenever legal battlefield slots exist, deploy enough eligible hand cards to leave at least `lib_battle_common.get_draw_card_count()` empty hand slots before its next draw. Use `lib_battle_ai.ensure_omega_hand_draw_capacity(...)` after enemy-specific deployment; do not reimplement this loop in an individual AI.
 - An AI may exclude a card only for an explicit enemy-specific game rule, such as reserving a required combo. The exception must be passed as `excluded_ids` and documented next to that AI's deployment logic.
 
+## Enemy AI Direct Damage Priority
+
+- When Alpha has no Character on `alpha_front_line` and Omega has an eligible Character, the AI must plan `omega_attack_alpha_hp` immediately. Check this before card-target combo logic; face-down Omega Characters remain eligible because the direct-attack executor reveals them before damage.
+
 

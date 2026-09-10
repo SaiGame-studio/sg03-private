@@ -211,8 +211,19 @@ function plan_attack(state)
     state.omega_planning = {}
 
     local defender = enemy_ai_core.pick_alpha_front_line_character_target(state)
+    if defender == nil then
+        local attacker = lib_battle_ai._find_omega_attacker(state, false)
+        if attacker == nil then
+            lib_battle_ai.omega_end_turn(state)
+            return nil
+        end
+        lib_battle_common.dlog("[entity_ai] the_bent_spoon_1.plan_attack: Alpha front line is clear, attacking Alpha HP")
+        append_omega_attack_plan(state, attacker, nil)
+        return nil
+    end
+
     local misthy = find_untriggered_front_line_misthy(state)
-    if defender == nil or misthy == nil then
+    if misthy == nil then
         local attacker = lib_battle_ai._find_omega_attacker(state, false)
         if attacker == nil then
             lib_battle_ai.omega_end_turn(state)
