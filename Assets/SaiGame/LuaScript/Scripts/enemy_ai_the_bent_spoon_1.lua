@@ -29,28 +29,27 @@ local function find_face_down_alpha_character(state)
     return nil
 end
 
-local function deploy_character_cards(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed)
+local function deploy_priority_character(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed)
     local priority_codes = { "misthy", "lyra" }
     for _, code_name in ipairs(priority_codes) do
-        for _, card in ipairs(hand_cards) do
-            if card.item_definition_code_name == code_name then
-                local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
-                if slot_i == nil then return end
-                enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
-                table.insert(deployed_ids, card.id)
-            end
+        local card = enemy_ai_core.find_card_by_code(hand_cards, code_name, nil)
+        local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
+        if card ~= nil and slot_i ~= nil then
+            enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
+            table.insert(deployed_ids, card.id)
+            return card
         end
     end
 
     local character_cards = lib_battle_ai._split_cards_by_type(hand_cards, state.item_defs)
     for _, card in ipairs(character_cards) do
-        if card.item_definition_code_name ~= "misthy" and card.item_definition_code_name ~= "lyra" then
-            local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
-            if slot_i == nil then return end
-            enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
-            table.insert(deployed_ids, card.id)
-        end
+        local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
+        if slot_i == nil then return nil end
+        enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
+        table.insert(deployed_ids, card.id)
+        return card
     end
+    return nil
 end
 
 local function deploy_one_ability_from_hand(back_line, hand_cards, code_name, slot_count, deployed_ids, back_deployed)
@@ -113,14 +112,19 @@ function deploy(state)
     local front_deployed = {}
     local back_deployed = {}
 
-    deploy_character_cards(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed)
-
     local abyssal_mist_card = stage_abyssal_mist(
         state, hand_cards, back_line, slot_count, deployed_ids, back_deployed
     )
-    local eagle_eye_card, eagle_eye_target = stage_eagle_eye(
-        state, hand_cards, back_line, slot_count, deployed_ids, back_deployed
-    )
+    local eagle_eye_card = nil
+    local eagle_eye_target = nil
+    if abyssal_mist_card == nil then
+        eagle_eye_card, eagle_eye_target = stage_eagle_eye(
+            state, hand_cards, back_line, slot_count, deployed_ids, back_deployed
+        )
+    end
+    if abyssal_mist_card == nil and eagle_eye_card == nil then
+        deploy_priority_character(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed)
+    end
 
     local new_hand = lib_battle_ai._rebuild_hand(hand, deployed_ids)
     lib_battle_ai._append_mid_deploy_actions(state, front_deployed, back_deployed)

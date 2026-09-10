@@ -16,6 +16,10 @@ For basic Lua operations that may be reused (for example definition lookup, card
 
 Keep Lua functions focused on one responsibility. When a function combines collection, state selection, mutation, and action creation, split it into small, clearly named helpers so the logic is readable and maintainable. Reuse generic helpers for shared operations; keep ability-specific helpers only for unique game rules.
 
+## Enemy AI Deployment Budget
+
+An enemy AI `deploy(state)` handler may move at most one card from `omega_hand` to a battle line per Omega turn. An exception requires an explicit game-design rule from the user. An Ability may be activated through its standard pipeline only after its one source card has been deployed; do not stage another hand card in that same deploy handler.
+
 ## Conditional Complexity (C# and Lua)
 
 In C# and Lua, do not nest `if` statements more than three levels deep. Do not create an `if` / `else if` / `else if` chain with more than three conditional branches. When a rule would exceed either limit, use guard clauses, a clearly named helper, or table-driven dispatch instead.

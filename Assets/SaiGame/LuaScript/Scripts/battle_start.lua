@@ -19,6 +19,7 @@ require "lib_battle_common"
 local DECK_CARD_MIN = 25
 local DECK_CARD_MAX = 52
 local DECK_CARD_COPY_MAX = 3
+local ENEMY_CARD_COUNT_DEFAULT = 3
 local START_BATTLE_SOUL_COST = 5
 
 local function gen_id()
@@ -27,6 +28,10 @@ local function gen_id()
         local v = (c == "x") and math.random(0, 15) or math.random(8, 11)
         return string.format("%x", v)
     end)
+end
+
+local function get_enemy_card_count(ability)
+    return ability.card_count or ENEMY_CARD_COUNT_DEFAULT
 end
 
 local check_enemy            -- forward declaration
@@ -223,7 +228,7 @@ load_enemy_the_source = function(enemy)
     local slot_index = 0
     if enemy.abilities ~= nil then
         for _, ability in ipairs(enemy.abilities) do
-            local count = ability.card_count or 0
+            local count = get_enemy_card_count(ability)
             for _ = 1, count do
                 source[#source + 1] = {
                     id                        = gen_id(),
@@ -299,7 +304,7 @@ check_enemy = function(e)
     local total = 0
     if e.abilities ~= nil then
         for _, ability in ipairs(e.abilities) do
-            total = total + (ability.card_count or 0)
+            total = total + get_enemy_card_count(ability)
         end
     end
     if total < DECK_CARD_MIN then

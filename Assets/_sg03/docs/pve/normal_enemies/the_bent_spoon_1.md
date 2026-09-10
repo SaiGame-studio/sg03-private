@@ -45,6 +45,8 @@ Danh sách card của The Bent Spoon #1:
 | `goblin_shaman` | 3 | Character chiến đấu |
 | **Tổng số card** | **27** | 9 loại card, mỗi loại 3 bản |
 
+Khi build enemy deck, `battle_start.lua` dùng `card_count = 3` nếu một card trong cấu hình NPC không có field `card_count`.
+
 ## Quy tắc rút bài và opening hand
 
 Theo `init_cards.lua`, opening hand Omega chỉ lấy các card preset theo thứ tự metadata, không rút ngẫu nhiên để lấp thêm bài. Với cấu hình hiện tại, opening hand được yêu cầu là:
@@ -57,11 +59,13 @@ Mỗi card preset phải tồn tại trong `omega_the_source`; nếu không tồ
 
 ## Triển khai Misthy và Abyssal Mist (`deploy`)
 
-AI xếp Character vào `omega_front_line` theo thứ tự ưu tiên:
+Mỗi lần `deploy(state)`, AI chỉ được đưa tối đa **một card** từ `omega_hand` lên battle line. Thứ tự ưu tiên là:
 
-1. Tất cả `misthy` có trên hand, cho đến khi hết slot front-line.
-2. `lyra`.
-3. Các Character còn lại theo thứ tự hand.
+1. `abyssal_mist` khi có Misthy chưa kích hoạt và chưa có Mist active.
+2. `eagle_eye` khi Lyra và mục tiêu Alpha face-down hợp lệ đã có.
+3. Một `misthy`.
+4. Một `lyra`.
+5. Một Character còn lại theo thứ tự hand.
 
 Khi Omega có Misthy chưa kích hoạt trên battle line và chưa có `abyssal_mist_active`, AI đưa đúng một `abyssal_mist` từ hand xuống `omega_back_line`, rồi kích hoạt nó qua `lib_ability_core.trigger_ability_by_key`.
 
@@ -86,7 +90,7 @@ Sau khi card đã có trên battle line, AI gọi Ability pipeline chuẩn với
 
 ## Tình huống kiểm thử tối thiểu
 
-1. Hand có nhiều Misthy: AI deploy tất cả Misthy còn vừa `omega_front_line` trước các Character khác.
+1. Hand có nhiều Misthy: mỗi lượt AI chỉ deploy một Misthy, trước các Character khác.
 2. Có Misthy và Abyssal Mist: chỉ một Mist được deploy/kích hoạt, Misthy được chọn bị trigger.
 3. Có nhiều Abyssal Mist trong hand: sau khi một Mist đang hoạt động, các Mist khác vẫn ở hand.
 4. Mist đang hoạt động bị vô hiệu hóa: AI deploy đúng một Mist dự phòng khi còn Misthy chưa kích hoạt.
