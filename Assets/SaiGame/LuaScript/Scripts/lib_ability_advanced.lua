@@ -109,14 +109,7 @@ function animate_dead_execute(state, source_card, event_data, helpers)
 
     local front_line_key = caster_side .. "_front_line"
     local front_line = state[front_line_key] or {}
-    local ria_card = nil
-    for _, card in ipairs(front_line) do
-        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
-            and card.item_definition_code_name == "ria" then
-            ria_card = card
-            break
-        end
-    end
+    local ria_card = lib_battle_common.find_card_in_line_by_code(front_line, "ria")
     if ria_card == nil then
         battle.dlog("[ability] animate_dead: error - no ria in " .. front_line_key)
         return {}, "animate_dead requires ria in front_line"

@@ -50,6 +50,31 @@ local function abyssal_mist_field_lines(state)
     }
 end
 
+-- Abyssal Mist remains on the battlefield only while its owner has a Misthy
+-- in the front line. This is side-symmetric: callers supply Alpha or Omega.
+function reconcile_abyssal_mist_frontline_requirement(state, side)
+    if lib_battle_common.has_front_line_card_code(state, side, "misthy") then return {} end
+
+    local mists = lib_battle_common.collect_side_cards_by_code(state, side, "abyssal_mist")
+    if #mists == 0 then return {} end
+
+    local void_key = side .. "_the_void"
+    state[void_key] = state[void_key] or {}
+    local actions = {}
+    for _, match in ipairs(mists) do
+        lib_battle_common.remove_card_from_line(match.line, match.card.inventory_item_id)
+        table.insert(state[void_key], match.card)
+        lib_battle_common.append_card_sent_to_void_action(actions, side, match.card)
+    end
+
+    local removed_sources = {
+        abyssal_mist = { id = mists[1].card.inventory_item_id, side = side },
+    }
+    local aura_actions = refresh_active_auras(state, "aura_removed", removed_sources)
+    for _, action in ipairs(aura_actions) do table.insert(actions, action) end
+    return actions
+end
+
 -- Returns whether card is a configured Darkborn Aura. Consumers supply the
 -- configured code-name set so each counter ability can extend its own list.
 function is_configured_darkborn_aura(state, card, allowed_codes)
@@ -119,13 +144,7 @@ end
 -- its back line. Ability activation and enemy planners use this to enforce
 -- the one-active-Abyssal-Mist-per-side rule.
 function has_active_abyssal_mist(state, side)
-    for _, card in ipairs(state[side .. "_back_line"] or {}) do
-        if card.item_definition_code_name == "abyssal_mist"
-            and card.abyssal_mist_active == true then
-            return true
-        end
-    end
-    return false
+    return lib_battle_common.has_active_back_line_card_code(state, side, "abyssal_mist", "abyssal_mist_active")
 end
 
 local function get_abyssal_mist_context(state, sources, removed_source)

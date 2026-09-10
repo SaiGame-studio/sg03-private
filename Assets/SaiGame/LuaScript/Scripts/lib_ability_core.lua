@@ -328,6 +328,9 @@ function deal_damage_to_character(state, attacker_card, target_card, damage, tar
             table.insert(state[void_key], target_card)
         end
         lib_battle_common.append_card_sent_to_void_action(damage_actions, target_side, target_card)
+        local mist_actions = lib_ability_aura.reconcile_abyssal_mist_frontline_requirement(
+            state, target_side)
+        for _, action in ipairs(mist_actions) do table.insert(damage_actions, action) end
     end
     return damage_actions, nil
 end

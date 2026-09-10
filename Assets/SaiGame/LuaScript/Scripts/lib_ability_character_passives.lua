@@ -147,15 +147,17 @@ function mist_execution_execute(state, source_card, event_data, helpers)
     local back_line_key = source_side .. "_back_line"
     local back_line = state[back_line_key] or {}
     state[back_line_key] = back_line
+    if battle.has_back_line_card_code(state, source_side, "abyssal_mist") then
+        battle.dlog("[ability] mist_execution: skip - Abyssal Mist is already in back_line")
+        return {}, nil
+    end
+
     local empty_slot_index = nil
     for index = 1, 5 do
         local line_card = back_line[index]
-        if line_card ~= nil and line_card.item_definition_code_name == "abyssal_mist" then
-            battle.dlog("[ability] mist_execution: skip - Abyssal Mist is already in back_line")
-            return {}, nil
-        end
-        if empty_slot_index == nil and (line_card == nil or line_card.inventory_item_id == nil or line_card.inventory_item_id == "") then
+        if line_card == nil or line_card.inventory_item_id == nil or line_card.inventory_item_id == "" then
             empty_slot_index = index
+            break
         end
     end
     if empty_slot_index == nil then
@@ -166,15 +168,7 @@ function mist_execution_execute(state, source_card, event_data, helpers)
     local own_void_key = source_side .. "_the_void"
     local own_void = state[own_void_key] or {}
     state[own_void_key] = own_void
-    local abyssal_mist_card = nil
-    local abyssal_mist_index = nil
-    for index, void_card in ipairs(own_void) do
-        if void_card.item_definition_code_name == "abyssal_mist" then
-            abyssal_mist_card = void_card
-            abyssal_mist_index = index
-            break
-        end
-    end
+    local abyssal_mist_card, abyssal_mist_index = battle.find_card_in_line_by_code(own_void, "abyssal_mist")
     if abyssal_mist_card == nil then
         battle.dlog("[ability] mist_execution: skip - no Abyssal Mist in " .. own_void_key)
         return {}, nil

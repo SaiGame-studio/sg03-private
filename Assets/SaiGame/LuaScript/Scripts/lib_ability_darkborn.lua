@@ -1,3 +1,6 @@
+-- lib_ability_darkborn
+-- is_library = true
+
 function skeleton_shield_execute(state, source_card, event_data, helpers)
     local battle = helpers.lib_battle_common
     battle.dlog("== [ability] skeleton_shield ====================")
@@ -13,30 +16,15 @@ function skeleton_shield_execute(state, source_card, event_data, helpers)
     local front_line = state[front_line_key] or {}
 
     -- Requirement 1: Ria must be present in front_line, even if triggered.
-    local ria_card = nil
-    for _, card in ipairs(front_line) do
-        local has_id = card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
-        if has_id and card.item_definition_code_name == "ria" then
-            ria_card = card
-            break
-        end
-    end
+    local ria_card = battle.find_card_in_line_by_code(front_line, "ria")
     if ria_card == nil then
         battle.dlog("[ability] skeleton_shield: error - no ria in " .. front_line_key)
         return {}, "skeleton_shield requires ria in front_line"
     end
 
     -- Requirement 2: Must have a skeleton card in front_line (different from target_card)
-    local skeleton_card = nil
-    local skel_idx = nil
-    for i, c in ipairs(front_line) do
-        local has_id = c.inventory_item_id ~= nil and c.inventory_item_id ~= ""
-        if has_id and c.item_definition_code_name == "skeleton" and c.inventory_item_id ~= target_card.inventory_item_id then
-            skeleton_card = c
-            skel_idx = i
-            break
-        end
-    end
+    local skeleton_card, skel_idx = battle.find_card_in_line_by_code(
+        front_line, "skeleton", target_card.inventory_item_id)
     if skeleton_card == nil or skel_idx == nil then
         battle.dlog("[ability] skeleton_shield: error - no distinct skeleton in " .. front_line_key)
         return {}, "skeleton_shield requires skeleton in front_line different from target_card"
@@ -111,7 +99,6 @@ function skeleton_shield_execute(state, source_card, event_data, helpers)
     target_plan_entry.defender_inv_id = skeleton_card.inventory_item_id
 
     ria_card.trigger = true
-
 
     local expose_action = helpers.expose_ability_selected_card(state, ria_card)
     battle.dlog("[ability] skeleton_shield: swapped skeleton=" .. skeleton_card.inventory_item_id .. " and target=" .. target_card.inventory_item_id)

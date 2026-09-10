@@ -42,6 +42,74 @@ function is_character_of_races(item_defs, card, allowed_races)
     return false
 end
 
+-- Returns true when line contains at least one card matching code_name.
+function line_contains_card_code(line, code_name)
+    if type(line) ~= "table" or code_name == nil or code_name == "" then return false end
+    for _, card in ipairs(line) do
+        if card.item_definition_code_name == code_name then
+            return true
+        end
+    end
+    return false
+end
+
+-- Returns true when side's Front Line contains at least one card matching code_name.
+function has_front_line_card_code(state, side, code_name)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return false end
+    local line = state[side .. "_front_line"]
+    return line_contains_card_code(line, code_name)
+end
+
+-- Returns true when side's Back Line contains at least one card matching code_name.
+function has_back_line_card_code(state, side, code_name)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return false end
+    local line = state[side .. "_back_line"]
+    return line_contains_card_code(line, code_name)
+end
+
+-- Returns the first card and its index in line matching code_name (and optional exclude_item_id), or nil, nil.
+function find_card_in_line_by_code(line, code_name, exclude_item_id)
+    if type(line) ~= "table" or code_name == nil or code_name == "" then return nil, nil end
+    for index, card in ipairs(line) do
+        local has_id = card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+        if has_id and card.item_definition_code_name == code_name then
+            if exclude_item_id == nil or card.inventory_item_id ~= exclude_item_id then
+                return card, index
+            end
+        end
+    end
+    return nil, nil
+end
+
+-- Collects all card matches on a side's front and back lines matching code_name.
+-- Each match is a table: { card = card, line = line }
+function collect_side_cards_by_code(state, side, code_name)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return {} end
+    local matches = {}
+    for _, line in ipairs({ state[side .. "_front_line"] or {}, state[side .. "_back_line"] or {} }) do
+        for _, card in ipairs(line) do
+            if card.item_definition_code_name == code_name then
+                table.insert(matches, { card = card, line = line })
+            end
+        end
+    end
+    return matches
+end
+
+-- Returns true when side's Back Line contains an active card with code_name.
+function has_active_back_line_card_code(state, side, code_name, active_flag_key)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return false end
+    local flag_key = active_flag_key or (code_name .. "_active")
+    for _, card in ipairs(state[side .. "_back_line"] or {}) do
+        if card.item_definition_code_name == code_name and card[flag_key] == true then
+            return true
+        end
+    end
+    return false
+end
+
+
+
 -- Clears the first slot with matching inventory_item_id from a fixed-size line.
 -- Preserves the line length by replacing the slot with {} instead of removing it.
 -- Returns true if a card was cleared, false otherwise.
