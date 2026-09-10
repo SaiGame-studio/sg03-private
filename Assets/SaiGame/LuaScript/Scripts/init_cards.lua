@@ -278,7 +278,7 @@ local function move_auto_void_cards(state, side)
             card.inventory_item_id = gen_id()
         end
         table.insert(state[void_key], card)
-        lib_battle_common.append_card_sent_to_void_client_action(state, side, card)
+        lib_battle_common.append_card_sent_to_void_client_action(state, side, card, false)
         lib_battle_common.dlog("[init_cards] Moved " .. side .. " card to void (" .. reason .. "): " .. card.inventory_item_id)
     end
 
@@ -341,7 +341,7 @@ local function alpha_init_void(state)
 
     local function move_to_void(card, reason)
         table.insert(state.alpha_the_void, card)
-        lib_battle_common.append_card_sent_to_void_client_action(state, "alpha", card)
+        lib_battle_common.append_card_sent_to_void_client_action(state, "alpha", card, false)
         lib_battle_common.dlog("[init_cards] Moved alpha card to void (" .. reason .. "): " .. card.inventory_item_id)
     end
 

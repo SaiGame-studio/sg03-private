@@ -208,9 +208,14 @@ function append_card_sent_to_void_action(actions, side, card)
 end
 
 -- State-backed variant used by scripts which append actions directly to the
--- session queue instead of returning an ability action list.
-function append_card_sent_to_void_client_action(state, side, card)
+-- session queue instead of returning an ability action list. Set
+-- expose_before_move to false when a hidden source card enters Void at init.
+function append_card_sent_to_void_client_action(state, side, card, expose_before_move)
     if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return end
+    if expose_before_move == false then
+        append_client_action(state, side .. "_card_sent_to_void:" .. card.inventory_item_id)
+        return
+    end
     local is_already_exposed = card.face_up == true and card.expose == true
     card.face_up = true
     card.expose = true

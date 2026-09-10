@@ -534,6 +534,7 @@ namespace SG03
         {
             if (string.IsNullOrEmpty(inventoryItemId)) return null;
             if (this.handCardRegistry.TryGetValue(inventoryItemId, out Card3DCtrl handCard)) return handCard;
+            if (this.sourceCardRegistry.TryGetValue(inventoryItemId, out Card3DCtrl sourceCard)) return sourceCard;
             foreach (Card3DCtrl card in this.slotOccupancy.Values)
             {
                 if (card != null && card.InventoryItemId == inventoryItemId) return card;
@@ -556,6 +557,31 @@ namespace SG03
         public void LoadOmegaCardData(string inventoryItemId)
         {
             Card3DCtrl card = this.FindCardById(inventoryItemId);
+            if (card == null)
+            {
+                card = this.PrepareOmegaSourceCardForVoid(inventoryItemId);
+            }
+            if (card == null) return;
+            this.ApplyOmegaCardData(card, inventoryItemId);
+        }
+
+        private Card3DCtrl PrepareOmegaSourceCardForVoid(string inventoryItemId)
+        {
+            Card3DCtrl card = this.FindCardById(inventoryItemId);
+            if (card != null) return card;
+
+            Card3DCtrl prefab = this.ResolvePrefab();
+            if (prefab == null) return null;
+            card = this.DequeueOmegaSourceCard(prefab);
+            if (card == null) return null;
+            card.SetOwner(Owner.omega);
+            card.SetInventoryItemId(inventoryItemId);
+            this.sourceCardRegistry[inventoryItemId] = card;
+            return card;
+        }
+
+        private void ApplyOmegaCardData(Card3DCtrl card, string inventoryItemId)
+        {
             if (card == null) return;
             BattleCardSlot slot = this.FindOmegaSlotById(inventoryItemId);
             if (slot == null) return;
@@ -574,7 +600,10 @@ namespace SG03
             => this.MoveCardToVoid(inventoryItemId, this.deskPosition.AlphaTheVoid);
 
         public Card3DCtrl MoveOmegaCardToVoid(string inventoryItemId)
-            => this.MoveCardToVoid(inventoryItemId, this.deskPosition.OmegaTheVoid);
+        {
+            this.PrepareOmegaSourceCardForVoid(inventoryItemId);
+            return this.MoveCardToVoid(inventoryItemId, this.deskPosition.OmegaTheVoid);
+        }
 
         public void SettleAlphaCardInVoid(Card3DCtrl card)
         {
@@ -614,6 +643,7 @@ namespace SG03
             }
             if (card == null) return null;
             this.handCardRegistry.Remove(inventoryItemId);
+            this.sourceCardRegistry.Remove(inventoryItemId);
             this.PreserveAttackerForReplacement(card, card.CardHolder);
             this.RemoveFromSlotOccupancy(card);
             float moveDuration = card.Location == Location.in_source
