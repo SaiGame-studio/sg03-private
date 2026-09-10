@@ -6,12 +6,74 @@ namespace SG03.UI
     [CustomEditor(typeof(BattleState))]
     public class BattleStateEditor : UnityEditor.Editor
     {
+        private static readonly string[] AlphaProperties =
+        {
+            "alphaHp",
+            "alphaTheSourceCount",
+            "alphaTheVoidCount",
+            "alphaDefending",
+            "alphaTheVoid",
+            "alphaTheSource",
+            "alphaHand",
+            "alphaBackLine",
+            "alphaFrontLine",
+        };
+
+        private static readonly string[] OmegaProperties =
+        {
+            "omegaHp",
+            "omegaTheSourceCount",
+            "omegaTheVoidCount",
+            "omegaDefending",
+            "omegaTheVoid",
+            "omegaHand",
+            "omegaFrontLine",
+            "omegaBackLine",
+            "omegaPlanning",
+        };
+
+        private static readonly string[] JsonProperties =
+        {
+            "battleStatusJson",
+            "metadataJson",
+        };
+
+        private static readonly string[] ExcludedProperties =
+        {
+            "debugLog",
+            "battleStatusJson",
+            "metadataJson",
+            "alphaHp",
+            "alphaTheSourceCount",
+            "alphaTheVoidCount",
+            "alphaDefending",
+            "alphaTheVoid",
+            "alphaTheSource",
+            "alphaHand",
+            "alphaBackLine",
+            "alphaFrontLine",
+            "omegaHp",
+            "omegaTheSourceCount",
+            "omegaTheVoidCount",
+            "omegaDefending",
+            "omegaTheVoid",
+            "omegaHand",
+            "omegaFrontLine",
+            "omegaBackLine",
+            "omegaPlanning",
+        };
+
         private bool debugLogFoldout = true;
 
         public override void OnInspectorGUI()
         {
             this.serializedObject.Update();
-            DrawPropertiesExcluding(this.serializedObject, "debugLog");
+            DrawPropertiesExcluding(this.serializedObject, ExcludedProperties);
+            this.DrawProperties(AlphaProperties);
+            EditorGUILayout.LabelField(string.Empty, GUI.skin.horizontalSlider);
+            this.DrawProperties(OmegaProperties);
+            EditorGUILayout.LabelField(string.Empty, GUI.skin.horizontalSlider);
+            this.DrawProperties(JsonProperties);
             this.serializedObject.ApplyModifiedProperties();
 
             this.DrawDebugLog();
@@ -24,6 +86,15 @@ namespace SG03.UI
                 Undo.RecordObject(battleState, "Clear BattleState Data");
                 battleState.ClearData();
                 EditorUtility.SetDirty(battleState);
+            }
+        }
+
+        private void DrawProperties(string[] propertyNames)
+        {
+            foreach (string propertyName in propertyNames)
+            {
+                SerializedProperty property = this.serializedObject.FindProperty(propertyName);
+                if (property != null) EditorGUILayout.PropertyField(property, true);
             }
         }
 
