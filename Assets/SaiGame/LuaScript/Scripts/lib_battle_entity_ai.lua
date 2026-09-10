@@ -1,5 +1,5 @@
 -- lib_battle_entity_ai  (is_library = true)
--- Loads the AI configured on the Omega entity instead of maintaining an
+-- Resolves the AI library name from the Omega entity instead of maintaining an
 -- enemy-key dispatcher in each battle-phase script.
 
 function get_enemy_key(state)
@@ -11,7 +11,12 @@ local function load_enemy_ai(state)
     local enemy, enemy_err = game.get_entity_def_by_key(enemy_key)
     if enemy == nil then return nil, enemy_err end
 
-    return game.load_entity_ai(enemy.entity_key)
+    local script_name = "enemy_ai_" .. enemy.entity_key
+    local enemy_ai = _G[script_name]
+    if enemy_ai == nil then
+        return nil, "enemy AI library is not loaded: " .. script_name
+    end
+    return enemy_ai, nil
 end
 
 local function get_enemy_handler(state, handler_name)

@@ -66,6 +66,7 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | `ERR_CONFIG_ACTIVE_SESSION_EXISTS` | `player already has an active battle session` | You already have an active battle session in progress. | Bạn đang có một trận đấu chưa hoàn thành. | `battle_start.lua` |
 | `ERR_CONFIG_ENEMY_NOT_FOUND` | `enemy not found` | Selected enemy definition not found. | Không tìm thấy dữ liệu đối thủ. | `battle_start.lua` |
 | `ERR_ENTITY_AI_HANDLER_MISSING` | `entity AI handler is missing: {0}` | The configured enemy AI does not support this battle phase. | AI của enemy cấu hình không hỗ trợ phase này. | `lib_battle_entity_ai.lua` |
+| `ERR_ENTITY_AI_LIBRARY_NOT_LOADED` | `enemy AI library is not loaded: {0}` | The required enemy AI library is not loaded by this battle phase. | Battle phase này chưa nạp AI library cần thiết của enemy. | `lib_battle_entity_ai.lua` |
 | `ERR_CONFIG_PRESET_NOT_FOUND` | `preset not found` | Selected deck preset not found. | Không tìm thấy bộ thẻ đã chọn. | `battle_start.lua` |
 | `ERR_DECK_TOO_SMALL` | `player deck must have at least 25 cards (has {0})` / `enemy deck...` | Deck must contain at least 25 cards (currently has {0}). | Bộ thẻ phải có ít nhất 25 lá (hiện có {0} lá). | `battle_start.lua` |
 | `ERR_DECK_TOO_LARGE` | `player deck must have fewer than 52 cards (has {0})` / `enemy deck...` | Deck cannot contain 52 or more cards (currently has {0}). | Bộ thẻ phải ít hơn 52 lá (hiện có {0} lá). | `battle_start.lua` |
