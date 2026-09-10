@@ -88,6 +88,19 @@ function deploy(state)
         end
     end
 
+    -- This explicit combo rule reserves front-line capacity, so its remaining
+    -- Characters are excluded from the shared hand-capacity deployment.
+    local excluded_ids = {}
+    if reserve_left ~= nil then
+        local character_cards = lib_battle_ai._split_cards_by_type(hand_cards, state.item_defs)
+        for _, card in ipairs(character_cards) do
+            excluded_ids[card.id] = true
+        end
+    end
+    lib_battle_ai.ensure_omega_hand_draw_capacity(
+        state, front_line, back_line, hand, deployed_ids, front_deployed, back_deployed, excluded_ids
+    )
+
     local new_hand = lib_battle_ai._rebuild_hand(hand, deployed_ids)
     lib_battle_ai._append_mid_deploy_actions(state, front_deployed, back_deployed)
     lib_battle_ai._reset_deployed_cards(state.item_defs, front_deployed, back_deployed)

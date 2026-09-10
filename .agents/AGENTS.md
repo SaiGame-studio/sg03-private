@@ -16,4 +16,9 @@
 - During battle setup, guarantee that `omega_the_source` contains at least one copy of each configured `choose_card_X`, and do not move an Omega chosen card to `the_void` before `omega_choose_cards` runs.
 - Do not duplicate this lookup in an individual enemy AI module. New enemy AIs configure their draw priority through `choose_card_X` metadata and rely on the shared draw pipeline.
 
+## Enemy AI Hand Capacity
+
+- An Omega AI must, whenever legal battlefield slots exist, deploy enough eligible hand cards to leave at least `lib_battle_common.get_draw_card_count()` empty hand slots before its next draw. Use `lib_battle_ai.ensure_omega_hand_draw_capacity(...)` after enemy-specific deployment; do not reimplement this loop in an individual AI.
+- An AI may exclude a card only for an explicit enemy-specific game rule, such as reserving a required combo. The exception must be passed as `excluded_ids` and documented next to that AI's deployment logic.
+
 

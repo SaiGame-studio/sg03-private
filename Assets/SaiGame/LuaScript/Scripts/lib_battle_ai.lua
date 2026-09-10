@@ -316,6 +316,43 @@ function _reset_deployed_cards(item_defs, front_deployed, back_deployed)
     end
 end
 
+-- Deploys enough eligible hand cards to leave room for the standard next draw.
+-- Excluded cards remain in hand for an explicit enemy-specific game rule.
+function ensure_omega_hand_draw_capacity(state, front_line, back_line, hand, deployed_ids, front_deployed, back_deployed, excluded_ids)
+    local required_empty_slots = lib_battle_common.get_draw_card_count()
+    local hand_size = lib_battle_common.get_hand_size()
+    local deployed = {}
+    for _, card_id in ipairs(deployed_ids) do deployed[card_id] = true end
+
+    local remaining_cards = 0
+    for _, card in ipairs(hand or {}) do
+        if card.id ~= nil and card.id ~= "" and deployed[card.id] ~= true then
+            remaining_cards = remaining_cards + 1
+        end
+    end
+
+    for _, card in ipairs(hand or {}) do
+        if hand_size - remaining_cards >= required_empty_slots then break end
+
+        local is_excluded = excluded_ids ~= nil and excluded_ids[card.id] == true
+        local is_available = card.id ~= nil and card.id ~= "" and deployed[card.id] ~= true
+        if is_available and not is_excluded then
+            local is_character = lib_battle_common.check_card_type(state.item_defs, card, "character")
+            local target_line = is_character and front_line or back_line
+            local deployed_list = is_character and front_deployed or back_deployed
+            local placed_ids, placed_cards = _fill_line_slots(target_line, { card }, false)
+            if #placed_ids > 0 then
+                deployed[card.id] = true
+                table.insert(deployed_ids, card.id)
+                table.insert(deployed_list, placed_cards[1])
+                remaining_cards = remaining_cards - 1
+            end
+        end
+    end
+
+    return hand_size - remaining_cards
+end
+
 function deploy_omega_cards(state)
     lib_battle_common.dlog("[lib_battle_ai] == deploy_omega_cards ==")
     local omega_front_line             = state.omega_front_line or {}

@@ -453,6 +453,26 @@ local function fire_on_damaged(state, attacker_card, attacker_def, defender_card
     return lib_ability_core.trigger_card_ability(state, defender_card, "on_damaged", def_event_data)
 end
 
+local function trigger_abyssal_mist_after_misthy_defeat(state, attacker_side, attacker_card, defender_card)
+    if attacker_card.item_definition_code_name ~= "misthy" or defender_card.defeated_from_line_key == nil then
+        return {}, nil
+    end
+
+    for _, source_card in ipairs(state[attacker_side .. "_back_line"] or {}) do
+        if source_card.item_definition_code_name == "abyssal_mist" and source_card.abyssal_mist_active ~= true then
+            local actions, err = lib_ability_core.trigger_ability_by_key(
+                state, source_card, "abyssal_mist", "on_misthy_kill", {
+                    misthy_card = attacker_card,
+                    defeated_enemy = defender_card,
+                }
+            )
+            if err ~= nil then return nil, err end
+            return actions, nil
+        end
+    end
+    return {}, nil
+end
+
 local function fire_pending_aura_refresh(state)
     if state.aura_refresh_requested ~= true then return {} end
     state.aura_refresh_requested = nil
@@ -503,10 +523,16 @@ function card_attack_card(state, attacker_card, attacker_def, attacker_line_key,
     local def_actions, def_err = fire_on_damaged(state, attacker_card, attacker_def, defender_card, defender_def, damage_dealt)
     if def_err ~= nil then return def_err end
 
+    local mist_actions, mist_err = trigger_abyssal_mist_after_misthy_defeat(
+        state, attacker_side, attacker_card, defender_card
+    )
+    if mist_err ~= nil then return mist_err end
+
     local aura_actions = fire_pending_aura_refresh(state)
     append_attack_client_actions(
         state, attacker_side, defender_side, attacker_card, defender_card,
         dmg_actions, atk_actions, def_actions, aura_actions)
+    for _, action in ipairs(mist_actions) do append_client_action(state, action) end
 
     send_ability_attacker_to_void(state, attacker_card, attacker_line_key, attacker_def, attacker_side)
 

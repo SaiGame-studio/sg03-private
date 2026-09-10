@@ -98,6 +98,11 @@ function deploy(state)
         end
     end
 
+    lib_battle_ai.ensure_omega_hand_draw_capacity(
+        state, omega_front_line, omega_back_line, state.omega_hand or {},
+        deployed_ids, front_deployed, back_deployed
+    )
+
     local new_hand = lib_battle_ai._rebuild_hand(state.omega_hand or {}, deployed_ids)
     lib_battle_ai._append_mid_deploy_actions(state, front_deployed, back_deployed)
     lib_battle_ai._reset_deployed_cards(state.item_defs, front_deployed, back_deployed)
