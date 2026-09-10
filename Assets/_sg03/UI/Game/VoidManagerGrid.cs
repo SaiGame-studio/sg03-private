@@ -55,6 +55,7 @@ namespace SG03.UI
         private VisualElement content;
         private VisualElement panel;
         private Label alphaVoidCountLabel;
+        private Label omegaVoidCountLabel;
         private Label titleLabel;
         private Label pageLabel;
         private DropdownField sortField;
@@ -68,6 +69,7 @@ namespace SG03.UI
         private readonly Dictionary<string, AsyncOperationHandle<CardData>> cardArtHandles = new Dictionary<string, AsyncOperationHandle<CardData>>();
         private int currentPage;
         private VoidCardSortMode sortMode = VoidCardSortMode.NewestFirst;
+        private Owner voidOwner = Owner.alpha;
         private bool isVisible;
         private bool isDisposed;
 
@@ -178,7 +180,7 @@ namespace SG03.UI
                 return;
             }
 
-            this.OpenWhenAlphaVoidCardIsClicked();
+            this.OpenWhenVoidCardIsClicked();
         }
 
         protected virtual void OnDestroy()
@@ -224,6 +226,7 @@ namespace SG03.UI
             this.panel = root?.Q("VoidGridPanel");
             this.content = root?.Q("VoidGridContent");
             this.alphaVoidCountLabel = root?.Q<Label>("AlphaTheVoidCountLabel");
+            this.omegaVoidCountLabel = root?.Q<Label>("OmegaTheVoidCountLabel");
             this.titleLabel = root?.Q<Label>("VoidGridTitle");
             this.pageLabel = root?.Q<Label>("VoidGridPageLabel");
             this.sortField = root?.Q<DropdownField>("VoidGridSortField");
@@ -254,6 +257,7 @@ namespace SG03.UI
         private void RegisterCallbacks()
         {
             this.alphaVoidCountLabel?.RegisterCallback<ClickEvent>(this.OnAlphaVoidCountClicked);
+            this.omegaVoidCountLabel?.RegisterCallback<ClickEvent>(this.OnOmegaVoidCountClicked);
             this.closeButton?.RegisterCallback<ClickEvent>(this.OnCloseClicked);
             this.previousButton?.RegisterCallback<ClickEvent>(this.OnPreviousClicked);
             this.nextButton?.RegisterCallback<ClickEvent>(this.OnNextClicked);
@@ -264,6 +268,7 @@ namespace SG03.UI
         private void UnregisterCallbacks()
         {
             this.alphaVoidCountLabel?.UnregisterCallback<ClickEvent>(this.OnAlphaVoidCountClicked);
+            this.omegaVoidCountLabel?.UnregisterCallback<ClickEvent>(this.OnOmegaVoidCountClicked);
             this.closeButton?.UnregisterCallback<ClickEvent>(this.OnCloseClicked);
             this.previousButton?.UnregisterCallback<ClickEvent>(this.OnPreviousClicked);
             this.nextButton?.UnregisterCallback<ClickEvent>(this.OnNextClicked);
@@ -302,7 +307,12 @@ namespace SG03.UI
 
         private void OnAlphaVoidCountClicked(ClickEvent _)
         {
-            this.Show();
+            this.Show(Owner.alpha);
+        }
+
+        private void OnOmegaVoidCountClicked(ClickEvent _)
+        {
+            this.Show(Owner.omega);
         }
 
         private void OnCloseClicked(ClickEvent evt)
@@ -322,7 +332,7 @@ namespace SG03.UI
         private void OnNextClicked(ClickEvent evt)
         {
             evt.StopPropagation();
-            int pageCount = this.GetPageCount(this.GetAlphaVoidCards().Count);
+            int pageCount = this.GetPageCount(this.GetVoidCards().Count);
             if (this.currentPage >= pageCount - 1) return;
             this.currentPage++;
             this.Refresh();
@@ -365,13 +375,12 @@ namespace SG03.UI
             this.Refresh();
         }
 
-        private void OpenWhenAlphaVoidCardIsClicked()
+        private void OpenWhenVoidCardIsClicked()
         {
             if (Mouse.current?.leftButton.wasPressedThisFrame != true) return;
             if (this.hoveredCard == null) return;
-            if (this.hoveredCard.CardOwner != Owner.alpha) return;
             if (this.hoveredCard.Location != Location.in_void) return;
-            this.Show();
+            this.Show(this.hoveredCard.CardOwner);
         }
 
         private void CloseWhenEscapeIsPressed()
@@ -380,9 +389,10 @@ namespace SG03.UI
             this.Hide();
         }
 
-        private void Show()
+        private void Show(Owner owner)
         {
             if (this.dimLayer == null) return;
+            this.voidOwner = owner;
             this.isVisible = true;
             this.currentPage = 0;
             this.dimLayer.Show();
@@ -398,7 +408,7 @@ namespace SG03.UI
         private void Refresh()
         {
             if (this.content == null) return;
-            List<BattleCardSlot> cards = this.GetAlphaVoidCards();
+            List<BattleCardSlot> cards = this.GetVoidCards();
             int pageCount = this.GetPageCount(cards.Count);
             this.currentPage = Mathf.Clamp(this.currentPage, 0, pageCount - 1);
             this.UpdateHeader(cards.Count);
@@ -406,10 +416,12 @@ namespace SG03.UI
             this.BuildPage(cards);
         }
 
-        private List<BattleCardSlot> GetAlphaVoidCards()
+        private List<BattleCardSlot> GetVoidCards()
         {
             List<BattleCardSlot> cards = new List<BattleCardSlot>();
-            BattleCardSlot[] slots = this.battleStateCtrl?.BattleState?.AlphaTheVoid;
+            BattleCardSlot[] slots = this.voidOwner == Owner.omega
+                ? this.battleStateCtrl?.BattleState?.OmegaTheVoid
+                : this.battleStateCtrl?.BattleState?.AlphaTheVoid;
             if (slots == null) return cards;
             foreach (BattleCardSlot slot in slots)
             {
@@ -475,7 +487,7 @@ namespace SG03.UI
         private void UpdateHeader(int cardCount)
         {
             if (this.titleLabel == null) return;
-            this.titleLabel.text = $"Alpha - The Void ({cardCount})";
+            this.titleLabel.text = $"{this.GetVoidOwnerLabel()} - The Void ({cardCount})";
         }
 
         private void UpdatePagination(int pageCount)
@@ -490,7 +502,7 @@ namespace SG03.UI
             this.content.Clear();
             if (cards.Count == 0)
             {
-                Label emptyLabel = new Label("Alpha's Void is empty.");
+                Label emptyLabel = new Label($"{this.GetVoidOwnerLabel()}'s Void is empty.");
                 emptyLabel.AddToClassList("void-grid-empty-label");
                 this.content.Add(emptyLabel);
                 return;
@@ -689,5 +701,8 @@ namespace SG03.UI
             card.style.width = this.CardWidth;
             card.style.height = this.CardHeight;
         }
+
+        private string GetVoidOwnerLabel()
+            => this.voidOwner == Owner.omega ? "Omega" : "Alpha";
     }
 }

@@ -328,6 +328,9 @@ function deal_damage_to_character(state, attacker_card, target_card, damage, tar
             table.insert(state[void_key], target_card)
         end
         lib_battle_common.append_card_sent_to_void_action(damage_actions, target_side, target_card)
+        local mist_actions = lib_ability_aura.reconcile_abyssal_mist_frontline_requirement(
+            state, target_side)
+        for _, action in ipairs(mist_actions) do table.insert(damage_actions, action) end
     end
     return damage_actions, nil
 end
@@ -512,9 +515,21 @@ function trigger_ability_by_key(state, source_card, ability_key, trigger_event, 
     source_card.face_up = true
     source_card.expose = true
     local source_side = _find_card_side(state, source_card)
-    table.insert(all_actions, source_side .. "_card_expose:" .. source_card.inventory_item_id)
+    local source_expose_action = source_side .. "_card_expose:" .. source_card.inventory_item_id
+    local reveal_selected_before_source = ability_key == "lux_maxima"
+    if not reveal_selected_before_source then
+        table.insert(all_actions, source_expose_action)
+    end
     local ability_actions, err = _dispatch_one_ability(state, source_card, ability_key, trigger_event, event_data)
     if err ~= nil then return all_actions, err end
+
+    -- Lux Maxima returns Diana's expose action first. Preserve that first
+    -- client action, then reveal Lux before dispatching its ability effect.
+    if reveal_selected_before_source and #ability_actions > 0 then
+        table.insert(all_actions, ability_actions[1])
+        table.insert(all_actions, source_expose_action)
+        table.remove(ability_actions, 1)
+    end
     for _, action in ipairs(ability_actions) do
         table.insert(all_actions, action)
     end

@@ -50,7 +50,9 @@ end
 
 function find_untriggered_line_card_by_code(line, code_name)
     for _, card in ipairs(line or {}) do
-        if card.item_definition_code_name == code_name and card.trigger ~= true then
+        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+            and card.item_definition_code_name == code_name
+            and card.trigger ~= true then
             return card
         end
     end

@@ -25,6 +25,24 @@ function _collect_cards(hand)
     return cards
 end
 
+-- Returns the first source index matching Omega's configured draw priority.
+-- Chosen cards are considered in choose_card_1 through choose_card_3 order.
+function find_omega_source_choice_index(state, source)
+    local omega = state.metadata ~= nil and state.metadata.omega or nil
+    local preset = omega ~= nil and omega.metadata or nil
+    if preset == nil then return nil end
+
+    for choice_index = 1, 3 do
+        local code = preset["choose_card_" .. choice_index]
+        if code ~= nil and code ~= "" then
+            for source_index, card in ipairs(source or {}) do
+                if card.item_definition_code_name == code then return source_index end
+            end
+        end
+    end
+    return nil
+end
+
 -- Finds an item def in state.item_defs (array) by item_code.
 function _find_item_def(item_defs, code)
     if item_defs == nil then return nil end
@@ -289,13 +307,56 @@ function _append_mid_deploy_actions(state, front_deployed, back_deployed)
 end
 
 -- Calls reset_card_turn_state on all newly deployed front and back cards.
-function _reset_deployed_cards(item_defs, front_deployed, back_deployed)
+function _reset_deployed_cards(item_defs, front_deployed, back_deployed, state)
     for _, front_card in ipairs(front_deployed) do
-        lib_battle_common.reset_card_turn_state(item_defs, front_card)
+        lib_battle_common.reset_card_turn_state(item_defs, front_card, state)
     end
     for _, back_card in ipairs(back_deployed) do
-        lib_battle_common.reset_card_turn_state(item_defs, back_card)
+        lib_battle_common.reset_card_turn_state(item_defs, back_card, state)
     end
+end
+
+-- Deploys enough eligible hand cards to leave room for the standard next draw.
+-- Excluded cards remain in hand for an explicit enemy-specific game rule.
+function ensure_omega_hand_draw_capacity(state, front_line, back_line, hand, deployed_ids, front_deployed, back_deployed, excluded_ids)
+    local required_empty_slots = lib_battle_common.get_draw_card_count()
+    local hand_size = lib_battle_common.get_hand_size()
+    local deployed = {}
+    for _, card_id in ipairs(deployed_ids) do deployed[card_id] = true end
+    local character_deployed = #(front_deployed or {}) > 0
+
+    local remaining_cards = 0
+    for _, card in ipairs(hand or {}) do
+        if card.id ~= nil and card.id ~= "" and deployed[card.id] ~= true then
+            remaining_cards = remaining_cards + 1
+        end
+    end
+
+    for _, card in ipairs(hand or {}) do
+        if hand_size - remaining_cards >= required_empty_slots then break end
+
+        local is_excluded = excluded_ids ~= nil and excluded_ids[card.id] == true
+        local is_available = card.id ~= nil and card.id ~= "" and deployed[card.id] ~= true
+        if is_available and not is_excluded then
+            local is_character = lib_battle_common.check_card_type(state.item_defs, card, "character")
+            -- Hand-capacity cleanup must not bypass the one-Character-per-turn
+            -- deployment limit already observed by the enemy-specific planner.
+            if not is_character or not character_deployed then
+                local target_line = is_character and front_line or back_line
+                local deployed_list = is_character and front_deployed or back_deployed
+                local placed_ids, placed_cards = _fill_line_slots(target_line, { card }, false)
+                if #placed_ids > 0 then
+                    deployed[card.id] = true
+                    table.insert(deployed_ids, card.id)
+                    table.insert(deployed_list, placed_cards[1])
+                    remaining_cards = remaining_cards - 1
+                    if is_character then character_deployed = true end
+                end
+            end
+        end
+    end
+
+    return hand_size - remaining_cards
 end
 
 function deploy_omega_cards(state)

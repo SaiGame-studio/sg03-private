@@ -55,14 +55,13 @@ namespace SG03
             if (parameters == null || parameters.Length == 0) return null;
             string inventoryItemId = parameters[0].Trim();
             if (string.IsNullOrEmpty(inventoryItemId)) return null;
-            Card3DCtrl card = this.cardSpawning?.FindCardById(inventoryItemId);
-            if (card == null) return null;
-
             // A battle-status response contains the resolved state, so an Omega
             // card can already be marked FaceUp before this queued action runs.
-            // Load its revealed data first; otherwise the early return below
-            // leaves its face/back art hidden until it is moved to the Void.
+            // Prepare an Omega source card first when it goes directly to Void
+            // during init_cards; it has no ID until that action assigns one.
             beforeExpose?.Invoke(inventoryItemId);
+            Card3DCtrl card = this.cardSpawning?.FindCardById(inventoryItemId);
+            if (card == null) return null;
             card.SetExpose(true);
             if (card.FaceState == FaceState.FaceUp) return null;
             return this.StartCoroutine(this.CardExposeRoutine(card));

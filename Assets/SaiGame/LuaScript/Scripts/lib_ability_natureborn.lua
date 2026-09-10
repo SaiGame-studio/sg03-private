@@ -214,7 +214,7 @@ function brute_call_execute(state, source_card, event_data, helpers)
         end
 
         table.remove(void_zone, brute_index)
-        battle.reset_card_turn_state(state.item_defs, brute_card)
+        battle.reset_card_turn_state(state.item_defs, brute_card, state)
         brute_card.slot_index = chosen_index - 1
         brute_card.face_up = true
         brute_card.expose = true

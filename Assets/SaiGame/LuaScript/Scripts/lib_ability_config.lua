@@ -97,6 +97,7 @@ function get_ability_config(ability_key)
         },
         abyssal_mist = {
             handler_group = "aura",
+            event = "on_misthy_kill",
             target_positions = { "own_frontline", "own_backline" },
             resolves_without_attack = true,
         },

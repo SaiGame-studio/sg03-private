@@ -7,6 +7,7 @@ require "lib_battle_entity_ai"
 require "enemy_ai_core"
 require "enemy_ai_goblin_shaman"
 require "enemy_ai_silas"
+require "enemy_ai_the_bent_spoon_1"
 require "lib_ability_human"
 require "lib_ability_darkborn"
 require "lib_ability_lightborn"
@@ -53,7 +54,8 @@ local function run_omega_draw(state)
         local slot = state.omega_hand[i]
         -- slot is empty when it has no inventory_item_id
         if slot == nil or slot.inventory_item_id == nil or slot.inventory_item_id == "" then
-            local idx  = math.random(1, #source)
+            local idx = lib_battle_ai.find_omega_source_choice_index(state, source)
+            if idx == nil then idx = math.random(1, #source) end
             local card = source[idx]
             table.remove(source, idx)
             card.id                = gen_id()

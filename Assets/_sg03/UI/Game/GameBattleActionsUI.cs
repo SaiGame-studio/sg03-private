@@ -13,7 +13,7 @@ namespace SG03.UI
     public class GameBattleActionsUI
     {
         private const string BattleModeNormal = "normal";
-        private const string DefaultEnemyCodeName = "silas";
+        private const string DefaultEnemyCodeName = "the_bent_spoon_1";
         private const string NewGameButtonText = "Start with 5 soul";
         private const string ResumeButtonText = "Resume";
 

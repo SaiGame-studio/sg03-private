@@ -8,6 +8,29 @@ function defend(state)
     )
 end
 
+local function count_empty_slots(line, slot_count)
+    local count = 0
+    for slot_i = 1, slot_count do
+        if enemy_ai_core.is_empty_slot(line[slot_i]) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+local function find_unreserved_empty_slot(line, slot_count, reserve_start, reserve_count)
+    reserve_count = reserve_count or 2
+    for slot_i = 1, slot_count do
+        local is_reserved_slot = reserve_start ~= nil
+            and slot_i >= reserve_start
+            and slot_i < reserve_start + reserve_count
+        if not is_reserved_slot and enemy_ai_core.is_empty_slot(line[slot_i]) then
+            return slot_i
+        end
+    end
+    return nil
+end
+
 -- Deploy Totem Pulse immediately, reserve one Shaman plus one Brute Call, and
 -- retain two adjacent front-line slots until the combo is resolved.
 function deploy(state)
@@ -24,13 +47,17 @@ function deploy(state)
     local front_deployed = {}
     local back_deployed = {}
 
-    -- Totem Pulse is deployed as soon as it is drawn, without using a front slot.
+    -- Totem Pulse is deployed as soon as it is drawn, reserving 1 back slot for Brute Call if held.
+    local min_back_slots = brute_call_card ~= nil and 2 or 1
     for _, card in ipairs(hand_cards) do
         if card.item_definition_code_name == "totem_pulse" then
-            local slot_i = enemy_ai_core.find_empty_slot(back_line, slot_count)
-            if slot_i == nil then break end
-            enemy_ai_core.deploy_card(back_line, slot_i, card, false, back_deployed)
-            table.insert(deployed_ids, card.id)
+            if count_empty_slots(back_line, slot_count) >= min_back_slots then
+                local slot_i = enemy_ai_core.find_empty_slot(back_line, slot_count)
+                if slot_i ~= nil then
+                    enemy_ai_core.deploy_card(back_line, slot_i, card, false, back_deployed)
+                    table.insert(deployed_ids, card.id)
+                end
+            end
         end
     end
 
@@ -78,7 +105,7 @@ function deploy(state)
                 or card.inventory_item_id == reserved_call_id
                 or card.item_definition_code_name == "goblin_brute"
             if not is_reserved then
-                local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
+                local slot_i = find_unreserved_empty_slot(front_line, slot_count, reserve_left, 2)
                 if slot_i ~= nil then
                     enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
                     table.insert(deployed_ids, card.id)
@@ -87,6 +114,19 @@ function deploy(state)
             end
         end
     end
+
+    -- This explicit combo rule reserves front-line capacity, so its remaining
+    -- Characters are excluded from the shared hand-capacity deployment.
+    local excluded_ids = {}
+    if reserve_left ~= nil then
+        local character_cards = lib_battle_ai._split_cards_by_type(hand_cards, state.item_defs)
+        for _, card in ipairs(character_cards) do
+            excluded_ids[card.id] = true
+        end
+    end
+    lib_battle_ai.ensure_omega_hand_draw_capacity(
+        state, front_line, back_line, hand, deployed_ids, front_deployed, back_deployed, excluded_ids
+    )
 
     local new_hand = lib_battle_ai._rebuild_hand(hand, deployed_ids)
     lib_battle_ai._append_mid_deploy_actions(state, front_deployed, back_deployed)

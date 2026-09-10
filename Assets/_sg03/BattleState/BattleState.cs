@@ -37,6 +37,7 @@ namespace SG03.UI
         [SerializeField] private BattleCardSlot[] alphaTheVoid;
         [SerializeField] private BattleCardSlot[] omegaTheVoid;
         [SerializeField] private BattleCardSlot[] alphaTheSource;
+        [SerializeField] private BattleCardSlot[] omegaTheSource;
         [SerializeField] private BattleCardSlot[] alphaHand;
         [SerializeField] private BattleCardSlot[] alphaBackLine;
         [SerializeField] private BattleCardSlot[] alphaFrontLine;
@@ -64,6 +65,7 @@ namespace SG03.UI
         public BattleCardSlot[] AlphaTheVoid => this.alphaTheVoid;
         public BattleCardSlot[] OmegaTheVoid => this.omegaTheVoid;
         public BattleCardSlot[] AlphaTheSource => this.alphaTheSource;
+        public BattleCardSlot[] OmegaTheSource => this.omegaTheSource;
         public BattleCardSlot[] AlphaHand => this.alphaHand;
         public BattleCardSlot[] AlphaBackLine => this.alphaBackLine;
         public BattleCardSlot[] AlphaFrontLine => this.alphaFrontLine;
@@ -169,6 +171,7 @@ namespace SG03.UI
             this.alphaTheVoid = null;
             this.omegaTheVoid = null;
             this.alphaTheSource = null;
+            this.omegaTheSource = null;
             this.alphaHand = null;
             this.alphaBackLine = null;
             this.alphaFrontLine = null;
@@ -286,6 +289,7 @@ namespace SG03.UI
             this.alphaTheVoid = output.alpha_the_void;
             this.omegaTheVoid = output.omega_the_void;
             this.alphaTheSource = output.alpha_the_source;
+            this.omegaTheSource = output.omega_the_source;
             this.alphaHand = output.alpha_hand;
             this.alphaBackLine = output.alpha_back_line;
             this.alphaFrontLine = output.alpha_front_line;

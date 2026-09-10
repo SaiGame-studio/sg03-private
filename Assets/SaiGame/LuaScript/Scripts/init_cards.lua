@@ -2,10 +2,12 @@ require "lib_battle_common"
 require "lib_battle_ai"
 require "lib_ability_config"
 require "lib_ability_core"
+require "lib_ability_aura"
 require "lib_battle_entity_ai"
 require "enemy_ai_core"
 require "enemy_ai_goblin_shaman"
 require "enemy_ai_silas"
+require "enemy_ai_the_bent_spoon_1"
 require "lib_ability_human"
 require "lib_ability_darkborn"
 require "lib_ability_lightborn"
@@ -112,7 +114,8 @@ local function omega_draw_random(state, card_count, start_slot)
     local hand = {}
     for _ = 1, card_count do
         if #source == 0 then break end
-        local idx                     = math.random(1, #source)
+        local idx = lib_battle_ai.find_omega_source_choice_index(state, source)
+        if idx == nil then idx = math.random(1, #source) end
         source[idx].id                = gen_id()
         source[idx].inventory_item_id = gen_id()
         table.insert(hand, source[idx])
@@ -255,8 +258,8 @@ local function alpha_init_cards(state)
     return nil
 end
 
--- Moves cards whose definition is assigned to the_void or Character with at
--- least four stars out of a side's source before that side draws its opening hand.
+-- Moves cards whose definition is assigned to the_void or has at least four
+-- stars out of a side's source before that side draws its opening hand.
 local function move_auto_void_cards(state, side)
     local source_key = side .. "_the_source"
     local void_key = side .. "_the_void"
@@ -275,7 +278,7 @@ local function move_auto_void_cards(state, side)
             card.inventory_item_id = gen_id()
         end
         table.insert(state[void_key], card)
-        lib_battle_common.append_card_sent_to_void_client_action(state, side, card)
+        lib_battle_common.append_card_sent_to_void_client_action(state, side, card, false)
         lib_battle_common.dlog("[init_cards] Moved " .. side .. " card to void (" .. reason .. "): " .. card.inventory_item_id)
     end
 
@@ -299,9 +302,8 @@ local function move_auto_void_cards(state, side)
             return "metadata.location=the_void"
         end
 
-        local card_type = metadata ~= nil and metadata.type or nil
-        if card_type == "character" and get_card_stars(card) >= 4 then
-            return tostring(get_card_stars(card)) .. "-star character"
+        if get_card_stars(card) >= 4 then
+            return tostring(get_card_stars(card)) .. "-star card"
         end
 
         return nil
@@ -339,7 +341,7 @@ local function alpha_init_void(state)
 
     local function move_to_void(card, reason)
         table.insert(state.alpha_the_void, card)
-        lib_battle_common.append_card_sent_to_void_client_action(state, "alpha", card)
+        lib_battle_common.append_card_sent_to_void_client_action(state, "alpha", card, false)
         lib_battle_common.dlog("[init_cards] Moved alpha card to void (" .. reason .. "): " .. card.inventory_item_id)
     end
 
@@ -362,7 +364,7 @@ local function alpha_init_void(state)
     return move_auto_void_cards(state, "alpha")
 end
 
--- Draws omega's opening hand: selected cards plus random cards to reach five.
+-- Draws omega's opening hand: selected cards plus priority-or-random cards to reach five.
 -- Returns err or nil.
 local function omega_init_cards(state)
     local omega_hand, omega_err = omega_choose_cards(state)

@@ -50,6 +50,31 @@ local function abyssal_mist_field_lines(state)
     }
 end
 
+-- Abyssal Mist remains on the battlefield only while its owner has a Misthy
+-- in the front line. This is side-symmetric: callers supply Alpha or Omega.
+function reconcile_abyssal_mist_frontline_requirement(state, side)
+    if lib_battle_common.has_front_line_card_code(state, side, "misthy") then return {} end
+
+    local mists = lib_battle_common.collect_side_cards_by_code(state, side, "abyssal_mist")
+    if #mists == 0 then return {} end
+
+    local void_key = side .. "_the_void"
+    state[void_key] = state[void_key] or {}
+    local actions = {}
+    for _, match in ipairs(mists) do
+        lib_battle_common.remove_card_from_line(match.line, match.card.inventory_item_id)
+        table.insert(state[void_key], match.card)
+        lib_battle_common.append_card_sent_to_void_action(actions, side, match.card)
+    end
+
+    local removed_sources = {
+        abyssal_mist = { id = mists[1].card.inventory_item_id, side = side },
+    }
+    local aura_actions = refresh_active_auras(state, "aura_removed", removed_sources)
+    for _, action in ipairs(aura_actions) do table.insert(actions, action) end
+    return actions
+end
+
 -- Returns whether card is a configured Darkborn Aura. Consumers supply the
 -- configured code-name set so each counter ability can extend its own list.
 function is_configured_darkborn_aura(state, card, allowed_codes)
@@ -113,6 +138,13 @@ local function collect_abyssal_mist_sources(state)
         end
     end
     return sources
+end
+
+-- Returns whether the specified side already has an active Abyssal Mist in
+-- its back line. Ability activation and enemy planners use this to enforce
+-- the one-active-Abyssal-Mist-per-side rule.
+function has_active_abyssal_mist(state, side)
+    return lib_battle_common.has_active_back_line_card_code(state, side, "abyssal_mist", "abyssal_mist_active")
 end
 
 local function get_abyssal_mist_context(state, sources, removed_source)
@@ -221,19 +253,25 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
     if source_side == nil or source_side == "unknown" then
         return {}, "abyssal_mist source card is not on the battlefield"
     end
+    local source_is_in_backline = false
+    for _, card in ipairs(state[source_side .. "_back_line"] or {}) do
+        if card.inventory_item_id == source_card.inventory_item_id then
+            source_is_in_backline = true
+            break
+        end
+    end
+    if not source_is_in_backline then
+        return {}, "abyssal_mist requires source card in own backline"
+    end
     if source_card.abyssal_mist_active == true then
         return {}, "abyssal_mist is already active"
     end
 
-    local is_misthy = function(card)
-        return card.item_definition_code_name == "misthy"
-    end
-    local misthy_card = helpers.find_untriggered_card(state[source_side .. "_front_line"], is_misthy)
-    if misthy_card == nil then
-        misthy_card = helpers.find_untriggered_card(state[source_side .. "_back_line"], is_misthy)
-    end
-    if misthy_card == nil then
-        return {}, "abyssal_mist requires untriggered misthy on the battlefield"
+    local misthy_card = event_data ~= nil and event_data.misthy_card or nil
+    local defeated_enemy = event_data ~= nil and event_data.defeated_enemy or nil
+    if misthy_card == nil or misthy_card.item_definition_code_name ~= "misthy"
+        or defeated_enemy == nil or defeated_enemy.defeated_from_line_key == nil then
+        return {}, "abyssal_mist requires misthy to defeat an enemy"
     end
     local atk_added = tonumber(helpers.get_card_stat(state, source_card, "atk_added"))
     local def_added = tonumber(helpers.get_card_stat(state, source_card, "def_added"))
@@ -241,8 +279,6 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
         return {}, "abyssal_mist requires positive base_stats.atk_added and base_stats.def_added"
     end
 
-    local expose_action = helpers.expose_ability_selected_card(state, misthy_card)
-    misthy_card.trigger = true
     source_card.abyssal_mist_active = true
     source_card.abyssal_mist_atk_added = atk_added
     source_card.abyssal_mist_def_added = def_added
@@ -254,7 +290,6 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
     end
 
     local actions = abyssal_mist_refresh_aura(state)
-    if expose_action ~= nil then table.insert(actions, 1, expose_action) end
     table.insert(actions, source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
         ",ability=abyssal_mist,selected=" .. misthy_card.inventory_item_id)
     return actions, nil

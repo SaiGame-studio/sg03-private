@@ -42,6 +42,74 @@ function is_character_of_races(item_defs, card, allowed_races)
     return false
 end
 
+-- Returns true when line contains at least one card matching code_name.
+function line_contains_card_code(line, code_name)
+    if type(line) ~= "table" or code_name == nil or code_name == "" then return false end
+    for _, card in ipairs(line) do
+        if card.item_definition_code_name == code_name then
+            return true
+        end
+    end
+    return false
+end
+
+-- Returns true when side's Front Line contains at least one card matching code_name.
+function has_front_line_card_code(state, side, code_name)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return false end
+    local line = state[side .. "_front_line"]
+    return line_contains_card_code(line, code_name)
+end
+
+-- Returns true when side's Back Line contains at least one card matching code_name.
+function has_back_line_card_code(state, side, code_name)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return false end
+    local line = state[side .. "_back_line"]
+    return line_contains_card_code(line, code_name)
+end
+
+-- Returns the first card and its index in line matching code_name (and optional exclude_item_id), or nil, nil.
+function find_card_in_line_by_code(line, code_name, exclude_item_id)
+    if type(line) ~= "table" or code_name == nil or code_name == "" then return nil, nil end
+    for index, card in ipairs(line) do
+        local has_id = card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+        if has_id and card.item_definition_code_name == code_name then
+            if exclude_item_id == nil or card.inventory_item_id ~= exclude_item_id then
+                return card, index
+            end
+        end
+    end
+    return nil, nil
+end
+
+-- Collects all card matches on a side's front and back lines matching code_name.
+-- Each match is a table: { card = card, line = line }
+function collect_side_cards_by_code(state, side, code_name)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return {} end
+    local matches = {}
+    for _, line in ipairs({ state[side .. "_front_line"] or {}, state[side .. "_back_line"] or {} }) do
+        for _, card in ipairs(line) do
+            if card.item_definition_code_name == code_name then
+                table.insert(matches, { card = card, line = line })
+            end
+        end
+    end
+    return matches
+end
+
+-- Returns true when side's Back Line contains an active card with code_name.
+function has_active_back_line_card_code(state, side, code_name, active_flag_key)
+    if state == nil or side == nil or code_name == nil or code_name == "" then return false end
+    local flag_key = active_flag_key or (code_name .. "_active")
+    for _, card in ipairs(state[side .. "_back_line"] or {}) do
+        if card.item_definition_code_name == code_name and card[flag_key] == true then
+            return true
+        end
+    end
+    return false
+end
+
+
+
 -- Clears the first slot with matching inventory_item_id from a fixed-size line.
 -- Preserves the line length by replacing the slot with {} instead of removing it.
 -- Returns true if a card was cleared, false otherwise.
@@ -80,7 +148,7 @@ local function get_active_persistent_bonus(state, bonuses)
     local total = 0
     if type(bonuses) ~= "table" then return total end
     for source_id, bonus in pairs(bonuses) do
-        if is_card_on_battlefield(state, source_id) then
+        if state == nil or is_card_on_battlefield(state, source_id) then
             total = total + (tonumber(bonus) or 0)
         else
             bonuses[source_id] = nil
@@ -208,9 +276,14 @@ function append_card_sent_to_void_action(actions, side, card)
 end
 
 -- State-backed variant used by scripts which append actions directly to the
--- session queue instead of returning an ability action list.
-function append_card_sent_to_void_client_action(state, side, card)
+-- session queue instead of returning an ability action list. Set
+-- expose_before_move to false when a hidden source card enters Void at init.
+function append_card_sent_to_void_client_action(state, side, card, expose_before_move)
     if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return end
+    if expose_before_move == false then
+        append_client_action(state, side .. "_card_sent_to_void:" .. card.inventory_item_id)
+        return
+    end
     local is_already_exposed = card.face_up == true and card.expose == true
     card.face_up = true
     card.expose = true
@@ -353,10 +426,11 @@ local function write_alpha_state_output(state, session_id)
     output.alpha_back_line        = state.alpha_back_line
 end
 
-local function write_omega_state_output(state)
+local function write_omega_state_output(state, is_development)
     output.omega_hp               = state.omega_hp
     output.omega_max_hp           = state.omega_max_hp
     output.omega_the_source_count = state.omega_the_source ~= nil and #state.omega_the_source or 0
+    output.omega_the_source       = is_development and state.omega_the_source or nil
     output.omega_the_void         = state.omega_the_void
     output.omega_the_void_count   = state.omega_the_void ~= nil and #state.omega_the_void or 0
     output.omega_front_line       = state.omega_front_line
@@ -402,7 +476,7 @@ function battle_status()
     mask_omega_hand(state, is_development)
     write_alpha_state_output(state, session_id)
     hide_unrevealed_omega_cards(state)
-    write_omega_state_output(state)
+    write_omega_state_output(state, is_development)
     output.item_defs         = is_development and state.item_defs or nil
     -- output.item_defs_actions = build_card_action_list(state)
     write_battle_meta_output(state)
@@ -451,6 +525,31 @@ local function fire_on_damaged(state, attacker_card, attacker_def, defender_card
     def_event_data.attacker_def    = attacker_def
     def_event_data.defender_def    = defender_def
     return lib_ability_core.trigger_card_ability(state, defender_card, "on_damaged", def_event_data)
+end
+
+local function trigger_abyssal_mist_after_misthy_defeat(state, attacker_side, attacker_card, defender_card)
+    if attacker_card.item_definition_code_name ~= "misthy" or defender_card.defeated_from_line_key == nil then
+        return {}, nil
+    end
+
+    if lib_ability_aura.has_active_abyssal_mist(state, attacker_side) then
+        dlog("[ability] abyssal_mist: " .. attacker_side .. " already has an active Abyssal Mist")
+        return {}, nil
+    end
+
+    for _, source_card in ipairs(state[attacker_side .. "_back_line"] or {}) do
+        if source_card.item_definition_code_name == "abyssal_mist" and source_card.abyssal_mist_active ~= true then
+            local actions, err = lib_ability_core.trigger_ability_by_key(
+                state, source_card, "abyssal_mist", "on_misthy_kill", {
+                    misthy_card = attacker_card,
+                    defeated_enemy = defender_card,
+                }
+            )
+            if err ~= nil then return nil, err end
+            return actions, nil
+        end
+    end
+    return {}, nil
 end
 
 local function fire_pending_aura_refresh(state)
@@ -503,10 +602,16 @@ function card_attack_card(state, attacker_card, attacker_def, attacker_line_key,
     local def_actions, def_err = fire_on_damaged(state, attacker_card, attacker_def, defender_card, defender_def, damage_dealt)
     if def_err ~= nil then return def_err end
 
+    local mist_actions, mist_err = trigger_abyssal_mist_after_misthy_defeat(
+        state, attacker_side, attacker_card, defender_card
+    )
+    if mist_err ~= nil then return mist_err end
+
     local aura_actions = fire_pending_aura_refresh(state)
     append_attack_client_actions(
         state, attacker_side, defender_side, attacker_card, defender_card,
         dmg_actions, atk_actions, def_actions, aura_actions)
+    for _, action in ipairs(mist_actions) do append_client_action(state, action) end
 
     send_ability_attacker_to_void(state, attacker_card, attacker_line_key, attacker_def, attacker_side)
 

@@ -23,6 +23,7 @@ namespace SG03.UI
         public BattleCardSlot[] alpha_front_line;
         public int                 alpha_the_source_count;
         public int                 omega_the_source_count;
+        public BattleCardSlot[]    omega_the_source;
         public int                 alpha_the_void_count;
         public int                 omega_the_void_count;
         public BattleCardSlot[] alpha_the_void;

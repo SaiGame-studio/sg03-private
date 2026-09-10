@@ -634,10 +634,10 @@
 
 /* Enemy input and Start Battle button placed inside TopMenu — compact size */
 .game-top-menu .game-bottom-input {
-    flex: 0 0 210px;
-    width: 210px;
-    min-width: 210px;
-    max-width: 210px;
+    flex: 0 0 280px;
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
     font-size: 11px;
     margin: 0 4px;
 }

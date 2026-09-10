@@ -43,12 +43,9 @@ namespace SG03
             if (holder == null) return null;
 
             Card3DCtrl card = this.FindCardById(inventoryItemId);
-            if (card == null)
-            {
-                Card3DCtrl prefab = this.ResolvePrefab();
-                Transform spawnPoint = owner == Owner.alpha ? this.deskPosition.AlphaTheVoid : this.deskPosition.OmegaTheVoid;
-                card = this.SpawnCardAt(prefab, spawnPoint);
-            }
+            // A Void-to-line action can only move the same card instance which
+            // the backend previously placed in this side's Void. Do not create
+            // a client-only card when that instance is absent.
             if (card == null) return null;
             if (!this.TryPrepareVoidToLineTarget(card, holder)) return null;
 

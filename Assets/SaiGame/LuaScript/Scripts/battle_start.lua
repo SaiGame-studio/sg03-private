@@ -19,14 +19,41 @@ require "lib_battle_common"
 local DECK_CARD_MIN = 25
 local DECK_CARD_MAX = 52
 local DECK_CARD_COPY_MAX = 3
+local ENEMY_CARD_COUNT_DEFAULT = 3
 local START_BATTLE_SOUL_COST = 5
-
 local function gen_id()
     local t = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
     return string.gsub(t, "[xy]", function(c)
         local v = (c == "x") and math.random(0, 15) or math.random(8, 11)
         return string.format("%x", v)
     end)
+end
+
+local function get_enemy_card_count(ability)
+    return ability.card_count or ENEMY_CARD_COUNT_DEFAULT
+end
+
+local function source_contains_card_code(source, code)
+    for _, card in ipairs(source) do
+        if card.item_definition_code_name == code then return true end
+    end
+    return false
+end
+
+local function ensure_enemy_choose_cards_in_source(enemy, source)
+    local metadata = enemy.metadata
+    if metadata == nil then return end
+
+    for choice_index = 1, 3 do
+        local code = metadata["choose_card_" .. choice_index]
+        if code ~= nil and code ~= "" and not source_contains_card_code(source, code) then
+            source[#source + 1] = {
+                id = gen_id(),
+                slot_index = #source,
+                item_definition_code_name = code,
+            }
+        end
+    end
 end
 
 local check_enemy            -- forward declaration
@@ -37,7 +64,6 @@ local resolve_mode           -- forward declaration
 local build_state            -- forward declaration
 local load_player_the_source -- forward declaration
 local load_enemy_the_source  -- forward declaration
-local prepare_enemy_void_cards -- forward declaration
 local load_item_defs         -- forward declaration
 local charge_start_battle_fee -- forward declaration
 
@@ -70,10 +96,10 @@ local function main()
     lib_battle_common.dlog("[battle_start] player source loaded: " .. tostring(#player_the_source) .. " cards")
 
     local enemy_the_source = load_enemy_the_source(enemy)
+    ensure_enemy_choose_cards_in_source(enemy, enemy_the_source)
     lib_battle_common.dlog("[battle_start] enemy source loaded: " .. tostring(#enemy_the_source) .. " cards")
 
-    local omega_the_void, void_err = prepare_enemy_void_cards(payload.enemy_entity_key, enemy_the_source)
-    if void_err ~= nil then output.error = void_err ; return end
+    local omega_the_void = {}
 
     local selected_mode = resolve_mode(enemy)
     lib_battle_common.dlog("[battle_start] battle mode: " .. tostring(selected_mode))
@@ -223,7 +249,7 @@ load_enemy_the_source = function(enemy)
     local slot_index = 0
     if enemy.abilities ~= nil then
         for _, ability in ipairs(enemy.abilities) do
-            local count = ability.card_count or 0
+            local count = get_enemy_card_count(ability)
             for _ = 1, count do
                 source[#source + 1] = {
                     id                        = gen_id(),
@@ -235,28 +261,6 @@ load_enemy_the_source = function(enemy)
         end
     end
     return source
-end
-
--- Prepares cards that must already be in a zone for an enemy Ability to use.
--- Silas's Brute Call summons a Brute from the void; the AI never places it directly.
-prepare_enemy_void_cards = function(enemy_key, enemy_source)
-    local enemy_void = {}
-    if enemy_key ~= "silas" then return enemy_void, nil end
-
-    for index, card in ipairs(enemy_source or {}) do
-        if card.item_definition_code_name == "goblin_brute" then
-            table.remove(enemy_source, index)
-            card.inventory_item_id = gen_id()
-            card.slot_index        = nil
-            card.face_up           = true
-            card.expose            = true
-            card.trigger           = false
-            table.insert(enemy_void, card)
-            return enemy_void, nil
-        end
-    end
-
-    return nil, "silas requires goblin_brute in enemy_the_source"
 end
 
 verify_player_preset = function(preset_instance_id)
@@ -299,7 +303,7 @@ check_enemy = function(e)
     local total = 0
     if e.abilities ~= nil then
         for _, ability in ipairs(e.abilities) do
-            total = total + (ability.card_count or 0)
+            total = total + get_enemy_card_count(ability)
         end
     end
     if total < DECK_CARD_MIN then
