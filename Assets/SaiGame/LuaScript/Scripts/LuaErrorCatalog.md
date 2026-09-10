@@ -65,6 +65,7 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | `ERR_CONFIG_PRESET_ID_REQUIRED` | `preset_instance_id is required` | Deck preset ID is required. | Thiếu ID bộ thẻ. | `battle_start.lua` |
 | `ERR_CONFIG_ACTIVE_SESSION_EXISTS` | `player already has an active battle session` | You already have an active battle session in progress. | Bạn đang có một trận đấu chưa hoàn thành. | `battle_start.lua` |
 | `ERR_CONFIG_ENEMY_NOT_FOUND` | `enemy not found` | Selected enemy definition not found. | Không tìm thấy dữ liệu đối thủ. | `battle_start.lua` |
+| `ERR_ENTITY_AI_UNKNOWN_HANDLER` | `unknown handler for the_bent_spoon_1: {0}` | The requested AI handler is not supported for The Bent Spoon #1. | AI The Bent Spoon #1 không hỗ trợ handler được yêu cầu. | `lib_battle_entity_ai.lua` |
 | `ERR_CONFIG_PRESET_NOT_FOUND` | `preset not found` | Selected deck preset not found. | Không tìm thấy bộ thẻ đã chọn. | `battle_start.lua` |
 | `ERR_DECK_TOO_SMALL` | `player deck must have at least 25 cards (has {0})` / `enemy deck...` | Deck must contain at least 25 cards (currently has {0}). | Bộ thẻ phải có ít nhất 25 lá (hiện có {0} lá). | `battle_start.lua` |
 | `ERR_DECK_TOO_LARGE` | `player deck must have fewer than 52 cards (has {0})` / `enemy deck...` | Deck cannot contain 52 or more cards (currently has {0}). | Bộ thẻ phải ít hơn 52 lá (hiện có {0} lá). | `battle_start.lua` |

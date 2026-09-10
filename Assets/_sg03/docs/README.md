@@ -50,6 +50,7 @@ Assets/_sg03/docs/
 #### ⚔️ Chế độ PvE (Đang Triển Khai) `[/docs/pve/]`
 - **[Tổng Quan Chế Độ PvE](pve/pve_overview.md)** — Hướng dẫn luồng trận đấu đánh Boss singleplayer và khởi tạo kịch bản.
 - **[Thuật Toán AI Goblin Shaman (Normal Enemy)](pve/normal_enemies/goblin_shaman.md)** — Phân tích kỹ thuật cây quyết định của script `enemy_ai_goblin_shaman.lua`.
+- **[AI The Bent Spoon #1 (Normal Enemy)](pve/normal_enemies/the_bent_spoon_1.md)** — Cấu hình NPC và bộ bài đang chờ chiến thuật.
 - **[Cấu Hình Kịch Bản Mẫu PvE](pve/pve_preset_scenarios.md)** — Hướng dẫn cấu hình metadata bộ bài preset và khởi tạo trận đấu.
 
 #### ⚔️ Chế độ PvP (Định Hướng Mở Rộng) `[/docs/pvp/]`

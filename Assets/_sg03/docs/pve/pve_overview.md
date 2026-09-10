@@ -60,4 +60,5 @@ sequenceDiagram
 ## 4. Tài Liệu PvE Liên Quan
 
 - [Thuật Toán AI Goblin Shaman (Normal Enemy)](normal_enemies/goblin_shaman.md) — Phân tích kỹ thuật cây quyết định AI Goblin Shaman và thuật toán quét dòng.
+- [AI The Bent Spoon #1 (Normal Enemy)](normal_enemies/the_bent_spoon_1.md) — Cấu hình NPC và bộ bài đang chờ chiến thuật.
 - [Cấu Hình Kịch Bản Mẫu PvE](pve_preset_scenarios.md) — Hướng dẫn cấu hình bộ bài preset và metadata kịch bản cho Alpha và Omega.

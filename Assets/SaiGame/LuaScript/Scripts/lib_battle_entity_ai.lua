@@ -33,6 +33,19 @@ function run_enemy_ai_handler(state, handler_name)
         return nil, nil, nil, "unknown handler for silas: " .. tostring(handler_name)
     end
 
+    if enemy_key == "the_bent_spoon_1" then
+        if handler_name == "defend" then
+            return enemy_ai_the_bent_spoon_1.defend(state)
+        end
+        if handler_name == "plan_attack" then
+            return enemy_ai_the_bent_spoon_1.plan_attack(state)
+        end
+        if handler_name == "deploy" then
+            return enemy_ai_the_bent_spoon_1.deploy(state)
+        end
+        return nil, nil, nil, "unknown handler for the_bent_spoon_1: " .. tostring(handler_name)
+    end
+
     if handler_name == "deploy" then
         return nil, nil, nil, "no deploy handler for enemy_entity_key: " .. tostring(enemy_key)
     end

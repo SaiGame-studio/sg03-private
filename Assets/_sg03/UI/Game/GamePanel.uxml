@@ -12,7 +12,7 @@
 
             <ui:VisualElement name="TopMenu" class="game-top-menu">
                 <ui:Label name="BattleTitle" text="Omega" class="game-top-menu__title" />
-                <ui:DropdownField name="EnemyCodeNameInput" label="Enemy" choices="silas,goblin_shaman" value="silas" class="game-bottom-input" />
+                <ui:DropdownField name="EnemyCodeNameInput" label="Enemy" choices="the_bent_spoon_1,silas,goblin_shaman" value="the_bent_spoon_1" class="game-bottom-input" />
                 <ui:VisualElement name="PlayerNavigation">
                     <ui:Button name="SoulEnergy" class="soul-energy" tooltip="Soul Collector">
                         <ui:VisualElement tooltip="Soul Energy" class="soul-energy__icon" />
