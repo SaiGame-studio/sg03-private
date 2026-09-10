@@ -269,15 +269,16 @@ function lux_maxima_execute(state, source_card, event_data, helpers)
         return {}, "lux_maxima target must be a configured Darkborn Aura"
     end
 
+    -- Lux Maxima must first reveal Diana; the core trigger then reveals Lux
+    -- before it dispatches this ability action and its remaining effects.
     local actions = {
+        helpers.expose_ability_selected_card(state, diana_card),
         source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
             ",ability=lux_maxima,target=" .. target_card.inventory_item_id ..
             ",selected=" .. diana_card.inventory_item_id ..
             ",target_code=" .. selected_aura_code ..
             ",target_count=" .. tostring(#aura_targets),
     }
-    local diana_expose_action = helpers.expose_ability_selected_card(state, diana_card)
-    if diana_expose_action ~= nil then table.insert(actions, diana_expose_action) end
 
     local removed_sources = {}
     for _, aura_target in ipairs(aura_targets) do
