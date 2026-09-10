@@ -41,6 +41,7 @@ namespace SG03.UI
         private static readonly string[] ExcludedProperties =
         {
             "debugLog",
+            "clientActions",
             "battleStatusJson",
             "metadataJson",
             "alphaHp",
