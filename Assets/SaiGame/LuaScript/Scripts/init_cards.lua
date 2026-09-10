@@ -114,7 +114,8 @@ local function omega_draw_random(state, card_count, start_slot)
     local hand = {}
     for _ = 1, card_count do
         if #source == 0 then break end
-        local idx                     = math.random(1, #source)
+        local idx = lib_battle_ai.find_omega_source_choice_index(state, source)
+        if idx == nil then idx = math.random(1, #source) end
         source[idx].id                = gen_id()
         source[idx].inventory_item_id = gen_id()
         table.insert(hand, source[idx])
@@ -294,7 +295,24 @@ local function move_auto_void_cards(state, side)
         return tonumber(stars) or 0
     end
 
+    local function is_omega_opening_hand_choice(card)
+        if side ~= "omega" then return false end
+
+        local omega = state.metadata ~= nil and state.metadata.omega or nil
+        local preset = omega ~= nil and omega.metadata or nil
+        if preset == nil then return false end
+
+        for choice_index = 1, 3 do
+            if preset["choose_card_" .. choice_index] == card.item_definition_code_name then
+                return true
+            end
+        end
+        return false
+    end
+
     local function get_auto_void_reason(card)
+        if is_omega_opening_hand_choice(card) then return nil end
+
         local item_def = defs_by_code[card.item_definition_code_name]
         local metadata = item_def ~= nil and item_def.metadata or nil
         if metadata ~= nil and metadata.location == "the_void" then
@@ -364,7 +382,7 @@ local function alpha_init_void(state)
     return move_auto_void_cards(state, "alpha")
 end
 
--- Draws omega's opening hand: selected cards plus random cards to reach five.
+-- Draws omega's opening hand: selected cards plus priority-or-random cards to reach five.
 -- Returns err or nil.
 local function omega_init_cards(state)
     local omega_hand, omega_err = omega_choose_cards(state)

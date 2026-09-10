@@ -29,13 +29,22 @@ local function find_face_down_alpha_character(state)
     return nil
 end
 
-local function deploy_priority_character(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed)
+local function has_omega_deployed_card(front_line, back_line)
+    for _, line in ipairs({ front_line, back_line }) do
+        for _, card in ipairs(line) do
+            if not enemy_ai_core.is_empty_slot(card) then return true end
+        end
+    end
+    return false
+end
+
+local function deploy_priority_character(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed, face_up)
     local priority_codes = { "misthy", "lyra" }
     for _, code_name in ipairs(priority_codes) do
         local card = enemy_ai_core.find_card_by_code(hand_cards, code_name, nil)
         local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
         if card ~= nil and slot_i ~= nil then
-            enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
+            enemy_ai_core.deploy_card(front_line, slot_i, card, face_up, front_deployed)
             table.insert(deployed_ids, card.id)
             return card
         end
@@ -45,7 +54,7 @@ local function deploy_priority_character(state, front_line, hand_cards, slot_cou
     for _, card in ipairs(character_cards) do
         local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
         if slot_i == nil then return nil end
-        enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
+        enemy_ai_core.deploy_card(front_line, slot_i, card, face_up, front_deployed)
         table.insert(deployed_ids, card.id)
         return card
     end
@@ -123,7 +132,8 @@ function deploy(state)
         )
     end
     if abyssal_mist_card == nil and eagle_eye_card == nil then
-        deploy_priority_character(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed)
+        local face_up = has_omega_deployed_card(front_line, back_line)
+        deploy_priority_character(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed, face_up)
     end
 
     local new_hand = lib_battle_ai._rebuild_hand(hand, deployed_ids)

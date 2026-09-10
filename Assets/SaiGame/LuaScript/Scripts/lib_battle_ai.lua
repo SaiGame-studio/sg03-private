@@ -25,6 +25,24 @@ function _collect_cards(hand)
     return cards
 end
 
+-- Returns the first source index matching Omega's configured draw priority.
+-- Chosen cards are considered in choose_card_1 through choose_card_3 order.
+function find_omega_source_choice_index(state, source)
+    local omega = state.metadata ~= nil and state.metadata.omega or nil
+    local preset = omega ~= nil and omega.metadata or nil
+    if preset == nil then return nil end
+
+    for choice_index = 1, 3 do
+        local code = preset["choose_card_" .. choice_index]
+        if code ~= nil and code ~= "" then
+            for source_index, card in ipairs(source or {}) do
+                if card.item_definition_code_name == code then return source_index end
+            end
+        end
+    end
+    return nil
+end
+
 -- Finds an item def in state.item_defs (array) by item_code.
 function _find_item_def(item_defs, code)
     if item_defs == nil then return nil end

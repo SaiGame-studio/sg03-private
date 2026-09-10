@@ -10,4 +10,10 @@
 - **WebGL Icon Assets**: Do not use emoji or custom USS geometry elements to build UI icons. Do not manually generate custom SVG icons; always use official `.svg` vector icons downloaded directly from FontAwesome or WebGL-compatible serialized sprite/vector image assets from valid project asset sources.
 - **Evidence-Based Explanations (No Guessing)**: Always substantiate every technical explanation, root cause analysis, or response with concrete code snippets, line numbers, or empirical log/file evidence. Never guess or speculate on code logic, architecture, or behavior without inspecting the authoritative source.
 
+## Enemy AI Draw Priority
+
+- Every Omega draw must use `lib_battle_ai.find_omega_source_choice_index(state, source)` before random selection. The helper prioritizes remaining source cards by `metadata.omega.metadata.choose_card_1`, then `choose_card_2`, then `choose_card_3`; random selection is allowed only when none of those configured cards remain in `omega_the_source`.
+- During battle setup, guarantee that `omega_the_source` contains at least one copy of each configured `choose_card_X`, and do not move an Omega chosen card to `the_void` before `omega_choose_cards` runs.
+- Do not duplicate this lookup in an individual enemy AI module. New enemy AIs configure their draw priority through `choose_card_X` metadata and rely on the shared draw pipeline.
+
 

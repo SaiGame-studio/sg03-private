@@ -21,6 +21,9 @@ local DECK_CARD_MAX = 52
 local DECK_CARD_COPY_MAX = 3
 local ENEMY_CARD_COUNT_DEFAULT = 3
 local START_BATTLE_SOUL_COST = 5
+local ENEMY_CHOOSE_CARD_CODES = {
+    the_bent_spoon_1 = { "misthy", "abyssal_mist", "eagle_eye" },
+}
 
 local function gen_id()
     local t = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
@@ -32,6 +35,39 @@ end
 
 local function get_enemy_card_count(ability)
     return ability.card_count or ENEMY_CARD_COUNT_DEFAULT
+end
+
+local function apply_enemy_choose_card_codes(enemy, enemy_key)
+    local choices = ENEMY_CHOOSE_CARD_CODES[enemy_key]
+    if choices == nil then return end
+
+    if enemy.metadata == nil then enemy.metadata = {} end
+    for choice_index, code in ipairs(choices) do
+        enemy.metadata["choose_card_" .. choice_index] = code
+    end
+end
+
+local function source_contains_card_code(source, code)
+    for _, card in ipairs(source) do
+        if card.item_definition_code_name == code then return true end
+    end
+    return false
+end
+
+local function ensure_enemy_choose_cards_in_source(enemy, source)
+    local metadata = enemy.metadata
+    if metadata == nil then return end
+
+    for choice_index = 1, 3 do
+        local code = metadata["choose_card_" .. choice_index]
+        if code ~= nil and code ~= "" and not source_contains_card_code(source, code) then
+            source[#source + 1] = {
+                id = gen_id(),
+                slot_index = #source,
+                item_definition_code_name = code,
+            }
+        end
+    end
 end
 
 local check_enemy            -- forward declaration
@@ -75,6 +111,7 @@ local function main()
     lib_battle_common.dlog("[battle_start] player source loaded: " .. tostring(#player_the_source) .. " cards")
 
     local enemy_the_source = load_enemy_the_source(enemy)
+    ensure_enemy_choose_cards_in_source(enemy, enemy_the_source)
     lib_battle_common.dlog("[battle_start] enemy source loaded: " .. tostring(#enemy_the_source) .. " cards")
 
     local omega_the_void, void_err = prepare_enemy_void_cards(payload.enemy_entity_key, enemy_the_source)
@@ -125,6 +162,7 @@ resolve_enemy = function()
     local enemy, err = game.get_entity_def_by_key(payload.enemy_entity_key)
     if err ~= nil then return nil, err end
     if enemy == nil then return nil, "enemy not found" end
+    apply_enemy_choose_card_codes(enemy, payload.enemy_entity_key)
     return enemy, nil
 end
 
