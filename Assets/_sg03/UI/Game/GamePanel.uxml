@@ -27,7 +27,7 @@
                 <ui:Label name="OmegaHpLabel" text="HP: --" class="battle-hp-label battle-hp-label--omega" />
                 <ui:Label name="AlphaHpLabel" text="HP: --" class="battle-hp-label battle-hp-label--alpha" />
                 <ui:Label name="OmeraSourceCountLabel" text="Source: --" class="battle-source-count-label battle-source-count-label--top-right" />
-                <ui:Label name="OmegaTheVoidCountLabel" text="Void: --" class="battle-source-count-label battle-source-count-label--top-right-2" />
+                <ui:Label name="OmegaTheVoidCountLabel" text="Void: --" tooltip="Show Omega Void cards" class="battle-source-count-label battle-source-count-label--top-right-2 battle-source-count-label--interactive" />
                 <ui:Label name="AlphaTheVoidCountLabel" text="Void: --" tooltip="Show Alpha Void cards" class="battle-source-count-label battle-source-count-label--bottom-right-2 battle-source-count-label--interactive" />
                 <ui:Label name="AlphaSourceCountLabel" text="Source: --" class="battle-source-count-label battle-source-count-label--bottom-right" />
             </ui:VisualElement>
