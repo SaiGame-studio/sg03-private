@@ -307,12 +307,12 @@ function _append_mid_deploy_actions(state, front_deployed, back_deployed)
 end
 
 -- Calls reset_card_turn_state on all newly deployed front and back cards.
-function _reset_deployed_cards(item_defs, front_deployed, back_deployed)
+function _reset_deployed_cards(item_defs, front_deployed, back_deployed, state)
     for _, front_card in ipairs(front_deployed) do
-        lib_battle_common.reset_card_turn_state(item_defs, front_card)
+        lib_battle_common.reset_card_turn_state(item_defs, front_card, state)
     end
     for _, back_card in ipairs(back_deployed) do
-        lib_battle_common.reset_card_turn_state(item_defs, back_card)
+        lib_battle_common.reset_card_turn_state(item_defs, back_card, state)
     end
 end
 

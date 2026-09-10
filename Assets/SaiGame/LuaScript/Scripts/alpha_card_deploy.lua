@@ -101,10 +101,10 @@ local function main()
     end
 
     for _, deployed_card in ipairs(front_line) do
-        lib_battle_common.reset_card_turn_state(state.item_defs, deployed_card)
+        lib_battle_common.reset_card_turn_state(state.item_defs, deployed_card, state)
     end
     for _, deployed_card in ipairs(back_line) do
-        lib_battle_common.reset_card_turn_state(state.item_defs, deployed_card)
+        lib_battle_common.reset_card_turn_state(state.item_defs, deployed_card, state)
     end
 
     append_alpha_deploy_client_actions(state, old_location)

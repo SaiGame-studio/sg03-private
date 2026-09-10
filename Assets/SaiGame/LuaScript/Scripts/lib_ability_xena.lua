@@ -147,7 +147,7 @@ local function replace_xena_on_line(state, target_line, target_index, void_zone,
     table.insert(void_zone, target_card)
 
     successor_card.slot_index = target_card.slot_index
-    helpers.lib_battle_common.reset_card_turn_state(state.item_defs, successor_card)
+    helpers.lib_battle_common.reset_card_turn_state(state.item_defs, successor_card, state)
     successor_card.trigger = true
     successor_card.face_up = true
     successor_card.expose = true

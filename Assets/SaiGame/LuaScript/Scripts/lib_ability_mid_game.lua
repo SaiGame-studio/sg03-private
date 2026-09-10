@@ -119,7 +119,7 @@ function titan_fall_execute(state, source_card, event_data, helpers)
     local target_slot_index = target_card.slot_index
     table.remove(state[void_key], titan_index)
     table.insert(state[void_key], target_card)
-    battle.reset_card_turn_state(state.item_defs, titan_card)
+    battle.reset_card_turn_state(state.item_defs, titan_card, state)
     titan_card.slot_index = target_slot_index
     titan_card.face_up = true
     titan_card.expose = true

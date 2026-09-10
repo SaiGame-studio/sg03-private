@@ -151,7 +151,7 @@ function animate_dead_execute(state, source_card, event_data, helpers)
         local chosen_slot_idx = free_slots[math.random(1, #free_slots)]
         table.remove(void_zone, skeleton_idx)
         skeleton_card.slot_index = chosen_slot_idx - 1
-        battle.reset_card_turn_state(state.item_defs, skeleton_card)
+        battle.reset_card_turn_state(state.item_defs, skeleton_card, state)
         skeleton_card.trigger = false
         skeleton_card.face_up = true
         skeleton_card.expose = true
@@ -244,7 +244,7 @@ function king_return_execute(state, source_card, event_data, helpers)
             ",result=failed,reason=no_adjacent_position")
     else
         table.remove(void_zone, king_index)
-        battle.reset_card_turn_state(state.item_defs, king_card)
+        battle.reset_card_turn_state(state.item_defs, king_card, state)
         king_card.slot_index = chosen_index - 1
         king_card.face_up = true
         king_card.expose = true

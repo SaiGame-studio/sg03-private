@@ -148,7 +148,7 @@ local function get_active_persistent_bonus(state, bonuses)
     local total = 0
     if type(bonuses) ~= "table" then return total end
     for source_id, bonus in pairs(bonuses) do
-        if is_card_on_battlefield(state, source_id) then
+        if state == nil or is_card_on_battlefield(state, source_id) then
             total = total + (tonumber(bonus) or 0)
         else
             bonuses[source_id] = nil
