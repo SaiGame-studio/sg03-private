@@ -8,191 +8,170 @@
 >
 > Enemy key: `silas`
 >
-> Battle AI dự kiến: `Assets/SaiGame/LuaScript/Scripts/enemy_ai_silas.lua`
+> Script chính: [`enemy_ai_silas.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua)
 
 ## Tổng quan
 
-Silas giữ bộ combo gồm **một `Goblin Shaman` và một `Brute Call` trên tay**, chờ đến lượt Omega hợp lệ từ turn 4 trở đi mới triển khai combo theo [Brute Call](../../cards/natureborn/goblin/abilities/brute_call.md).
+Silas ([`enemy_ai_silas.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua)) triển khai chiến thuật combo kết hợp giữa việc giữ bộ bài triệu hồi `Goblin Brute` và phòng thủ phản ứng bằng `Totem Pulse`:
 
-Việc triệu hồi bắt buộc đi qua Ability `brute_call` hiện có. AI chỉ chọn đúng source Ability và Goblin Shaman target, rồi gọi Ability pipeline; toàn bộ hiệu ứng triệu hồi do Ability xử lý.
+1. **Phòng thủ phản ứng (`defend`)**: Silas sử dụng `totem_pulse` để bảo vệ tiền tuyến khi bị tấn công thông qua cơ chế dùng chung `enemy_ai_core.defend_with_back_line_ability_when_front_line_takes_damage`.
+2. **Quản lý bộ Combo trên tay**: Dự trữ **một `goblin_shaman` và một `brute_call` trên tay**, duy trì **2 slot trống liền kề** ở tiền tuyến cho tới khi đủ điều kiện kích hoạt từ turn 4.
+3. **Triển khai Combo triệu hồi**: Từ turn 4 trở đi, khi thỏa mãn điều kiện, Silas deploy Shaman vào slot tiền tuyến đã dự trữ, deploy Brute Call vào hậu tuyến và kích hoạt `brute_call` qua pipeline Ability tiêu chuẩn để triệu hồi `Goblin Brute` từ void.
+4. **Triển khai ngoài combo**: Ưu tiên deploy ngay `totem_pulse` xuống hậu tuyến khi rút được, đồng thời cho phép các Character ngoài bộ dự trữ được deploy vào các slot chưa bị reserve.
 
-## Cấu hình entity
+---
 
-Theo cấu hình được cung cấp:
+## Cấu hình Entity & Bộ Bài
+
+Theo cấu hình NPC Silas:
 
 | Thuộc tính | Giá trị |
 | --- | --- |
 | Name | Silas |
 | Rarity | Common |
 | Type | NPC |
-| Documentation category | Normal Enemy |
+| Category | Normal Enemy |
 | `choose_card_1` | `goblin_shaman` |
 | `choose_card_2` | `brute_call` |
 | `choose_card_3` | `goblin_saboteur` |
 
-Danh sách card của Silas:
+Danh sách 27 card của Silas (9 loại, mỗi loại 3 bản):
 
-| Card code | Card count | Vai trò |
+| Card code | Số lượng | Vai trò |
 | --- | ---: | --- |
-| `goblin_shaman` | 3 | Character bắt buộc cho combo |
+| `goblin_shaman` | 3 | Character cho combo & trigger Totem |
 | `goblin_saboteur` | 3 | Character chiến đấu |
 | `skeleton` | 3 | Character chiến đấu |
 | `goblin_grunt` | 3 | Character chiến đấu |
-| `totem_pulse` | 3 | Ability hỗ trợ Goblin Shaman |
+| `totem_pulse` | 3 | Ability phòng thủ Totem |
 | `brute_call` | 3 | Ability triệu hồi Goblin Brute |
-| `goblin_brute` | 3 | Character 4 sao |
+| `goblin_brute` | 3 | Character 4 sao (triệu hồi từ void) |
 | `zombie_male` | 3 | Character chiến đấu |
 | `zombie_female` | 3 | Character chiến đấu |
-| **Tổng số card** | **27** | 9 loại card, mỗi loại 3 bản |
 
-## Quy tắc rút bài và opening hand
+---
 
-Hệ thống hiện có hai khái niệm khác nhau:
+## 1. Phản ứng phòng thủ (`defend`)
 
-- `lib_battle_common.get_draw_card_count()` trả về **2**, nghĩa là số card rút thông thường mỗi lần draw là hai.
-- `init_cards.lua` hiện tạo opening hand Omega bằng ba card preset, sau đó rút thêm hai card ngẫu nhiên. Opening hand tối đa là năm card, không phải hai.
+Chi tiết mã nguồn nằm tại [`enemy_ai_silas.lua:L5-L9`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua#L5-L9):
 
-Với metadata hiện tại, ba card được bảo đảm trong opening hand là:
-
-1. `goblin_shaman`
-2. `brute_call`
-3. `goblin_saboteur`
-
-Hai card ngẫu nhiên còn lại không ảnh hưởng đến điều kiện có đủ bộ combo cơ bản.
-
-## Bộ combo phải giữ trên tay
-
-AI phải nhận diện và reserve đúng hai card:
-
-- một `goblin_shaman`;
-- một `brute_call`.
-
-Trước lượt combo:
-
-- không deploy Goblin Shaman đã reserve;
-- không deploy hoặc tiêu thụ Brute Call đã reserve;
-- không dùng các card reserve làm attacker, Ability source hoặc mục đích khác;
-- luôn giữ ít nhất hai slot trống liền kề trên `omega_front_line` cho combo Brute;
-- các card không thuộc bộ reserve vẫn có thể được triển khai bằng chiến thuật thông thường.
-
-Nếu trên tay chưa đủ một `goblin_shaman` và một `brute_call`, AI tiếp tục giữ những thành phần đã có và chờ lượt sau. AI không được tạo card giả, sao chép card hoặc lấy card trực tiếp từ source để hoàn thiện combo.
-
-## Điều kiện kích hoạt combo
-
-Combo chỉ được thực hiện khi đồng thời thỏa mãn:
-
-1. Đang là lượt hành động của Omega/Silas.
-2. Turn hiện tại từ 4 trở đi.
-3. Trên tay có đủ một `goblin_shaman` và một `brute_call` đã reserve.
-4. `omega_front_line` có ít nhất hai slot trống liền kề đã được reserve: một cho Goblin Shaman được chọn và một cho Goblin Brute.
-5. `omega_back_line` có vị trí cho Brute Call.
-6. Mọi điều kiện kích hoạt của [Brute Call](../../cards/natureborn/goblin/abilities/brute_call.md) đều được thỏa mãn.
-
-Nếu chưa đủ điều kiện, AI hoãn combo.
-
-## Luồng triển khai combo
-
-### Bước 1: triển khai Goblin Shaman được chọn
-
-- Đưa một `goblin_shaman` đã reserve từ `omega_hand` vào một trong hai slot trống liền kề đã giữ.
-- Giữ slot trống liền kề còn lại cho Goblin Brute.
-- Ghi client actions bằng cơ chế deploy dùng chung.
-- Không đặt Goblin Brute trực tiếp lên bàn trong bước này.
-
-### Bước 2: triển khai Brute Call
-
-- Đưa `brute_call` đã reserve từ `omega_hand` vào một slot trống của `omega_back_line`.
-- Brute Call phải nằm ở `omega_back_line`; AI Silas không đặt Ability này ở front-line.
-
-### Bước 3: kích hoạt Brute Call
-
-AI kích hoạt `Brute Call` lên Goblin Shaman đã triển khai bằng đúng luồng kích hoạt Ability tiêu chuẩn mà người chơi sử dụng.
-
-Chi tiết điều kiện, mục tiêu, hiệu ứng, tiêu thụ Ability và kết quả triệu hồi được định nghĩa duy nhất trong [Brute Call](../../cards/natureborn/goblin/abilities/brute_call.md).
-
-AI không được thêm bất kỳ hiệu ứng hoặc thao tác triệu hồi riêng nào sau khi kích hoạt; kết quả hoàn toàn do Ability tiêu chuẩn xử lý.
-
-## Deploy ngoài combo
-
-Trước khi combo được thực hiện:
-
-- bỏ qua hai card đang reserve khi quét `omega_hand`;
-- có thể deploy các Character khác vào tiền tuyến;
-- ngay khi rút được `Totem Pulse`, ưu tiên triển khai Ability này vào back-line có slot trống;
-- khi một Character của Omega đang bị tấn công, ưu tiên kích hoạt `Totem Pulse` ngay khi có thể;
-- luôn giữ ít nhất hai slot trống liền kề trên `omega_front_line`; vì hàng có năm slot, chỉ được phép để tối đa ba slot có card trước khi combo hoàn tất;
-- hai slot reserve được dành lần lượt cho Shaman được chọn và Goblin Brute, để combo có thể chạy ngay từ turn hợp lệ;
-- không được để deploy thông thường tiêu thụ hoặc ghi đè các card reserve.
-
-Sau khi combo hoàn tất, Silas có thể quay về quy tắc deploy và plan attack dùng chung.
-
-## Phản ứng phòng thủ (`defend`)
-
-Chưa có phản ứng phòng thủ riêng được yêu cầu cho Silas. Baseline:
-
-```text
-defend(state)
-  -> nil
+```lua
+function defend(state)
+    return enemy_ai_core.defend_with_back_line_ability_when_front_line_takes_damage(
+        state, "totem_pulse", "goblin_shaman"
+    )
+end
 ```
 
-## Lập kế hoạch tấn công (`plan_attack`)
+Silas chủ động phòng thủ tương tự Goblin Shaman: Khi tiền tuyến Omega bị nhắm tới bởi một đòn đánh gây sát thương (`pending_attack.damage_dealt > 0`), nếu có `totem_pulse` ở hậu tuyến và `goblin_shaman` chưa kích hoạt trên tiền tuyến, Silas sẽ kích hoạt Totem Pulse nâng DEF toàn bộ tiền tuyến trước khi đòn đánh giải quyết.
 
-Ngoài lượt thực hiện combo, baseline:
+---
 
-- chọn Character Omega chưa kích hoạt đầu tiên, loại trừ các card đang reserve trong hand;
-- ưu tiên Character Alpha đang face-up có hiệu `final_def - total_damage_received` thấp nhất ở tiền tuyến; nếu không có Character face-up, chọn Character face-down đầu tiên theo thứ tự slot;
-- nếu Alpha không còn Character tiền tuyến, lập kế hoạch đánh `alpha_hp`;
-- không có attacker hợp lệ thì kết thúc lượt Omega.
+## 2. Triển khai đội hình (`deploy`)
 
-## Cây quyết định
+Chi tiết mã nguồn nằm tại [`enemy_ai_silas.lua:L36-L135`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua#L36-L135).
+
+### Triển khai Totem Pulse sớm
+
+- Khi rút được `totem_pulse`, Silas deploy ngay vào hậu tuyến (`omega_back_line`) ở trạng thái úp (`face_up = false`).
+- Để đảm bảo còn chỗ cho `brute_call`, Silas kiểm tra `count_empty_slots(back_line) >= min_back_slots` (với `min_back_slots = 2` nếu đang cầm `brute_call`, ngược lại là `1`).
+
+### Kiểm tra điều kiện Combo (`can_combo`)
+
+Combo được phép thực thi khi **đồng thời** thỏa mãn 6 điều kiện [`enemy_ai_silas.lua:L65-L70`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua#L65-L70):
+1. `tonumber(state.turn or 0) >= 4` (từ Turn 4 trở đi).
+2. Tay bài có `goblin_shaman`.
+3. Tay bài có `brute_call`.
+4. Tiền tuyến `omega_front_line` có 2 slot trống liền kề (`reserve_left ~= nil`).
+5. Hậu tuyến `omega_back_line` còn ít nhất 1 slot trống cho `brute_call`.
+6. `omega_the_void` có lá `goblin_brute`.
+
+### Luồng thực thi Combo
+
+Nếu `can_combo == true`:
+1. Deploy `goblin_shaman` từ hand vào slot tiền tuyến `reserve_left` ở trạng thái ngửa (`face_up = true`).
+2. Deploy `brute_call` từ hand vào slot trống ở hậu tuyến ở trạng thái úp (`face_up = false`).
+3. Rebuild lại tay bài và cập nhật client actions.
+4. Kích hoạt Ability `brute_call` thông qua helper:
+   ```lua
+   local event_data = {
+       defender_card = shaman_card,
+       defender_line_key = "omega_front_line",
+       damage_dealt = 0,
+   }
+   local ability_err = enemy_ai_core.trigger_ability_and_append_actions(
+       state, brute_call_card, "brute_call", "on_attack", event_data
+   )
+   ```
+5. Hiệu ứng triệu hồi `goblin_brute` từ void được xử lý hoàn toàn bởi pipeline của Ability `brute_call`.
+
+### Luồng triển khai trước/ngoài Combo
+
+Nếu chưa thể thực hiện combo:
+1. Xác định 2 slot trống liền kề trên tiền tuyến (`reserve_left`) để giữ lại cho combo.
+2. Không deploy các card thuộc danh sách dự trữ: `shaman_card`, `brute_call_card`, và `goblin_brute`.
+3. Có thể deploy các Character chiến đấu khác vào các slot tiền tuyến chưa bị reserve (`find_unreserved_empty_slot`).
+4. Khi gọi `lib_battle_ai.ensure_omega_hand_draw_capacity`, Silas truyền danh sách `excluded_ids` (chứa các Character bị giữ lại) để việc giải phóng dung lượng tay bài không vô tình tiêu thụ bài dự trữ.
+
+---
+
+## 3. Lập kế hoạch tấn công (`plan_attack`)
+
+Chi tiết mã nguồn nằm tại [`enemy_ai_silas.lua:L138-L141`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua#L138-L141):
+
+```lua
+function plan_attack(state)
+    local defender = enemy_ai_core.pick_alpha_front_line_character_target(state)
+    return enemy_ai_core.plan_omega_attack_with_target(state, defender)
+end
+```
+
+Silas sử dụng luồng chọn mục tiêu và tấn công tiêu chuẩn qua `enemy_ai_core`:
+1. **Chọn mục tiêu (`pick_alpha_front_line_character_target`)**: Ưu tiên Character ngửa trên `alpha_front_line` có `final_def - total_damage_received` thấp nhất. Nếu không có, chọn Character úp đầu tiên.
+2. **Thực thi tấn công (`plan_omega_attack_with_target`)**: Chọn Attacker ngửa chưa trigger trên tiền tuyến để tấn công mục tiêu đã chọn, hoặc tấn công `alpha_hp` nếu tiền tuyến Alpha trống.
+
+---
+
+## Sơ đồ luồng quyết định
 
 ```mermaid
 flowchart TD
-    A[Bắt đầu lượt Silas] --> B{Đủ 1 Shaman và 1 Brute Call trên tay?}
-    B -- Không --> C[Giữ các mảnh combo và chơi card khác]
-    B -- Có --> D{state.turn >= 4?}
-    D -- Không --> C
-    D -- Có --> E{Đủ điều kiện theo Brute Call?}
-    E -- Không --> F[Hoãn combo, không tiêu thụ Brute Call]
-    E -- Có --> G[Deploy Shaman vào 1 trong 2 slot reserve]
-    G --> H[Deploy Brute Call vào back line]
-    H --> I[Kích hoạt Brute Call như người chơi]
-    I --> J[Ability tự xử lý hiệu ứng]
+    A[Bắt đầu lượt AI Silas] --> B[deploy: Deploy Totem Pulse nếu có vào hậu tuyến]
+    B --> C{Kiểm tra can_combo: Turn >= 4 & có Shaman & Brute Call & 2 slot tiền tuyến & 1 slot hậu tuyến & Brute ở Void?}
+    
+    C -- ĐỦ ĐIỀU KIỆN --> D[Triển khai Shaman vào slot tiền tuyến dự trữ]
+    D --> E[Triển khai Brute Call vào slot hậu tuyến]
+    E --> F[Gọi trigger_ability brute_call qua Ability pipeline chuẩn]
+    F --> G[Brute Call tự triệu hồi Goblin Brute từ Void vào slot liền kề]
+
+    C -- CHƯA ĐỦ ĐIỀU KIỆN --> H[Giữ 2 slot tiền tuyến liền kề & giữ bài combo]
+    H --> I[Deploy các Character không dự trữ vào slot chưa bị reserve]
+    I --> J[Gọi ensure_omega_hand_draw_capacity với excluded_ids]
+
+    G --> K[plan_attack: Tấn công bằng helper enemy_ai_core]
+    J --> K
 ```
 
-## Blocker cần xử lý trước khi code AI
+---
 
-### 1. Chuẩn bị battle state cho Brute Call
+## Tóm tắt thuật toán Lua
 
-Battle state của Omega phải được chuẩn bị để thỏa toàn bộ điều kiện của [Brute Call](../../cards/natureborn/goblin/abilities/brute_call.md) trước lượt combo. AI Silas không được tự thêm logic thay thế các điều kiện này.
+```text
+DEFEND:
+  Kích hoạt Totem Pulse từ hậu tuyến nâng DEF tiền tuyến khi bị tấn công (nhờ enemy_ai_core).
 
-## Tích hợp bắt buộc
+DEPLOY:
+  1. Rút được Totem Pulse -> Deploy ngay vào hậu tuyến (giữ slot cho Brute Call nếu cầm).
+  2. Kiểm tra điều kiện combo (turn >= 4, có Shaman + Brute Call + Brute trong Void + đủ slot).
+  3. Nếu đủ điều kiện:
+     - Deploy Shaman ngửa vào front slot dự trữ.
+     - Deploy Brute Call úp vào back slot.
+     - Trigger Ability brute_call trên Shaman để triệu hồi Goblin Brute.
+  4. Nếu chưa đủ điều kiện:
+     - Dự trữ 2 slot tiền tuyến liền kề.
+     - Chỉ deploy Character không thuộc nhóm reserve vào slot ngoài khu vực reserve.
+     - Gọi ensure_omega_hand_draw_capacity ngoại trừ các lá reserved (dùng excluded_ids).
 
-- Tạo library `enemy_ai_silas.lua` với `deploy`, `defend`, `plan_attack`.
-- Thêm nhánh `silas` vào `lib_battle_entity_ai.lua`.
-- Load `enemy_ai_silas` trong các regular battle script đi qua dispatcher.
-- Bảo đảm battle state thỏa điều kiện của [Brute Call](../../cards/natureborn/goblin/abilities/brute_call.md).
-- Kích hoạt Brute Call qua cùng luồng Ability chuẩn như người chơi; không nhân bản thuật toán Ability trong AI.
-
-## Kịch bản kiểm thử tối thiểu
-
-1. Mỗi card trong danh sách entity tạo đúng ba bản trên `omega_the_source` và `omega_the_void`; riêng một `goblin_brute` được chuẩn bị trong `omega_the_void`, còn hai bản ở `omega_the_source`.
-2. Mỗi draw thông thường lấy tối đa hai card.
-3. Opening hand lấy ba card preset và hai card ngẫu nhiên theo code hiện tại.
-4. Trước turn 4, Goblin Shaman và Brute Call đã reserve không bị deploy.
-5. Thiếu Goblin Shaman hoặc Brute Call thì AI chờ, không tự lấy card từ source.
-6. Chưa đủ điều kiện theo [Brute Call](../../cards/natureborn/goblin/abilities/brute_call.md) thì AI hoãn combo.
-7. Trước combo, AI duy trì hai slot trống liền kề ở tiền tuyến.
-8. Từ `state.turn >= 4`, khi đủ card và slot, AI deploy một Shaman vào slot reserve rồi đặt Brute Call.
-9. Brute Call được kích hoạt qua cùng luồng Ability chuẩn như người chơi.
-10. Kết quả combo tuân theo [Brute Call](../../cards/natureborn/goblin/abilities/brute_call.md), không có thao tác triệu hồi riêng trong AI.
-
-## Điều kiện hoàn thành
-
-Silas chỉ được chuyển sang trạng thái **Đã triển khai** khi:
-
-- battle state đáp ứng điều kiện của Brute Call;
-- reserve logic giữ đúng một Shaman và một Brute Call;
-- combo chỉ chạy ở lượt hợp lệ từ turn 4;
-- việc triệu hồi hoàn toàn đi qua Ability `brute_call` hiện có;
-- dispatcher, runtime libraries và toàn bộ test combo đã hoàn tất.
+PLAN ATTACK:
+  Sử dụng pick_alpha_front_line_character_target và plan_omega_attack_with_target.
+```
