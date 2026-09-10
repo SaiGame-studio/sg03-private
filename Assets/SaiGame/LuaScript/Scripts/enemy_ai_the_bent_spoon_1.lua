@@ -1,17 +1,21 @@
 -- enemy_ai_the_bent_spoon_1  (is_library = true)
 -- AI module for The Bent Spoon #1 normal enemy.
 
+-- This enemy's opening-hand choices belong to its own AI configuration rather
+-- than to the shared battle-start flow.
+function prepare_battle_start(enemy, enemy_source, id_generator)
+    if enemy.metadata == nil then enemy.metadata = {} end
+    for choice_index = 1, 3 do
+        enemy.metadata["choose_card_" .. choice_index] = nil
+    end
+    enemy.metadata.choose_card_1 = "misthy"
+    enemy.metadata.choose_card_2 = "eagle_eye"
+    return {}, nil
+end
+
 local function find_untriggered_omega_misthy(state)
     return enemy_ai_core.find_untriggered_line_card_by_code(state.omega_front_line, "misthy")
         or enemy_ai_core.find_untriggered_line_card_by_code(state.omega_back_line, "misthy")
-end
-
-local function has_positive_abyssal_mist_bonuses(state, source_card)
-    local item_def = lib_battle_ai._find_item_def(state.item_defs, source_card.item_definition_code_name)
-    local stats = item_def ~= nil and item_def.base_stats or nil
-    local atk_added = stats ~= nil and tonumber(stats.atk_added) or nil
-    local def_added = stats ~= nil and tonumber(stats.def_added) or nil
-    return atk_added ~= nil and atk_added > 0 and def_added ~= nil and def_added > 0
 end
 
 local function find_face_down_alpha_character(state)
@@ -73,20 +77,6 @@ end
 local function find_omega_line_card(state, code_name)
     return enemy_ai_core.find_line_card_by_code_prefer_exposed(state.omega_back_line, code_name)
         or enemy_ai_core.find_line_card_by_code_prefer_exposed(state.omega_front_line, code_name)
-end
-
-local function deploy_abyssal_mist_to_backline(state, hand_cards, back_line, slot_count, deployed_ids, back_deployed)
-    if find_untriggered_omega_misthy(state) == nil then return nil end
-
-    local source_card = find_omega_line_card(state, "abyssal_mist")
-    if source_card ~= nil then return nil end
-
-    local hand_card = enemy_ai_core.find_card_by_code(hand_cards, "abyssal_mist", nil)
-    if hand_card == nil or not has_positive_abyssal_mist_bonuses(state, hand_card) then return nil end
-
-    return deploy_one_ability_from_hand(
-        back_line, hand_cards, "abyssal_mist", slot_count, deployed_ids, back_deployed, false
-    )
 end
 
 local function stage_eagle_eye(state, hand_cards, back_line, slot_count, deployed_ids, back_deployed)
@@ -173,17 +163,10 @@ function deploy(state)
     local front_deployed = {}
     local back_deployed = {}
 
-    local abyssal_mist_card = deploy_abyssal_mist_to_backline(
+    local eagle_eye_card, eagle_eye_target = stage_eagle_eye(
         state, hand_cards, back_line, slot_count, deployed_ids, back_deployed
     )
-    local eagle_eye_card = nil
-    local eagle_eye_target = nil
-    if abyssal_mist_card == nil then
-        eagle_eye_card, eagle_eye_target = stage_eagle_eye(
-            state, hand_cards, back_line, slot_count, deployed_ids, back_deployed
-        )
-    end
-    if abyssal_mist_card == nil and eagle_eye_card == nil then
+    if eagle_eye_card == nil then
         local face_up = has_omega_deployed_card(front_line, back_line)
         deploy_priority_character(state, front_line, hand_cards, slot_count, deployed_ids, front_deployed, face_up)
     end

@@ -5,6 +5,18 @@ function get_enemy_key(state)
     return state.metadata ~= nil and state.metadata.enemy_entity_key or nil
 end
 
+-- Runs enemy-specific setup while battle_start remains deck-agnostic.
+function prepare_battle_start(enemy, enemy_source, id_generator)
+    local enemy_key = enemy ~= nil and enemy.entity_key or nil
+    if enemy_key == "silas" then
+        return enemy_ai_silas.prepare_battle_start(enemy, enemy_source, id_generator)
+    end
+    if enemy_key == "the_bent_spoon_1" then
+        return enemy_ai_the_bent_spoon_1.prepare_battle_start(enemy, enemy_source, id_generator)
+    end
+    return {}, nil
+end
+
 function run_enemy_ai_handler(state, handler_name)
     local enemy_key = get_enemy_key(state)
     if enemy_key == "goblin_shaman" then

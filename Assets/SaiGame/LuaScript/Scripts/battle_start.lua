@@ -14,6 +14,10 @@
 -- }
 
 require "lib_battle_common"
+require "lib_battle_entity_ai"
+require "enemy_ai_goblin_shaman"
+require "enemy_ai_silas"
+require "enemy_ai_the_bent_spoon_1"
 
 -- Deck size limits — shared with player deck validation
 local DECK_CARD_MIN = 25
@@ -21,10 +25,6 @@ local DECK_CARD_MAX = 52
 local DECK_CARD_COPY_MAX = 3
 local ENEMY_CARD_COUNT_DEFAULT = 3
 local START_BATTLE_SOUL_COST = 5
-local ENEMY_CHOOSE_CARD_CODES = {
-    the_bent_spoon_1 = { "misthy", "abyssal_mist", "eagle_eye" },
-}
-
 local function gen_id()
     local t = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx"
     return string.gsub(t, "[xy]", function(c)
@@ -35,16 +35,6 @@ end
 
 local function get_enemy_card_count(ability)
     return ability.card_count or ENEMY_CARD_COUNT_DEFAULT
-end
-
-local function apply_enemy_choose_card_codes(enemy, enemy_key)
-    local choices = ENEMY_CHOOSE_CARD_CODES[enemy_key]
-    if choices == nil then return end
-
-    if enemy.metadata == nil then enemy.metadata = {} end
-    for choice_index, code in ipairs(choices) do
-        enemy.metadata["choose_card_" .. choice_index] = code
-    end
 end
 
 local function source_contains_card_code(source, code)
@@ -78,7 +68,6 @@ local resolve_mode           -- forward declaration
 local build_state            -- forward declaration
 local load_player_the_source -- forward declaration
 local load_enemy_the_source  -- forward declaration
-local prepare_enemy_void_cards -- forward declaration
 local load_item_defs         -- forward declaration
 local charge_start_battle_fee -- forward declaration
 
@@ -111,11 +100,12 @@ local function main()
     lib_battle_common.dlog("[battle_start] player source loaded: " .. tostring(#player_the_source) .. " cards")
 
     local enemy_the_source = load_enemy_the_source(enemy)
+    local omega_the_void, setup_err = lib_battle_entity_ai.prepare_battle_start(
+        enemy, enemy_the_source, gen_id
+    )
+    if setup_err ~= nil then output.error = setup_err ; return end
     ensure_enemy_choose_cards_in_source(enemy, enemy_the_source)
     lib_battle_common.dlog("[battle_start] enemy source loaded: " .. tostring(#enemy_the_source) .. " cards")
-
-    local omega_the_void, void_err = prepare_enemy_void_cards(payload.enemy_entity_key, enemy_the_source)
-    if void_err ~= nil then output.error = void_err ; return end
 
     local selected_mode = resolve_mode(enemy)
     lib_battle_common.dlog("[battle_start] battle mode: " .. tostring(selected_mode))
@@ -162,7 +152,6 @@ resolve_enemy = function()
     local enemy, err = game.get_entity_def_by_key(payload.enemy_entity_key)
     if err ~= nil then return nil, err end
     if enemy == nil then return nil, "enemy not found" end
-    apply_enemy_choose_card_codes(enemy, payload.enemy_entity_key)
     return enemy, nil
 end
 
@@ -278,28 +267,6 @@ load_enemy_the_source = function(enemy)
         end
     end
     return source
-end
-
--- Prepares cards that must already be in a zone for an enemy Ability to use.
--- Silas's Brute Call summons a Brute from the void; the AI never places it directly.
-prepare_enemy_void_cards = function(enemy_key, enemy_source)
-    local enemy_void = {}
-    if enemy_key ~= "silas" then return enemy_void, nil end
-
-    for index, card in ipairs(enemy_source or {}) do
-        if card.item_definition_code_name == "goblin_brute" then
-            table.remove(enemy_source, index)
-            card.inventory_item_id = gen_id()
-            card.slot_index        = nil
-            card.face_up           = true
-            card.expose            = true
-            card.trigger           = false
-            table.insert(enemy_void, card)
-            return enemy_void, nil
-        end
-    end
-
-    return nil, "silas requires goblin_brute in enemy_the_source"
 end
 
 verify_player_preset = function(preset_instance_id)

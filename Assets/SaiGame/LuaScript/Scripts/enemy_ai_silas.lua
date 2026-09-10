@@ -1,6 +1,25 @@
 -- enemy_ai_silas  (is_library = true)
 -- AI module for the Silas normal enemy.
 
+-- Brute Call may only summon Goblin Brute from the Void, so Silas starts with
+-- one Brute prepared there instead of deploying it from the source deck.
+function prepare_battle_start(enemy, enemy_source, id_generator)
+    local enemy_void = {}
+    for index, card in ipairs(enemy_source or {}) do
+        if card.item_definition_code_name == "goblin_brute" then
+            table.remove(enemy_source, index)
+            card.inventory_item_id = id_generator()
+            card.slot_index = nil
+            card.face_up = true
+            card.expose = true
+            card.trigger = false
+            table.insert(enemy_void, card)
+            return enemy_void, nil
+        end
+    end
+    return nil, "silas requires goblin_brute in enemy_the_source"
+end
+
 -- Defend with Totem Pulse through the same standard Ability flow as Goblin Shaman.
 function defend(state)
     return enemy_ai_core.defend_with_back_line_ability_when_front_line_takes_damage(

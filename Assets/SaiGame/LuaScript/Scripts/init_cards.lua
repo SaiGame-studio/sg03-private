@@ -258,8 +258,8 @@ local function alpha_init_cards(state)
     return nil
 end
 
--- Moves cards whose definition is assigned to the_void or Character with at
--- least four stars out of a side's source before that side draws its opening hand.
+-- Moves cards whose definition is assigned to the_void or has at least four
+-- stars out of a side's source before that side draws its opening hand.
 local function move_auto_void_cards(state, side)
     local source_key = side .. "_the_source"
     local void_key = side .. "_the_void"
@@ -295,33 +295,25 @@ local function move_auto_void_cards(state, side)
         return tonumber(stars) or 0
     end
 
-    local function is_omega_opening_hand_choice(card)
-        if side ~= "omega" then return false end
-
-        local omega = state.metadata ~= nil and state.metadata.omega or nil
-        local preset = omega ~= nil and omega.metadata or nil
-        if preset == nil then return false end
-
-        for choice_index = 1, 3 do
-            if preset["choose_card_" .. choice_index] == card.item_definition_code_name then
-                return true
-            end
-        end
-        return false
+    local function is_spoon_mist_execution_card(card)
+        local metadata = state.metadata or {}
+        return side == "omega"
+            and metadata.enemy_entity_key == "the_bent_spoon_1"
+            and card.item_definition_code_name == "abyssal_mist"
     end
 
     local function get_auto_void_reason(card)
-        if is_omega_opening_hand_choice(card) then return nil end
-
+        if is_spoon_mist_execution_card(card) then
+            return "the_bent_spoon_1.mist_execution"
+        end
         local item_def = defs_by_code[card.item_definition_code_name]
         local metadata = item_def ~= nil and item_def.metadata or nil
         if metadata ~= nil and metadata.location == "the_void" then
             return "metadata.location=the_void"
         end
 
-        local card_type = metadata ~= nil and metadata.type or nil
-        if card_type == "character" and get_card_stars(card) >= 4 then
-            return tostring(get_card_stars(card)) .. "-star character"
+        if get_card_stars(card) >= 4 then
+            return tostring(get_card_stars(card)) .. "-star card"
         end
 
         return nil
