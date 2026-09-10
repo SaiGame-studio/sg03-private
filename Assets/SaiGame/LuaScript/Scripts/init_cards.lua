@@ -5,9 +5,6 @@ require "lib_ability_core"
 require "lib_ability_aura"
 require "lib_battle_entity_ai"
 require "enemy_ai_core"
-require "enemy_ai_goblin_shaman"
-require "enemy_ai_silas"
-require "enemy_ai_the_bent_spoon_1"
 require "lib_ability_human"
 require "lib_ability_darkborn"
 require "lib_ability_lightborn"
@@ -295,17 +292,7 @@ local function move_auto_void_cards(state, side)
         return tonumber(stars) or 0
     end
 
-    local function is_spoon_mist_execution_card(card)
-        local metadata = state.metadata or {}
-        return side == "omega"
-            and metadata.enemy_entity_key == "the_bent_spoon_1"
-            and card.item_definition_code_name == "abyssal_mist"
-    end
-
     local function get_auto_void_reason(card)
-        if is_spoon_mist_execution_card(card) then
-            return "the_bent_spoon_1.mist_execution"
-        end
         local item_def = defs_by_code[card.item_definition_code_name]
         local metadata = item_def ~= nil and item_def.metadata or nil
         if metadata ~= nil and metadata.location == "the_void" then

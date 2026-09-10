@@ -14,10 +14,6 @@
 -- }
 
 require "lib_battle_common"
-require "lib_battle_entity_ai"
-require "enemy_ai_goblin_shaman"
-require "enemy_ai_silas"
-require "enemy_ai_the_bent_spoon_1"
 
 -- Deck size limits — shared with player deck validation
 local DECK_CARD_MIN = 25
@@ -100,12 +96,10 @@ local function main()
     lib_battle_common.dlog("[battle_start] player source loaded: " .. tostring(#player_the_source) .. " cards")
 
     local enemy_the_source = load_enemy_the_source(enemy)
-    local omega_the_void, setup_err = lib_battle_entity_ai.prepare_battle_start(
-        enemy, enemy_the_source, gen_id
-    )
-    if setup_err ~= nil then output.error = setup_err ; return end
     ensure_enemy_choose_cards_in_source(enemy, enemy_the_source)
     lib_battle_common.dlog("[battle_start] enemy source loaded: " .. tostring(#enemy_the_source) .. " cards")
+
+    local omega_the_void = {}
 
     local selected_mode = resolve_mode(enemy)
     lib_battle_common.dlog("[battle_start] battle mode: " .. tostring(selected_mode))

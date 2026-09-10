@@ -1,18 +1,6 @@
 -- enemy_ai_the_bent_spoon_1  (is_library = true)
 -- AI module for The Bent Spoon #1 normal enemy.
 
--- This enemy's opening-hand choices belong to its own AI configuration rather
--- than to the shared battle-start flow.
-function prepare_battle_start(enemy, enemy_source, id_generator)
-    if enemy.metadata == nil then enemy.metadata = {} end
-    for choice_index = 1, 3 do
-        enemy.metadata["choose_card_" .. choice_index] = nil
-    end
-    enemy.metadata.choose_card_1 = "misthy"
-    enemy.metadata.choose_card_2 = "eagle_eye"
-    return {}, nil
-end
-
 local function find_untriggered_omega_misthy(state)
     return enemy_ai_core.find_untriggered_line_card_by_code(state.omega_front_line, "misthy")
         or enemy_ai_core.find_untriggered_line_card_by_code(state.omega_back_line, "misthy")

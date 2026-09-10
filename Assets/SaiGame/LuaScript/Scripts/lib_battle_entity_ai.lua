@@ -1,82 +1,50 @@
 -- lib_battle_entity_ai  (is_library = true)
--- Per-enemy AI dispatcher. Enemy-specific logic is defined in separate library files.
+-- Loads the AI configured on the Omega entity instead of maintaining an
+-- enemy-key dispatcher in each battle-phase script.
 
 function get_enemy_key(state)
     return state.metadata ~= nil and state.metadata.enemy_entity_key or nil
 end
 
--- Runs enemy-specific setup while battle_start remains deck-agnostic.
-function prepare_battle_start(enemy, enemy_source, id_generator)
-    local enemy_key = enemy ~= nil and enemy.entity_key or nil
-    if enemy_key == "silas" then
-        return enemy_ai_silas.prepare_battle_start(enemy, enemy_source, id_generator)
-    end
-    if enemy_key == "the_bent_spoon_1" then
-        return enemy_ai_the_bent_spoon_1.prepare_battle_start(enemy, enemy_source, id_generator)
-    end
-    return {}, nil
+local function load_enemy_ai(state)
+    local enemy_key = get_enemy_key(state)
+    local enemy, enemy_err = game.get_entity_def_by_key(enemy_key)
+    if enemy == nil then return nil, enemy_err end
+
+    return game.load_entity_ai(enemy.entity_key)
 end
 
-function run_enemy_ai_handler(state, handler_name)
-    local enemy_key = get_enemy_key(state)
-    if enemy_key == "goblin_shaman" then
-        if handler_name == "defend" then
-            return enemy_ai_goblin_shaman.defend(state)
-        end
-        if handler_name == "plan_attack" then
-            return enemy_ai_goblin_shaman.plan_attack(state)
-        end
-        if handler_name == "deploy" then
-            return enemy_ai_goblin_shaman.deploy(state)
-        end
-        return nil, nil, nil, "unknown handler for goblin_shaman: " .. tostring(handler_name)
-    end
+local function get_enemy_handler(state, handler_name)
+    local enemy_ai, ai_err = load_enemy_ai(state)
+    if enemy_ai == nil then return nil, ai_err end
 
-    if enemy_key == "silas" then
-        if handler_name == "defend" then
-            return enemy_ai_silas.defend(state)
-        end
-        if handler_name == "plan_attack" then
-            return enemy_ai_silas.plan_attack(state)
-        end
-        if handler_name == "deploy" then
-            return enemy_ai_silas.deploy(state)
-        end
-        return nil, nil, nil, "unknown handler for silas: " .. tostring(handler_name)
+    local handler = enemy_ai[handler_name]
+    if type(handler) ~= "function" then
+        return nil, "entity AI handler is missing: " .. tostring(handler_name)
     end
-
-    if enemy_key == "the_bent_spoon_1" then
-        if handler_name == "defend" then
-            return enemy_ai_the_bent_spoon_1.defend(state)
-        end
-        if handler_name == "plan_attack" then
-            return enemy_ai_the_bent_spoon_1.plan_attack(state)
-        end
-        if handler_name == "deploy" then
-            return enemy_ai_the_bent_spoon_1.deploy(state)
-        end
-        return nil, nil, nil, "unknown handler for the_bent_spoon_1: " .. tostring(handler_name)
-    end
-
-    if handler_name == "deploy" then
-        return nil, nil, nil, "no deploy handler for enemy_entity_key: " .. tostring(enemy_key)
-    end
-    return "no " .. tostring(handler_name) .. " handler for enemy_entity_key: " .. tostring(enemy_key)
+    return handler, nil
 end
 
 function run_defend(state)
-    return run_enemy_ai_handler(state, "defend")
+    local handler, handler_err = get_enemy_handler(state, "defend")
+    if handler == nil then return handler_err end
+    return handler(state)
 end
 
 function run_plan_attack(state)
-    return run_enemy_ai_handler(state, "plan_attack")
+    local handler, handler_err = get_enemy_handler(state, "plan_attack")
+    if handler == nil then return handler_err end
+    return handler(state)
 end
 
 function deploy_enemy(state)
     local enemy_key = get_enemy_key(state)
     lib_battle_common.dlog("[entity_ai] deploy_enemy enemy_key=" .. tostring(enemy_key))
 
-    local o_front, o_back, o_hand, deploy_err = run_enemy_ai_handler(state, "deploy")
+    local handler, handler_err = get_enemy_handler(state, "deploy")
+    if handler == nil then return handler_err end
+
+    local o_front, o_back, o_hand, deploy_err = handler(state)
     if deploy_err ~= nil then return deploy_err end
 
     state.omega_front_line = o_front
