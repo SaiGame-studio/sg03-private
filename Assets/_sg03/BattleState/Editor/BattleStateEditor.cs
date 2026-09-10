@@ -12,6 +12,7 @@ namespace SG03.UI.Editor
             "alphaTheVoid",
             "omegaTheVoid",
             "alphaTheSource",
+            "omegaTheSource",
             "alphaHand",
             "alphaBackLine",
             "alphaFrontLine",

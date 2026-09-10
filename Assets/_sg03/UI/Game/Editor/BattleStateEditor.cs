@@ -23,6 +23,7 @@ namespace SG03.UI
         {
             "omegaHp",
             "omegaTheSourceCount",
+            "omegaTheSource",
             "omegaTheVoidCount",
             "omegaDefending",
             "omegaTheVoid",
@@ -55,6 +56,7 @@ namespace SG03.UI
             "alphaFrontLine",
             "omegaHp",
             "omegaTheSourceCount",
+            "omegaTheSource",
             "omegaTheVoidCount",
             "omegaDefending",
             "omegaTheVoid",
@@ -70,6 +72,7 @@ namespace SG03.UI
         {
             this.serializedObject.Update();
             DrawPropertiesExcluding(this.serializedObject, ExcludedProperties);
+            EditorGUILayout.LabelField(string.Empty, GUI.skin.horizontalSlider);
             this.DrawProperties(AlphaProperties);
             EditorGUILayout.LabelField(string.Empty, GUI.skin.horizontalSlider);
             this.DrawProperties(OmegaProperties);

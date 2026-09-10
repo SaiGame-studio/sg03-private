@@ -353,10 +353,11 @@ local function write_alpha_state_output(state, session_id)
     output.alpha_back_line        = state.alpha_back_line
 end
 
-local function write_omega_state_output(state)
+local function write_omega_state_output(state, is_development)
     output.omega_hp               = state.omega_hp
     output.omega_max_hp           = state.omega_max_hp
     output.omega_the_source_count = state.omega_the_source ~= nil and #state.omega_the_source or 0
+    output.omega_the_source       = is_development and state.omega_the_source or nil
     output.omega_the_void         = state.omega_the_void
     output.omega_the_void_count   = state.omega_the_void ~= nil and #state.omega_the_void or 0
     output.omega_front_line       = state.omega_front_line
@@ -402,7 +403,7 @@ function battle_status()
     mask_omega_hand(state, is_development)
     write_alpha_state_output(state, session_id)
     hide_unrevealed_omega_cards(state)
-    write_omega_state_output(state)
+    write_omega_state_output(state, is_development)
     output.item_defs         = is_development and state.item_defs or nil
     -- output.item_defs_actions = build_card_action_list(state)
     write_battle_meta_output(state)
