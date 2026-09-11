@@ -161,7 +161,8 @@ local function alpha_choose_cards(state)
             local card = find_and_remove(source, uid)
             if card == nil then
                 -- Void takes precedence over a hand choice, including cards
-                -- automatically moved because they have at least four stars.
+                -- automatically moved because they are Characters with at
+                -- least four stars.
                 if find_by_inventory_item_id(state.alpha_the_void, uid) ~= nil then
                     lib_battle_common.dlog("[init_cards] Skipped hand choice " .. slot_names[i] .. " (" .. uid .. ") because the card is in alpha_the_void")
                 else
@@ -258,8 +259,9 @@ local function alpha_init_cards(state)
     return nil
 end
 
--- Moves cards whose definition is assigned to the_void or has at least four
--- stars out of a side's source before that side draws its opening hand.
+-- Moves cards whose definition is assigned to the_void, plus Characters with
+-- at least four stars, out of a side's source before that side draws its
+-- opening hand.
 local function move_auto_void_cards(state, side)
     local source_key = side .. "_the_source"
     local void_key = side .. "_the_void"
@@ -302,7 +304,8 @@ local function move_auto_void_cards(state, side)
             return "metadata.location=the_void"
         end
 
-        if get_card_stars(card) >= 4 then
+        if lib_battle_common.check_card_type(state.item_defs, card, "character")
+            and get_card_stars(card) >= 4 then
             return tostring(get_card_stars(card)) .. "-star card"
         end
 
