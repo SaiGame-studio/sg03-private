@@ -36,15 +36,22 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 14. [Lux Maxima](cards/lightborn/lumina/diana/lux_maxima.md): 2 sao
 
 ### Natureborn
+
+#### Goblin
+
 15. [Totem Pulse](cards/natureborn/goblin/abilities/totem_pulse.md): 2 sao
 16. [Back Stab](cards/natureborn/goblin/abilities/back_stab.md): 2 sao
 17. [Brute Call](cards/natureborn/goblin/abilities/brute_call.md): 3 sao
 
+#### Furry
+
+18. [Silent Strike](cards/natureborn/furry/silent-strike.md): 3 sao
+
 ### Humans
 - [Twin Reaper](cards/human/abilities/twin_reaper.md): bị động
 - [Scout Strike](cards/human/abilities/scout_strike.md): bị động
-18. [Spinning Slash](cards/human/abilities/spinning_slash.md): 4 sao
-19. [Cross Guard](cards/human/abilities/cross_guard.md): 2 sao
-20. [Eagle Eye](cards/human/abilities/eagle_eye.md): 2 sao
-21. [Titan Fall](cards/human/abilities/titan_fall.md): 5 sao
-22. [Spear Sweep](cards/human/abilities/titan_spear_sweep.md): 4 sao
+19. [Spinning Slash](cards/human/abilities/spinning_slash.md): 4 sao
+20. [Cross Guard](cards/human/abilities/cross_guard.md): 2 sao
+21. [Eagle Eye](cards/human/abilities/eagle_eye.md): 2 sao
+22. [Titan Fall](cards/human/abilities/titan_fall.md): 5 sao
+23. [Spear Sweep](cards/human/abilities/titan_spear_sweep.md): 4 sao

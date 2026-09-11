@@ -54,11 +54,11 @@ Chỉ quan hệ được xác nhận ở cấp toàn race mới được gắn `
 
 ## Natureborn
 
-**Natureborn** là các bộ tộc hình thành từ sức sống hoang dã và linh lực nguyên thủy của tự nhiên. Họ chiến đấu bằng bản năng, nghi lễ bộ tộc, độc dược và totem. Goblin là một tộc nhánh của Natureborn.
+**Natureborn** là các bộ tộc hình thành từ sức sống hoang dã và linh lực nguyên thủy của tự nhiên. Họ chiến đấu bằng bản năng, nghi lễ bộ tộc, độc dược và totem. Goblin và Furry là các tộc nhánh của Natureborn.
 
 - Bản sắc chiến đấu: totem, bẫy, đánh úp và hiệu ứng theo đội hình.
-- Tộc nhánh hiện có: Goblin.
-- Thư mục card: [`cards/natureborn/goblin/`](cards/natureborn/goblin/).
+- Tộc nhánh hiện có: Goblin, Furry.
+- Thư mục card: [`cards/natureborn/goblin/`](cards/natureborn/goblin/) và [`cards/natureborn/furry/`](cards/natureborn/furry/).
 - Quan hệ: Darkborn — Đồng minh; Humans — Xung đột; Lightborn — Trung lập.
   - Đồng minh với Darkborn: Natureborn tôn trọng chu kỳ sinh tử, còn Darkborn gắn với linh lực chuyển hóa và hồi sinh.
   - Xung đột với Humans: việc mở rộng lãnh thổ, khai thác tài nguyên và phát triển công nghệ của Humans đe dọa vùng đất hoang dã của Natureborn.
@@ -81,7 +81,7 @@ Mỗi card phải thuộc đúng một chủng tộc chính:
 |---|---|---|
 | Darkborn | Undead, Demon | `darkborn`, `undead`, `demon` |
 | Lightborn | Light Elf | `elf`, `light_elf` |
-| Natureborn | Goblin | `goblin` |
+| Natureborn | Goblin, Furry | `goblin`, `furry` |
 | Humans | Human | `human` |
 
 Tên chủng tộc chính thức trong nội dung và tài liệu luôn dùng tiếng Anh: **Darkborn**, **Lightborn**, **Natureborn**, **Humans**. Chủng tộc mô tả nguồn gốc, văn hóa hoặc bản chất sức mạnh, không quyết định một Character là thiện hay ác. Các quan hệ trong tài liệu này mô tả bối cảnh ở cấp race, không tạo ưu thế chỉ số hay quy tắc khắc chế gameplay. Các định danh kỹ thuật cũ được giữ nguyên cho đến khi dữ liệu và script được migrate; chúng không tạo thêm chủng tộc chính.

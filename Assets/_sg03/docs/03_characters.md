@@ -54,20 +54,29 @@ Nằm tại thư mục [`cards/lightborn/lumina/`](cards/lightborn/lumina/)
 ---
 
 ## Natureborn
-Nằm tại thư mục [`cards/natureborn/goblin/`](cards/natureborn/goblin/)
 
-Tộc nhánh hiện có: Goblin. Định danh `goblin` là tên kỹ thuật hiện hành.
+Tộc nhánh hiện có: Goblin và Furry. Các định danh `goblin` và `furry` là tên kỹ thuật hiện hành.
+
+### Goblin
+
+Nằm tại thư mục [`cards/natureborn/goblin/`](cards/natureborn/goblin/)
 
 16. [Goblin Grunt](cards/natureborn/goblin/goblin_grunt.md) — Số sao: 1
 17. [Goblin Saboteur](cards/natureborn/goblin/goblin_saboteur.md) — Số sao: 2
 18. [Goblin Shaman](cards/natureborn/goblin/goblin_shaman.md) — Số sao: 3
 19. [Goblin Brute](cards/natureborn/goblin/goblin_brute.md) — Số sao: 4
 
+### Furry
+
+Nằm tại thư mục [`cards/natureborn/furry/`](cards/natureborn/furry/)
+
+20. [Bao](cards/natureborn/furry/bao.md) — Số sao: 1
+
 ---
 
 ## Humans
 Nằm tại thư mục [`cards/human/`](cards/human/)
 
-20. [Ren](cards/human/azure_blade.md) — Số sao: 3
-21. [Lyra](cards/human/lyra.md) — Số sao: 2
-22. [Titan](cards/human/titan.md) — Số sao: 5
+21. [Ren](cards/human/azure_blade.md) — Số sao: 3
+22. [Lyra](cards/human/lyra.md) — Số sao: 2
+23. [Titan](cards/human/titan.md) — Số sao: 5
