@@ -231,16 +231,12 @@ local function execute_omega_attack_alpha_hp_plan(state, plan_entry)
     local damage = lib_battle_common.get_attack_damage(state, attacker_def, attacker_line_key, attacker_card)
     lib_battle_common.dlog("[alpha_defending_end] omega attacking alpha_hp directly: damage=" .. damage)
 
-    state.alpha_hp = (state.alpha_hp or 0) - damage
+    local attack_action, completion_action = lib_battle_common.deal_direct_damage_to_player_hp(
+        state, "omega", attacker_card, "alpha", damage)
     lib_battle_common.dlog("[alpha_defending_end] alpha_hp after attack=" .. state.alpha_hp)
 
-    lib_battle_common.append_client_action(state, "omega_attack_alpha_hp:attacker_card_id=" .. attacker_card.inventory_item_id .. ",damage=" .. damage .. ",alpha_hp=" .. state.alpha_hp)
-
-    local alpha_defeated = state.alpha_hp <= 0
-    if alpha_defeated then
-        lib_battle_common.append_client_action(state, "battle_completed:omega")
-        state.status = "completed"
-    end
+    lib_battle_common.append_client_action(state, attack_action)
+    if completion_action ~= nil then lib_battle_common.append_client_action(state, completion_action) end
 
     lib_battle_common.append_client_action(state, "omega_card_move_back_to_holder:" .. attacker_card.inventory_item_id)
     return nil
