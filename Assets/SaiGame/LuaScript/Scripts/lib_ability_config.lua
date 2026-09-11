@@ -55,6 +55,15 @@ function get_ability_config(ability_key)
             target_positions = { "enemy_frontline" },
             requires_target_card = true,
         },
+        silent_strike = {
+            handler_group = "natureborn",
+            target_positions = {
+                "own_frontline", "own_backline",
+                "enemy_frontline", "enemy_backline",
+            },
+            can_target_player_hp = true,
+            resolves_without_attack = true,
+        },
         brute_call = {
             handler_group = "natureborn",
             target_positions = { "own_frontline" },

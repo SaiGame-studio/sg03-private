@@ -94,6 +94,56 @@ function back_stab_execute(state, source_card, event_data, helpers)
     return ability_actions, nil
 end
 
+-- ability: silent_strike
+-- Bao ignores the selected card and attacks the opposing player's HP directly.
+function silent_strike_execute(state, source_card, event_data, helpers)
+    local battle = helpers.lib_battle_common
+    local source_side = helpers.find_card_side(state, source_card)
+    if source_side == nil or source_side == "unknown" then
+        return {}, "silent_strike source card is not on a battle line"
+    end
+
+    local front_line = state[source_side .. "_front_line"] or {}
+    local bao_card = helpers.find_untriggered_card(front_line, function(card)
+        return card.item_definition_code_name == "bao"
+    end)
+    if bao_card == nil then
+        return {}, "silent_strike requires untriggered bao in front_line"
+    end
+
+    local bao_def = helpers.find_item_def(state.item_defs, bao_card.item_definition_code_name)
+    if bao_def == nil then
+        return {}, "silent_strike requires Bao item definition"
+    end
+
+    local target_side = source_side == "alpha" and "omega" or "alpha"
+    local damage = battle.get_attack_damage(state, bao_def, source_side .. "_front_line", bao_card)
+    bao_card.trigger = true
+
+    local ability_actions = {}
+    local expose_action = helpers.expose_ability_selected_card(state, bao_card)
+    if expose_action ~= nil then table.insert(ability_actions, expose_action) end
+    table.insert(ability_actions, source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
+        ",ability=silent_strike,target=" .. target_side .. ",selected=" .. bao_card.inventory_item_id)
+
+    local attack_action, completion_action = battle.deal_direct_damage_to_player_hp(
+        state, source_side, bao_card, target_side, damage)
+    table.insert(ability_actions, attack_action)
+    if completion_action ~= nil then table.insert(ability_actions, completion_action) end
+
+    for _, line_key in ipairs({ source_side .. "_front_line", source_side .. "_back_line", source_side .. "_hand" }) do
+        battle.remove_card_from_line(state[line_key], source_card.inventory_item_id)
+    end
+    local void_key = source_side .. "_the_void"
+    if state[void_key] == nil then state[void_key] = {} end
+    table.insert(state[void_key], source_card)
+    battle.append_card_sent_to_void_action(ability_actions, source_side, source_card)
+
+    battle.dlog("[ability] silent_strike: bao=" .. bao_card.inventory_item_id ..
+        " target=" .. target_side .. " damage=" .. tostring(damage))
+    return ability_actions, nil
+end
+
 -- ability: brute_call
 -- Summons Goblin Brute from the void beside the selected Goblin Shaman.
 -- An adjacent 1- or 2-star Goblin is trampled; otherwise an empty adjacent

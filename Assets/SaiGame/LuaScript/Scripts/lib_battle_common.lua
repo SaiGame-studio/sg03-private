@@ -226,6 +226,25 @@ function get_attack_damage(state, attacker_def, attacker_line_key, attacker_card
     return 0
 end
 
+-- Applies direct card damage to a player's HP and returns the matching client
+-- actions. Callers own the action queue because Ability handlers return a list
+-- while phase scripts append directly to state.client_actions.
+function deal_direct_damage_to_player_hp(state, attacker_side, attacker_card, target_side, damage)
+    local hp_key = target_side .. "_hp"
+    local applied_damage = tonumber(damage) or 0
+    state[hp_key] = (state[hp_key] or 0) - applied_damage
+
+    local attack_action = attacker_side .. "_attack_" .. target_side .. "_hp:attacker_card_id=" ..
+        attacker_card.inventory_item_id .. ",damage=" .. tostring(applied_damage) .. "," ..
+        hp_key .. "=" .. tostring(state[hp_key])
+    local completion_action = nil
+    if state[hp_key] <= 0 then
+        state.status = "completed"
+        completion_action = "battle_completed:" .. attacker_side
+    end
+    return attack_action, completion_action
+end
+
 -- Returns an error when a 4-star-or-higher card is summoned before turn 4.
 -- Cards with 1-3 stars are not turn-restricted.
 function validate_summon_card_turn(state, item_defs, summon_card)

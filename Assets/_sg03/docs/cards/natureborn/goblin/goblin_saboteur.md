@@ -7,7 +7,7 @@
 - **Phòng Thủ (DEF)**: 280
 - **Giới tính**: Male
 - **Loại Thẻ**: [`character`](../../../03_characters.md)
-- **Chủng Tộc Chính**: **Natureborn**
+- **Chủng Tộc Chính**: **natureborn**
 - **Tộc Nhánh**: **Goblin** (định danh kỹ thuật: `goblin`)
 - **Vai Trò**: Saboteur / Infiltrator
 
