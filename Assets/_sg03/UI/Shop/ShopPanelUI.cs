@@ -13,6 +13,7 @@ namespace SG03.UI
         private readonly Label contentTitle;
         private readonly Label contentDescription;
         private readonly Label itemsStatus;
+        private readonly TextField itemSearchField;
         private readonly ScrollView itemList;
         private readonly Shop shop;
         private readonly CurrencyWallet currencyWallet;
@@ -20,6 +21,7 @@ namespace SG03.UI
         private ShopData selectedShop;
         private ShopItemViewData[] currentItems;
         private ShopCurrencyData currentShopCurrency;
+        private string itemSearchTerm;
         private readonly Dictionary<string, int> selectedQuantities = new Dictionary<string, int>();
 
         public ShopPanelUI(VisualElement panelRoot, Shop shop, CurrencyWallet currencyWallet)
@@ -28,9 +30,11 @@ namespace SG03.UI
             this.contentTitle = panelRoot.Q<Label>("ShopContentTitle");
             this.contentDescription = panelRoot.Q<Label>("ShopContentDescription");
             this.itemsStatus = panelRoot.Q<Label>("ShopItemsStatus");
+            this.itemSearchField = panelRoot.Q<TextField>("ShopItemSearchField");
             this.itemList = panelRoot.Q<ScrollView>("ShopItemList");
             this.shop = shop;
             this.currencyWallet = currencyWallet;
+            this.itemSearchField?.RegisterValueChangedCallback(change => this.FilterItemsByName(change.newValue));
             if (this.currencyWallet != null)
                 this.currencyWallet.OnBalancesUpdated += this.RefreshItemAffordability;
 
@@ -151,12 +155,39 @@ namespace SG03.UI
             }
 
             this.ShowItemsState(string.Empty);
-            foreach (ShopItemViewData item in items)
+            this.DisplayFilteredItems();
+        }
+
+        private void FilterItemsByName(string searchTerm)
+        {
+            this.itemSearchTerm = searchTerm;
+            this.DisplayFilteredItems();
+        }
+
+        private void DisplayFilteredItems()
+        {
+            if (this.itemList == null || this.currentItems == null) return;
+            this.itemList.Clear();
+
+            bool hasItems = false;
+            foreach (ShopItemViewData item in this.currentItems)
             {
                 if (item == null) continue;
-                item.shop_currency = shopCurrency;
+                item.shop_currency = this.currentShopCurrency;
+                if (!this.ItemNameMatchesSearch(item)) continue;
                 this.itemList.Add(this.BuildItemCard(item));
+                hasItems = true;
             }
+
+            this.ShowItemsState(hasItems ? string.Empty : "No items match your search.");
+        }
+
+        private bool ItemNameMatchesSearch(ShopItemViewData item)
+        {
+            if (string.IsNullOrWhiteSpace(this.itemSearchTerm)) return true;
+
+            string itemName = this.GetItemDisplayName(item);
+            return itemName.IndexOf(this.itemSearchTerm.Trim(), StringComparison.OrdinalIgnoreCase) >= 0;
         }
 
         private VisualElement BuildItemCard(ShopItemViewData item)
@@ -166,7 +197,7 @@ namespace SG03.UI
 
             VisualElement details = new VisualElement();
             details.AddToClassList("shop-item-card__details");
-            Label name = new Label(string.IsNullOrWhiteSpace(item.display_name) ? item.item_def_id : item.display_name);
+            Label name = new Label(this.GetItemDisplayName(item));
             name.AddToClassList("shop-item-card__name");
             details.Add(name);
 
@@ -266,6 +297,9 @@ namespace SG03.UI
                 stock += $" · Limit: {item.purchased_count}/{item.purchase_limit}";
             return $"{item.price} {currency} · {stock}";
         }
+
+        private string GetItemDisplayName(ShopItemViewData item)
+            => string.IsNullOrWhiteSpace(item.display_name) ? item.item_def_id : item.display_name;
 
         private string GetCurrencyName(ShopItemViewData item)
         {

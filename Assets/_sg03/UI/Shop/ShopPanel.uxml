@@ -18,6 +18,7 @@
         <ui:VisualElement name="ShopContentArea" class="shop-content-area">
             <ui:Label name="ShopContentTitle" text="Select a shop" class="shop-content__title" />
             <ui:Label name="ShopContentDescription" text="Choose a shop from the sidebar to view its details." class="shop-content__description" />
+            <ui:TextField name="ShopItemSearchField" placeholder-text="Search items..." class="shop-item-search" tooltip="Search shop items" />
             <ui:Label name="ShopItemsStatus" class="shop-items__status" />
             <ui:ScrollView name="ShopItemList" class="shop-item-list" />
         </ui:VisualElement>
