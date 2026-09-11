@@ -41,7 +41,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 1d5e1b195ca468b4893156da6b96b0f1
-    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/silent-strike.asset
+    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/silent_strike.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

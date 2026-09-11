@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f9cbdcc53c1dd447ae715e2d0f04f14, type: 3}
-  m_Name: silent-strike
+  m_Name: silent_strike
   m_EditorClassIdentifier: Assembly-CSharp::SG03.CardData
   frameTexture: {fileID: 0}
   characterTexture: {fileID: 2800000, guid: 3edf025e7ad01284aa3cc69129a5764a, type: 3}
