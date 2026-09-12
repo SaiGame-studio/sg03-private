@@ -15,6 +15,11 @@ MonoBehaviour:
   m_GroupName: CardData
   m_GUID: 23f565229de3a5e479ee3849d00fd09c
   m_SerializeEntries:
+  - m_GUID: 082083e07a7de184f9592628e8db4901
+    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/sapphire.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 0c0eb85feafe74a459900e7e7f8c886f
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Undead/Ria/skeleton.asset
     m_ReadOnly: 0
@@ -85,8 +90,23 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d9b8cccb495b8d4a8597c8326a2e673
+    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/i_will_revenge.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3fe1da2b2c760aa4680679499fce77fd
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Undead/Common/zombie_female.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 40aa18006dfa8f444b303b2f66bc06ab
+    m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/LuminarBastion/bone_spire.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 446518e902255cb4aa6c295392c646a6
+    m_Address: Assets/_sg03/Card/Data/Character/Human/Sai/sai.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -117,6 +137,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 6afd6f7305243ca49b6994795e032089
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Undead/Ria/ria.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74d43a78fa81f1d478116cd9224df6d5
+    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/for_bao.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
@@ -215,6 +240,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c577885f5530d2d449d75dc7dd5245e2
+    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/let_her_go.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: cc20ad589d414bd49b44b0917ff99adc
     m_Address: Assets/_sg03/Card/Data/Character/Human/abilities/AzureBlade/cross_guard.asset
     m_ReadOnly: 0
@@ -227,6 +257,11 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: d7b3a1d2f007ace4e86c6b864f3c33b7
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Undead/Common/zombie_male.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db037241ccc6b88438022654b9c7b89e
+    m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/LuminarBastion/sythra.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0

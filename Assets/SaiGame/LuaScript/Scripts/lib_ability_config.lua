@@ -30,6 +30,11 @@ function get_ability_config(ability_key)
             event = "on_attack",
             target_positions = { "enemy_frontline", "enemy_backline" },
         },
+        crimson_spire = {
+            handler_group = "character_passives",
+            event = "on_attack",
+            target_positions = { "enemy_frontline", "enemy_backline" },
+        },
         eagle_eye = {
             handler_group = "human",
             target_positions = { "enemy_frontline" },
@@ -64,7 +69,28 @@ function get_ability_config(ability_key)
             can_target_player_hp = true,
             resolves_without_attack = true,
         },
+        for_bao = {
+            handler_group = "natureborn",
+            target_positions = {
+                "own_frontline", "own_backline",
+                "enemy_frontline", "enemy_backline",
+            },
+            can_target_player_hp = true,
+            resolves_without_attack = true,
+        },
         brute_call = {
+            handler_group = "natureborn",
+            target_positions = { "own_frontline" },
+            requires_target_card = true,
+            resolves_without_attack = true,
+        },
+        let_her_go = {
+            handler_group = "natureborn",
+            target_positions = { "own_frontline" },
+            requires_target_card = true,
+            resolves_without_attack = true,
+        },
+        i_will_revenge = {
             handler_group = "natureborn",
             target_positions = { "own_frontline" },
             requires_target_card = true,

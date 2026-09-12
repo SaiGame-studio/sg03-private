@@ -732,7 +732,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.size
-      value: 25
+      value: 29
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[0].fileName
@@ -935,6 +935,38 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[25].fileName
+      value: enemy_ai_core.lua
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[25].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[26].fileName
+      value: enemy_ai_silas.lua
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[26].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[27].fileName
+      value: enemy_ai_the_bent_spoon_1.lua
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[27].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[28].fileName
+      value: lib_ability_aura.lua
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[28].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[0].scriptName
       value: alpha_card_active
       objectReference: {fileID: 0}
@@ -1035,6 +1067,22 @@ PrefabInstance:
       value: lib_ability_natureborn
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[25].scriptName
+      value: enemy_ai_core
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[26].scriptName
+      value: enemy_ai_silas
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[27].scriptName
+      value: enemy_ai_the_bent_spoon_1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[28].scriptName
+      value: lib_ability_aura
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[0].hasLocalFile
       value: 1
       objectReference: {fileID: 0}
@@ -1132,6 +1180,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[24].hasLocalFile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[25].hasLocalFile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[26].hasLocalFile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[27].hasLocalFile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[28].hasLocalFile
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6971719431293405431, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
@@ -1641,10 +1705,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 62772905318436504, guid: c82510582685dbe4b976eaab14ab606b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -3.518
-      objectReference: {fileID: 0}
     - target: {fileID: 811396000192289789, guid: c82510582685dbe4b976eaab14ab606b, type: 3}
       propertyPath: reviewCamera
       value: 
@@ -1692,10 +1752,6 @@ PrefabInstance:
     - target: {fileID: 5442994032345533394, guid: c82510582685dbe4b976eaab14ab606b, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5573810003228165077, guid: c82510582685dbe4b976eaab14ab606b, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -1.702
       objectReference: {fileID: 0}
     - target: {fileID: 5662630202914217824, guid: c82510582685dbe4b976eaab14ab606b, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'

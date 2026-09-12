@@ -53,6 +53,10 @@ local function process_drops(pack_results, item_list, item_map)
     return item_list, item_map
 end
 
+local function is_main_inventory_capacity_error(err)
+    return string.find(tostring(err), "maximum owned item quantity reached", 1, true) ~= nil
+end
+
 local function main()
     local err = validate_payload()
     if err ~= nil then output.error = err ; return end
@@ -162,14 +166,20 @@ open_drop_packs = function(session_id, state)
             "battle-entity-drop:" .. session_id .. ":" .. pack_id
         )
         if err ~= nil then
-            return nil, "failed to open gacha pack '" .. tostring(pack.name or pack_code) .. "' (code: " .. tostring(pack_code) .. ", id: " .. tostring(pack_id) .. "): " .. tostring(err)
+            if is_main_inventory_capacity_error(err) then
+                game.log("Skipped battle reward pack '" .. tostring(pack.name or pack_code) .. "' because the main inventory is full.")
+            else
+                return nil, "failed to open gacha pack '" .. tostring(pack.name or pack_code) .. "' (code: " .. tostring(pack_code) .. ", id: " .. tostring(pack_id) .. "): " .. tostring(err)
+            end
         end
 
-        drops[#drops + 1] = {
-            pack_id = pack_id,
-            success = true,
-            items = result.items or {},
-        }
+        if result ~= nil then
+            drops[#drops + 1] = {
+                pack_id = pack_id,
+                success = true,
+                items = result.items or {},
+            }
+        end
     end
     return drops, nil
 end

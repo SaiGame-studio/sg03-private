@@ -22,6 +22,7 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 9. [Demon Rite](cards/darkborn/demon/xena/abilities/demon_rite.md): 3 sao
 10. [Abyssal Mist](cards/darkborn/demon/common/abilities/abyssal_mist.md): 4 sao
 - [Mist Execution](cards/darkborn/demon/common/abilities/mist_execution.md): bị động
+- [Crimson Spire](cards/darkborn/demon/luminar-bastion/abilities/crimson_spire.md): bị động
 
 ### Lightborn
 
@@ -45,13 +46,16 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 
 #### Furry
 
-18. [Silent Strike](cards/natureborn/furry/silent-strike.md): 3 sao
+18. [Silent Strike](cards/natureborn/furry/bao/silent-strike.md): 3 sao
+19. [Let Her Go](cards/natureborn/furry/bao/let_her_go.md): 4 sao
+20. [I Will Revenge](cards/natureborn/furry/bao/i_will_revenge.md): 4 sao
+21. [For Bao](cards/natureborn/furry/bao/for_bao.md): 4 sao
 
 ### Humans
-- [Twin Reaper](cards/human/abilities/twin_reaper.md): bị động
-- [Scout Strike](cards/human/abilities/scout_strike.md): bị động
-19. [Spinning Slash](cards/human/abilities/spinning_slash.md): 4 sao
-20. [Cross Guard](cards/human/abilities/cross_guard.md): 2 sao
-21. [Eagle Eye](cards/human/abilities/eagle_eye.md): 2 sao
-22. [Titan Fall](cards/human/abilities/titan_fall.md): 5 sao
-23. [Spear Sweep](cards/human/abilities/titan_spear_sweep.md): 4 sao
+- [Twin Reaper](cards/human/ren/twin_reaper.md): bị động
+- [Scout Strike](cards/human/lyra/scout_strike.md): bị động
+22. [Spinning Slash](cards/human/ren/spinning_slash.md): 4 sao
+23. [Cross Guard](cards/human/ren/cross_guard.md): 2 sao
+24. [Eagle Eye](cards/human/lyra/eagle_eye.md): 2 sao
+25. [Titan Fall](cards/human/ren/titan_fall.md): 5 sao
+26. [Spear Sweep](cards/human/ren/titan_spear_sweep.md): 4 sao
