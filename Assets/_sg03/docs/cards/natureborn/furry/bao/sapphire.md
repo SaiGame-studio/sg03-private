@@ -16,5 +16,6 @@ Sapphire là chị gái của Bao. Cô rất yêu thương và luôn sẵn sàng
 
 ## Kỹ Năng Liên Kết
 
+- [For Bao](for_bao.md)
 - [Let Her Go](let_her_go.md)
 - [I Will Revenge](i_will_revenge.md)

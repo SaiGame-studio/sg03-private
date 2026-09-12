@@ -48,12 +48,13 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 18. [Silent Strike](cards/natureborn/furry/bao/silent-strike.md): 3 sao
 19. [Let Her Go](cards/natureborn/furry/bao/let_her_go.md): 4 sao
 20. [I Will Revenge](cards/natureborn/furry/bao/i_will_revenge.md): 4 sao
+21. [For Bao](cards/natureborn/furry/bao/for_bao.md): 4 sao
 
 ### Humans
 - [Twin Reaper](cards/human/ren/twin_reaper.md): bị động
 - [Scout Strike](cards/human/lyra/scout_strike.md): bị động
-21. [Spinning Slash](cards/human/ren/spinning_slash.md): 4 sao
-22. [Cross Guard](cards/human/ren/cross_guard.md): 2 sao
-23. [Eagle Eye](cards/human/lyra/eagle_eye.md): 2 sao
-24. [Titan Fall](cards/human/ren/titan_fall.md): 5 sao
-25. [Spear Sweep](cards/human/ren/titan_spear_sweep.md): 4 sao
+22. [Spinning Slash](cards/human/ren/spinning_slash.md): 4 sao
+23. [Cross Guard](cards/human/ren/cross_guard.md): 2 sao
+24. [Eagle Eye](cards/human/lyra/eagle_eye.md): 2 sao
+25. [Titan Fall](cards/human/ren/titan_fall.md): 5 sao
+26. [Spear Sweep](cards/human/ren/titan_spear_sweep.md): 4 sao
