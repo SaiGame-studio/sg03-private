@@ -70,6 +70,12 @@ function get_ability_config(ability_key)
             requires_target_card = true,
             resolves_without_attack = true,
         },
+        let_her_go = {
+            handler_group = "natureborn",
+            target_positions = { "own_frontline" },
+            requires_target_card = true,
+            resolves_without_attack = true,
+        },
         holy_glow = {
             handler_group = "lightborn",
             target_positions = { "own_frontline", "own_backline", "own_source", "own_void" },

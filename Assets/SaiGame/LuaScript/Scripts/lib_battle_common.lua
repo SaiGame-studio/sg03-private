@@ -81,6 +81,19 @@ function find_card_in_line_by_code(line, code_name, exclude_item_id)
     return nil, nil
 end
 
+-- Returns the card and its index in line matching inventory_item_id, or nil, nil.
+function find_card_in_line_by_id(line, inventory_item_id)
+    if type(line) ~= "table" or inventory_item_id == nil or inventory_item_id == "" then
+        return nil, nil
+    end
+    for index, card in ipairs(line) do
+        if card.inventory_item_id == inventory_item_id then
+            return card, index
+        end
+    end
+    return nil, nil
+end
+
 -- Collects all card matches on a side's front and back lines matching code_name.
 -- Each match is a table: { card = card, line = line }
 function collect_side_cards_by_code(state, side, code_name)

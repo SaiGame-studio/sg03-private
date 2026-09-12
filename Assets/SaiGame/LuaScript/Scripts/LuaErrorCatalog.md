@@ -97,6 +97,13 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 
 | Error Key | Original Pattern / Server Text | English Default Text | Vietnamese Reference | Source Files |
 | :--- | :--- | :--- | :--- | :--- |
+| `ERR_ABILITY_LET_HER_GO_TARGET_INVALID` | `let_her_go requires a Bao target` / `let_her_go target must be Bao in own front_line` / `let_her_go target must be Bao` | Let Her Go requires targeting Bao on your front line. | Let Her Go yêu cầu nhắm Bao ở hàng trước của bạn. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_LET_HER_GO_SOURCE_INVALID` | `let_her_go source card is not on a battle line` | Let Her Go must be activated from a battle line. | Let Her Go phải được kích hoạt từ một hàng trên sân đấu. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_LET_HER_GO_NOT_ATTACKED` | `let_her_go target Bao is not being attacked` | Let Her Go requires Bao to be targeted by an incoming attack. | Let Her Go yêu cầu Bao đang bị nhắm tấn công. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_LET_HER_GO_BAO_WOULD_BE_DEFEATED` | `let_her_go requires Bao to survive the planned attack` | Let Her Go cannot be activated when Bao would be defeated. | Không thể dùng Let Her Go khi Bao sẽ bị đánh bại. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_LET_HER_GO_ENEMY_HP_FULL` | `let_her_go requires enemy hp to be below maximum` | Let Her Go requires the enemy to have lost HP. | Let Her Go yêu cầu HP đối thủ đã bị giảm. | `lib_ability_natureborn.lua` |
+| `RESULT_ABILITY_LET_HER_GO_NO_SAPPHIRE_VOID` | `result=failed,reason=no_sapphire_in_void` | Let Her Go resolved, but Sapphire was not in the void. | Let Her Go đã resolve nhưng Sapphire không nằm trong Hư Không. | `lib_ability_natureborn.lua` |
+| `RESULT_ABILITY_LET_HER_GO_NO_ADJACENT_POSITION` | `result=failed,reason=no_adjacent_position` | Let Her Go resolved, but Bao had no empty adjacent slot. | Let Her Go đã resolve nhưng Bao không có ô liền kề trống. | `lib_ability_natureborn.lua` |
 | `ERR_ABILITY_REQUIRES_CARD_TARGET` | `{0} requires a specific card target` | Ability {0} requires a targeted card. | Kỹ năng {0} yêu cầu chọn lá bài mục tiêu. | `alpha_card_active.lua` |
 | `ERR_ABILITY_CANNOT_TARGET_PLAYER_HP` | `{0} cannot target player hp` | Ability {0} cannot target player HP. | Kỹ năng {0} không thể nhắm HP người chơi. | `alpha_card_active.lua` |
 | `ERR_ABILITY_ANIMATE_DEAD_NO_RIA` | `animate_dead requires ria in front_line` | Animate Dead requires Ria on the front line. | Gọi Hồn yêu cầu Ria ở hàng trước. | `lib_ability_advanced.lua` |
