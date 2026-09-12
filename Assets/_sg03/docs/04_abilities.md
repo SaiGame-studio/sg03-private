@@ -47,6 +47,7 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 
 18. [Silent Strike](cards/natureborn/furry/bao/silent-strike.md): 3 sao
 19. [Let Her Go](cards/natureborn/furry/bao/let_her_go.md): 4 sao
+20. [I Will Revenge](cards/natureborn/furry/bao/i_will_revenge.md): 4 sao
 
 ### Humans
 - [Twin Reaper](cards/human/ren/twin_reaper.md): bị động

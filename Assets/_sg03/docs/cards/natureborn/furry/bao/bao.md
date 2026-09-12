@@ -19,3 +19,4 @@ Bao là một sát thủ người mèo được hoàng tộc cử đi ám sát v
 
 - [Silent Strike](silent-strike.md) — Tấn công trực tiếp Player HP của đối thủ.
 - [Let Her Go](let_her_go.md) — Triệu gọi Sapphire để bảo vệ Bao trước một đòn tấn công đã được lên kế hoạch.
+- [I Will Revenge](i_will_revenge.md) — Triệu gọi Sapphire khi Bao sẽ bị đánh bại bởi một đòn tấn công đã được lên kế hoạch.
