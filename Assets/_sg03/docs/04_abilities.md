@@ -22,6 +22,7 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 9. [Demon Rite](cards/darkborn/demon/xena/abilities/demon_rite.md): 3 sao
 10. [Abyssal Mist](cards/darkborn/demon/common/abilities/abyssal_mist.md): 4 sao
 - [Mist Execution](cards/darkborn/demon/common/abilities/mist_execution.md): bị động
+- [Crimson Spire](cards/darkborn/demon/luminar-bastion/abilities/crimson_spire.md): bị động
 
 ### Lightborn
 
