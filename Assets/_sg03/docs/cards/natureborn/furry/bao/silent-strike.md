@@ -1,7 +1,7 @@
 # Silent Strike
 
 - **Mã Thẻ Bài**: `silent_strike`
-- **Loại Thẻ**: [`ability`](../../../04_abilities.md)
+- **Loại Thẻ**: [`ability`](../../../../04_abilities.md)
 - **Số sao**: 3
 - **Chủng Tộc Chính**: **Natureborn**
 - **Tộc Nhánh**: Furry (định danh kỹ thuật: `furry`)

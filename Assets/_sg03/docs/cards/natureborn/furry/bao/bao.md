@@ -6,7 +6,7 @@
 - **Tấn Công (ATK)**: 150
 - **Phòng Thủ (DEF)**: 160
 - **Giới tính**: Female
-- **Loại Thẻ**: [`character`](../../../03_characters.md)
+- **Loại Thẻ**: [`character`](../../../../03_characters.md)
 - **Chủng Tộc Chính**: **natureborn**
 - **Tộc Nhánh**: **Furry** (định danh kỹ thuật: `furry`)
 - **Vai Trò**: Royal Assassin

@@ -70,13 +70,14 @@ Nằm tại thư mục [`cards/natureborn/goblin/`](cards/natureborn/goblin/)
 
 Nằm tại thư mục [`cards/natureborn/furry/`](cards/natureborn/furry/)
 
-20. [Bao](cards/natureborn/furry/bao.md) — Số sao: 1
+20. [Bao](cards/natureborn/furry/bao/bao.md) — Số sao: 1
+21. [Sapphire](cards/natureborn/furry/bao/sapphire.md) — Số sao: 4
 
 ---
 
 ## Humans
 Nằm tại thư mục [`cards/human/`](cards/human/)
 
-21. [Ren](cards/human/azure_blade.md) — Số sao: 3
-22. [Lyra](cards/human/lyra.md) — Số sao: 2
-23. [Titan](cards/human/titan.md) — Số sao: 5
+22. [Ren](cards/human/azure_blade.md) — Số sao: 3
+23. [Lyra](cards/human/lyra.md) — Số sao: 2
+24. [Titan](cards/human/titan.md) — Số sao: 5

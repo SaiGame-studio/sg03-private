@@ -45,7 +45,7 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 
 #### Furry
 
-18. [Silent Strike](cards/natureborn/furry/silent-strike.md): 3 sao
+18. [Silent Strike](cards/natureborn/furry/bao/silent-strike.md): 3 sao
 
 ### Humans
 - [Twin Reaper](cards/human/abilities/twin_reaper.md): bị động
