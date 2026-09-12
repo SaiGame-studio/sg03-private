@@ -10,7 +10,7 @@
 
 ## Battle Auras
 
-- **Bloodmight:** Aura do Sythra duy trì, tăng ATK cho toàn bộ chiến binh Darkborn trong phạm vi ảnh hưởng, khiến các đòn đánh của chúng mạnh và nguy hiểm hơn. Bloodmight không gây sát thương trực tiếp cho kẻ địch và không làm hư hại tường thành.
+- **Bloodmight:** Aura do Sythra thi triển sau khi triệu gọi đủ ba [Bone Spire](../darkborn/demon/luminar-bastion/bone_spire.md), tăng ATK cho toàn bộ chiến binh Darkborn trong phạm vi ảnh hưởng, khiến các đòn đánh của chúng mạnh và nguy hiểm hơn. Bloodmight không gây sát thương trực tiếp cho kẻ địch và không làm hư hại tường thành.
 - **Radiant Aegis:** Aura phòng thủ do Diana duy trì, tăng DEF cho Humans và Lightborn trong phạm vi Luminar Bastion, giúp cơ thể, khiên và áo giáp của họ chịu được những đòn đánh mạnh hơn. Radiant Aegis không chữa lành vết thương và sẽ biến mất nếu Diana mất khả năng duy trì phép.
 
 ---
@@ -25,7 +25,7 @@ Ren nhận tin khi dân chạy nạn chen kín sân trong, mang theo trẻ sốt
 
 - “Tôi gửi thư cho triều đình, có gọi cô đâu,” Ren đặt hai thanh katana lên bàn, khóe miệng khẽ nhếch dù gương mặt đã mệt lả. “Nhưng tôi biết cô sẽ đến.”
 
-Trước nửa đêm, quân Darkborn tràn xuống Veyra Pass và vây kín Luminar Bastion bằng những hàng đuốc cháy màu tím bẩn. Malachar cưỡi một con chiến thú bọc giáp đi giữa đội hình, bên phải hắn là Brakk cùng cây búa phá cổng, còn Kael Vorn kéo theo đoàn tù binh bị xích chung qua cổ. Phía sau, Sythra mở Bloodmight trên toàn bộ đội hình Darkborn, trong khi Mireya thả Wailing Soul Mist che kín máy bắn đá và tháp công thành. Để thị uy, Kael chặt đầu ba tù binh ngay trước cổng rồi ném xác họ xuống hào, mặc cho người trên thành gọi tên người thân đến khản giọng. Malachar không che giấu lực lượng hay ý định, bởi hắn muốn phe thủ thành nhìn rõ thứ đang chờ họ nếu cánh cổng bị phá vỡ.
+Trước nửa đêm, quân Darkborn tràn xuống Veyra Pass và vây kín Luminar Bastion bằng những hàng đuốc cháy màu tím bẩn. Malachar cưỡi một con chiến thú bọc giáp đi giữa đội hình, bên phải hắn là Brakk cùng cây búa phá cổng, còn Kael Vorn kéo theo đoàn tù binh bị xích chung qua cổ. Phía sau, Sythra triệu gọi đủ ba Bone Spire rồi mở Bloodmight trên toàn bộ đội hình Darkborn, trong khi Mireya thả Wailing Soul Mist che kín máy bắn đá và tháp công thành. Để thị uy, Kael chặt đầu ba tù binh ngay trước cổng rồi ném xác họ xuống hào, mặc cho người trên thành gọi tên người thân đến khản giọng. Malachar không che giấu lực lượng hay ý định, bởi hắn muốn phe thủ thành nhìn rõ thứ đang chờ họ nếu cánh cổng bị phá vỡ.
 
 - “Mở cổng, giao nộp Azura và Ren, ta sẽ giết phần còn lại thật nhanh,” Malachar ngẩng lên khỏi hàng giáo và nói qua chiếc loa bằng xương. “Nếu chống cự, ta sẽ để Brakk phá từng căn nhà khi các ngươi vẫn còn sống bên trong.”
 

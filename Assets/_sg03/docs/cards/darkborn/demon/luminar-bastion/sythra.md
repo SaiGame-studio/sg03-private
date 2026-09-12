@@ -14,6 +14,10 @@
 
 Sythra là một tư tế Demon duy trì Bloodmight trên đội hình Darkborn trong cuộc vây hãm Luminar Bastion.
 
+## Thẻ Triệu Hồi Liên Kết
+
+- [Bone Spire](bone_spire.md)
+
 ## Truyện liên quan
 
 - [The Oath of Luminar Bastion](../../../_lore/the_oath_of_luminar_bastion.md)
