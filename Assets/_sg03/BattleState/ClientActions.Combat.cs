@@ -1,10 +1,17 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace SG03
 {
     public partial class ClientActions
     {
+        private static readonly HashSet<string> AbilitiesWithoutSelectedAttackAnimation = new HashSet<string>(System.StringComparer.OrdinalIgnoreCase)
+        {
+            "silent_strike",
+            "for_bao",
+        };
+
         private Coroutine ExecuteCardTakeDamage(string[] parameters)
         {
             if (parameters == null || parameters.Length == 0) return null;
@@ -245,7 +252,7 @@ namespace SG03
             Card3DCtrl sourceCard = !string.IsNullOrEmpty(sourceId) ? this.cardSpawning?.FindCardById(sourceId) : null;
             Card3DCtrl targetCard = !string.IsNullOrEmpty(targetId) ? this.cardSpawning?.FindCardById(targetId) : null;
             Card3DCtrl selectedCard = !string.IsNullOrEmpty(selectedId) ? this.cardSpawning?.FindCardById(selectedId) : null;
-            bool shouldAnimateSelectedAttack = !string.Equals(abilityName, "silent_strike", System.StringComparison.OrdinalIgnoreCase);
+            bool shouldAnimateSelectedAttack = !AbilitiesWithoutSelectedAttackAnimation.Contains(abilityName);
 
             if (sourceCard != null) sourceCard.RunUp();
             if (shouldAnimateSelectedAttack && selectedCard != null && targetCard != null) selectedCard.AttackLunge(targetCard.transform.position);
