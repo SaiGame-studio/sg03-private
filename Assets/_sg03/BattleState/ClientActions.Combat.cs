@@ -237,19 +237,20 @@ namespace SG03
 
             if (string.IsNullOrEmpty(sourceId)) return null;
             if (!string.IsNullOrEmpty(casterId)) selectedId = casterId;
-            return this.StartCoroutine(this.CardAbilityRoutine(sourceId, targetId, selectedId));
+            return this.StartCoroutine(this.CardAbilityRoutine(sourceId, abilityName, targetId, selectedId));
         }
 
-        private IEnumerator CardAbilityRoutine(string sourceId, string targetId, string selectedId)
+        private IEnumerator CardAbilityRoutine(string sourceId, string abilityName, string targetId, string selectedId)
         {
             Card3DCtrl sourceCard = !string.IsNullOrEmpty(sourceId) ? this.cardSpawning?.FindCardById(sourceId) : null;
             Card3DCtrl targetCard = !string.IsNullOrEmpty(targetId) ? this.cardSpawning?.FindCardById(targetId) : null;
             Card3DCtrl selectedCard = !string.IsNullOrEmpty(selectedId) ? this.cardSpawning?.FindCardById(selectedId) : null;
+            bool shouldAnimateSelectedAttack = !string.Equals(abilityName, "silent_strike", System.StringComparison.OrdinalIgnoreCase);
 
             if (sourceCard != null) sourceCard.RunUp();
-            if (selectedCard != null && targetCard != null) selectedCard.AttackLunge(targetCard.transform.position);
-            else if (selectedCard != null && this.TryGetAbilityTargetSourcePosition(targetId, out Vector3 targetPosition)) selectedCard.AttackLunge(targetPosition);
-            else if (selectedCard != null) selectedCard.AbilityActive();
+            if (shouldAnimateSelectedAttack && selectedCard != null && targetCard != null) selectedCard.AttackLunge(targetCard.transform.position);
+            else if (shouldAnimateSelectedAttack && selectedCard != null && this.TryGetAbilityTargetSourcePosition(targetId, out Vector3 targetPosition)) selectedCard.AttackLunge(targetPosition);
+            else if (shouldAnimateSelectedAttack && selectedCard != null) selectedCard.AbilityActive();
 
             if (sourceCard != null) yield return this.StartCoroutine(this.WaitForCard(sourceCard));
             if (selectedCard != null) yield return this.StartCoroutine(this.WaitForCard(selectedCard));
