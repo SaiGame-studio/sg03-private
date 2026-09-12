@@ -3,8 +3,8 @@
 - **Tên**: Sapphire
 - **Code Name**: `sapphire`
 - **Số sao**: 4
-- **Tấn Công (ATK)**: 350
-- **Phòng Thủ (DEF)**: 460
+- **Tấn Công (ATK)**: 300
+- **Phòng Thủ (DEF)**: 500
 - **Giới tính**: Female
 - **Loại Thẻ**: [`character`](../../../../03_characters.md)
 - **Chủng Tộc Chính**: **natureborn**
