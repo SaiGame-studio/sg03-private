@@ -95,7 +95,7 @@ function back_stab_execute(state, source_card, event_data, helpers)
 end
 
 -- ability: silent_strike
--- Bao ignores the selected card and attacks the opposing player's HP directly.
+-- Bao ignores the selected card and deals Silent Strike's configured ATK to the opposing player's HP directly.
 function silent_strike_execute(state, source_card, event_data, helpers)
     local battle = helpers.lib_battle_common
     local source_side = helpers.find_card_side(state, source_card)
@@ -111,13 +111,8 @@ function silent_strike_execute(state, source_card, event_data, helpers)
         return {}, "silent_strike requires untriggered bao in front_line"
     end
 
-    local bao_def = helpers.find_item_def(state.item_defs, bao_card.item_definition_code_name)
-    if bao_def == nil then
-        return {}, "silent_strike requires Bao item definition"
-    end
-
     local target_side = source_side == "alpha" and "omega" or "alpha"
-    local damage = battle.get_attack_damage(state, bao_def, source_side .. "_front_line", bao_card)
+    local damage = tonumber(helpers.get_card_stat(state, source_card, "atk")) or 0
     bao_card.trigger = true
 
     local ability_actions = {}
