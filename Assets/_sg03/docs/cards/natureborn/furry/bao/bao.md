@@ -18,3 +18,4 @@ Bao là một sát thủ người mèo được hoàng tộc cử đi ám sát v
 ## Kỹ Năng Liên Kết
 
 - [Silent Strike](silent-strike.md) — Tấn công trực tiếp Player HP của đối thủ.
+- [Let Her Go](let_her_go.md) — Triệu gọi Sapphire để bảo vệ Bao trước một đòn tấn công đã được lên kế hoạch.

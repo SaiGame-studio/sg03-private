@@ -9,9 +9,9 @@ Số liệu trong tài liệu này được tổng hợp từ [Danh Mục Thẻ 
 | Loại thẻ | Số lượng |
 | --- | ---: |
 | [Character](03_characters.md) | 24 |
-| [Ability](04_abilities.md) | 23 |
+| [Ability](04_abilities.md) | 24 |
 | Ability bị động | 3 |
-| **Tổng số card** | **47** |
+| **Tổng số card** | **48** |
 
 ### Thống Kê Enemy AI (PvE)
 
@@ -28,9 +28,9 @@ Số liệu trong tài liệu này được tổng hợp từ [Danh Mục Thẻ 
 | --- | ---: | ---: | ---: | ---: |
 | Darkborn | 12 | 10 | 1 | 22 |
 | Lightborn | 3 | 4 | 0 | 7 |
-| Natureborn | 6 | 4 | 0 | 10 |
+| Natureborn | 6 | 5 | 0 | 11 |
 | Humans | 3 | 5 | 2 | 8 |
-| **Tổng** | **24** | **23** | **3** | **47** |
+| **Tổng** | **24** | **24** | **3** | **48** |
 
 ## Thống Kê Theo Tộc Nhánh
 
@@ -41,9 +41,9 @@ Số liệu trong tài liệu này được tổng hợp từ [Danh Mục Thẻ 
 | Lightborn | Light Elf | 2 | 3 | 0 | 5 |
 | Lightborn | Lumina | 1 | 1 | 0 | 2 |
 | Natureborn | Goblin | 4 | 3 | 0 | 7 |
-| Natureborn | Furry | 2 | 1 | 0 | 3 |
+| Natureborn | Furry | 2 | 2 | 0 | 4 |
 | Humans | - | 3 | 5 | 2 | 8 |
-| **Tổng** |  | **24** | **23** | **3** | **47** |
+| **Tổng** |  | **24** | **24** | **3** | **48** |
 
 ## Thống Kê Chi Tiết Enemy AI
 
