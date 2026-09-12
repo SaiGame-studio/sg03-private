@@ -9203,6 +9203,10 @@ PrefabInstance:
       propertyPath: m_LocalScale.z
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3227181756066447694, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -4.515
+      objectReference: {fileID: 0}
     - target: {fileID: 3724972524044309510, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
       propertyPath: m_text
       value: ???
@@ -9298,6 +9302,10 @@ PrefabInstance:
     - target: {fileID: 6861007660675967375, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
       propertyPath: m_AnchoredPosition.y
       value: -1.659
+      objectReference: {fileID: 0}
+    - target: {fileID: 6914425806330681257, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: -4.515
       objectReference: {fileID: 0}
     - target: {fileID: 8660204716586372184, guid: 2cdb7a8738b0092429faf20dce591cda, type: 3}
       propertyPath: m_Name
