@@ -255,6 +255,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: db037241ccc6b88438022654b9c7b89e
+    m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/LuminarBastion/sythra.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: de3a2dce44549984897c65d7b2f0adb8
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/abilities/xena_awakened1.asset
     m_ReadOnly: 0

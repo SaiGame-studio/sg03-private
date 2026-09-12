@@ -48,6 +48,7 @@ MonoBehaviour:
   card3DLoader: {fileID: 0}
   cardAddresses:
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Common/kira.asset
+  - Assets/_sg03/Card/Data/Character/Darkborn/Demon/LuminarBastion/sythra.asset
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Misthy/abyssal_mist.asset
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Misthy/misthy.asset
   - Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/abilities/demon_orbs.asset
