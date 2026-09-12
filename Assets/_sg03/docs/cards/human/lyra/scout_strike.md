@@ -4,7 +4,7 @@
 - **Loại Kỹ Năng**: `passive`
 - **Mã Kỹ Năng**: `scout_strike`
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
-- **Thẻ Nhân Vật Yêu Cầu**: [Lyra](../lyra.md)
+- **Thẻ Nhân Vật Yêu Cầu**: [Lyra](lyra.md)
 - **Sự Kiện Kích Hoạt**: `on_attack`
 - **Vị Trí Mục Tiêu**: Hàng trước đối thủ
 

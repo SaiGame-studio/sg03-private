@@ -79,5 +79,5 @@ Nằm tại thư mục [`cards/natureborn/furry/`](cards/natureborn/furry/)
 Nằm tại thư mục [`cards/human/`](cards/human/)
 
 22. [Ren](cards/human/ren/azure_blade.md) — Số sao: 3
-23. [Lyra](cards/human/lyra.md) — Số sao: 2
+23. [Lyra](cards/human/lyra/lyra.md) — Số sao: 2
 24. [Titan](cards/human/ren/titan.md) — Số sao: 5

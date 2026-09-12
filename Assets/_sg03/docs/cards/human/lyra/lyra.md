@@ -4,7 +4,7 @@
 - **Số sao**: 2
 - **Tấn Công (ATK)**: 170
 - **Phòng Thủ (DEF)**: 240
-- **Loại Thẻ**: [`character`](../../03_characters.md)
+- **Loại Thẻ**: [`character`](../../../03_characters.md)
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
 - **Vai Trò**: Support / Aerial Scout
 
@@ -16,8 +16,8 @@ Thiên về hỗ trợ trinh sát, Lyra có bộ chỉ số ưu tiên khả năn
 
 ## Kỹ Năng Bị Động
 
-- [Scout Strike](abilities/scout_strike.md) — Sau khi Lyra tấn công, Expose một Character đang úp đứng liền kề mục tiêu trên cùng hàng.
+- [Scout Strike](scout_strike.md) — Sau khi Lyra tấn công, Expose một Character đang úp đứng liền kề mục tiêu trên cùng hàng.
 
 ## Kỹ Năng Liên Kết
 
-- [Eagle Eye](abilities/eagle_eye.md): Đại bàng của Lyra trinh sát từ trên không, cho phép nhìn thấy 1 thẻ Character đang úp. Thẻ được chọn sẽ bị **Expose**, để lộ thông tin của nó cho người chơi.
+- [Eagle Eye](eagle_eye.md): Đại bàng của Lyra trinh sát từ trên không, cho phép nhìn thấy 1 thẻ Character đang úp. Thẻ được chọn sẽ bị **Expose**, để lộ thông tin của nó cho người chơi.
