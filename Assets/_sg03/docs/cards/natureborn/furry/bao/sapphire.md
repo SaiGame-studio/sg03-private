@@ -13,3 +13,7 @@
 ## Mô Tả
 
 Sapphire là chị gái của Bao. Cô rất yêu thương và luôn sẵn sàng xả thân bảo vệ em gái mình. Ngoài ra, Sapphire cũng sở hữu khả năng tấn công trực tiếp vào HP của người chơi
+
+## Kỹ Năng Liên Kết
+
+- [Let Her Go](let_her_go.md)
