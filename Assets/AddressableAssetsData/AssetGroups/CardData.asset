@@ -90,6 +90,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3d9b8cccb495b8d4a8597c8326a2e673
+    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/i_will_revenge.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 3fe1da2b2c760aa4680679499fce77fd
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Undead/Common/zombie_female.asset
     m_ReadOnly: 0
