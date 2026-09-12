@@ -94,35 +94,34 @@ function back_stab_execute(state, source_card, event_data, helpers)
     return ability_actions, nil
 end
 
--- ability: silent_strike
--- Bao ignores the selected card and deals Silent Strike's configured ATK to the opposing player's HP directly.
-function silent_strike_execute(state, source_card, event_data, helpers)
+-- Resolves a direct Player HP Ability through its required, untriggered Character.
+local function resolve_direct_player_hp_ability(state, source_card, helpers, ability_key, character_code)
     local battle = helpers.lib_battle_common
     local source_side = helpers.find_card_side(state, source_card)
     if source_side == nil or source_side == "unknown" then
-        return {}, "silent_strike source card is not on a battle line"
+        return {}, ability_key .. " source card is not on a battle line"
     end
 
     local front_line = state[source_side .. "_front_line"] or {}
-    local bao_card = helpers.find_untriggered_card(front_line, function(card)
-        return card.item_definition_code_name == "bao"
+    local character_card = helpers.find_untriggered_card(front_line, function(card)
+        return card.item_definition_code_name == character_code
     end)
-    if bao_card == nil then
-        return {}, "silent_strike requires untriggered bao in front_line"
+    if character_card == nil then
+        return {}, ability_key .. " requires untriggered " .. character_code .. " in front_line"
     end
 
     local target_side = source_side == "alpha" and "omega" or "alpha"
     local damage = tonumber(helpers.get_card_stat(state, source_card, "atk")) or 0
-    bao_card.trigger = true
+    character_card.trigger = true
 
     local ability_actions = {}
-    local expose_action = helpers.expose_ability_selected_card(state, bao_card)
+    local expose_action = helpers.expose_ability_selected_card(state, character_card)
     if expose_action ~= nil then table.insert(ability_actions, expose_action) end
     table.insert(ability_actions, source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
-        ",ability=silent_strike,target=" .. target_side .. ",selected=" .. bao_card.inventory_item_id)
+        ",ability=" .. ability_key .. ",target=" .. target_side .. ",selected=" .. character_card.inventory_item_id)
 
     local attack_action, completion_action = battle.deal_direct_damage_to_player_hp(
-        state, source_side, bao_card, target_side, damage)
+        state, source_side, character_card, target_side, damage)
     table.insert(ability_actions, attack_action)
     if completion_action ~= nil then table.insert(ability_actions, completion_action) end
 
@@ -134,9 +133,21 @@ function silent_strike_execute(state, source_card, event_data, helpers)
     table.insert(state[void_key], source_card)
     battle.append_card_sent_to_void_action(ability_actions, source_side, source_card)
 
-    battle.dlog("[ability] silent_strike: bao=" .. bao_card.inventory_item_id ..
+    battle.dlog("[ability] " .. ability_key .. ": " .. character_code .. "=" .. character_card.inventory_item_id ..
         " target=" .. target_side .. " damage=" .. tostring(damage))
     return ability_actions, nil
+end
+
+-- ability: silent_strike
+-- Bao ignores the selected card and deals Silent Strike's configured ATK to the opposing player's HP directly.
+function silent_strike_execute(state, source_card, event_data, helpers)
+    return resolve_direct_player_hp_ability(state, source_card, helpers, "silent_strike", "bao")
+end
+
+-- ability: for_bao
+-- Sapphire uses For Bao's configured ATK to attack the opposing player's HP directly.
+function for_bao_execute(state, source_card, event_data, helpers)
+    return resolve_direct_player_hp_ability(state, source_card, helpers, "for_bao", "sapphire")
 end
 
 -- Validates the shared target and planned-attack conditions for Bao's Sapphire

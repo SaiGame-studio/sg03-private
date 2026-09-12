@@ -135,6 +135,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 74d43a78fa81f1d478116cd9224df6d5
+    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/for_bao.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 7c511028519219e489397271c6c2e6f2
     m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Goblin/goblin_grunt.asset
     m_ReadOnly: 0
@@ -212,11 +217,6 @@ MonoBehaviour:
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: b54d7ce8ddf795a46b14aa2c5ba7b894
     m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Goblin/abilities/goblin_shaman/totem_pulse.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
-    FlaggedDuringContentUpdateRestriction: 0
-  - m_GUID: b9c9dc18fdc69b443946939ed15dc1b8
-    m_Address: Assets/_sg03/Card/Data/Character/Natureborn/Furry/bao/for_bao.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
