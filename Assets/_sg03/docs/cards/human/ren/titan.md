@@ -4,7 +4,7 @@
 - **Số sao**: 5
 - **Tấn Công (ATK)**: 500
 - **Phòng Thủ (DEF)**: 600
-- **Loại Thẻ**: [`character`](../../03_characters.md)
+- **Loại Thẻ**: [`character`](../../../03_characters.md)
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
 - **Vai Trò**: Summoned Colossus
 
@@ -16,4 +16,4 @@ Khi Ren lâm vào thời khắc khắc nghiệt nhất, Titan đáp lại như m
 
 ## Kỹ Năng Liên Kết
 
-- [Spear Sweep](abilities/titan_spear_sweep.md) — Đòn quét giáo trên toàn chiến trường.
+- [Spear Sweep](titan_spear_sweep.md) — Đòn quét giáo trên toàn chiến trường.

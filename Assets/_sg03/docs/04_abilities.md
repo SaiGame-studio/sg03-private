@@ -49,10 +49,10 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 19. [Let Her Go](cards/natureborn/furry/bao/let_her_go.md): 4 sao
 
 ### Humans
-- [Twin Reaper](cards/human/abilities/twin_reaper.md): bị động
+- [Twin Reaper](cards/human/ren/twin_reaper.md): bị động
 - [Scout Strike](cards/human/abilities/scout_strike.md): bị động
-20. [Spinning Slash](cards/human/abilities/spinning_slash.md): 4 sao
-21. [Cross Guard](cards/human/abilities/cross_guard.md): 2 sao
+20. [Spinning Slash](cards/human/ren/spinning_slash.md): 4 sao
+21. [Cross Guard](cards/human/ren/cross_guard.md): 2 sao
 22. [Eagle Eye](cards/human/abilities/eagle_eye.md): 2 sao
-23. [Titan Fall](cards/human/abilities/titan_fall.md): 5 sao
-24. [Spear Sweep](cards/human/abilities/titan_spear_sweep.md): 4 sao
+23. [Titan Fall](cards/human/ren/titan_fall.md): 5 sao
+24. [Spear Sweep](cards/human/ren/titan_spear_sweep.md): 4 sao

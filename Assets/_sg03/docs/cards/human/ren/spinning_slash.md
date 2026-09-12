@@ -4,7 +4,7 @@
 - **Số sao**: 4
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
 - **Vị Trí Nhắm Mục Tiêu**: Hàng trước đối thủ
-- **Thẻ Nhân Vật Yêu Cầu**: [Ren](../azure_blade.md)
+- **Thẻ Nhân Vật Yêu Cầu**: [Ren](azure_blade.md)
 
 ## Mô Tả Kỹ Năng
 Ren xoay người, dẫn cặp katana lưỡi dài tạo thành một vòng chém xanh rực quét thẳng vào tuyến đầu đối phương. Đòn đánh được tung ra với nhịp điệu dứt khoát, phá vỡ thế phòng bị và buộc mục tiêu phải đối mặt trực diện với sức ép từ Azure Blade. Spinning Slash là khoảnh khắc Ren chuyển từ thế kiểm soát sang tấn công quyết liệt để giành lại nhịp độ giao tranh.

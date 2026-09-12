@@ -5,7 +5,7 @@
 - **Số sao**: 4
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
 - **Vị trí nhắm mục tiêu**: Hàng trước của phe đối thủ; một Character đồng minh kề Titan
-- **Thẻ Nhân Vật Yêu Cầu**: [Titan](../titan.md)
+- **Thẻ Nhân Vật Yêu Cầu**: [Titan](titan.md)
 
 ## Mô Tả Kỹ Năng
 

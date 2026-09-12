@@ -4,7 +4,7 @@
 - **Loại Kỹ Năng**: `passive`
 - **Mã Kỹ Năng**: `twin_reaper`
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
-- **Thẻ Nhân Vật Yêu Cầu**: [Ren](../azure_blade.md)
+- **Thẻ Nhân Vật Yêu Cầu**: [Ren](azure_blade.md)
 - **Sự Kiện Kích Hoạt**: `on_attack`
 - **Vị Trí Mục Tiêu**: Hàng trước đối thủ
 

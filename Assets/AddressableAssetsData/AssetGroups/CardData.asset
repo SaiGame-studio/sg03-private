@@ -95,6 +95,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 446518e902255cb4aa6c295392c646a6
+    m_Address: Assets/_sg03/Card/Data/Character/Human/Sai/sai.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 47ad12a667181a64680abb02562ec8ee
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/xena3.asset
     m_ReadOnly: 0

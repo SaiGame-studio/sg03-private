@@ -5,7 +5,7 @@
 - **Số sao**: 2
 - **Chủng Tộc Chính**: **Humans** (định danh kỹ thuật: `human`)
 - **Vị Trí Nhắm Mục Tiêu**: Hàng trước đồng minh
-- **Thẻ Nhân Vật Yêu Cầu**: [Ren](../azure_blade.md)
+- **Thẻ Nhân Vật Yêu Cầu**: [Ren](azure_blade.md)
 
 ## Mô Tả Kỹ Năng
 Ren bắt chéo cặp katana lưỡi dài thành một thế thủ vững chãi, có thể che chở đồng minh hoặc tự bảo vệ chính mình. Từng chuyển động của cô vừa chặn đà tấn công của đối phương, vừa tạo ra khoảng trống để người được bảo vệ giữ vững vị trí ở tuyến đầu. Cross Guard là lời khẳng định rằng Ren không chỉ biết mở đường bằng lưỡi kiếm, mà còn sẵn sàng đứng chắn trước hiểm nguy cho đồng đội.
