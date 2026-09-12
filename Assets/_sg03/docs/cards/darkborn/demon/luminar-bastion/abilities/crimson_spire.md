@@ -7,6 +7,7 @@
 - **Tộc Nhánh**: **Demon**
 - **Thẻ Nhân Vật Yêu Cầu**: [Sythra](../sythra.md)
 - **Sự Kiện Kích Hoạt**: `on_attack`
+- **Vị Trí Triệu Hồi**: Hàng trước phe sở hữu
 
 ## Mô Tả Kỹ Năng
 
@@ -20,7 +21,7 @@ Mỗi lần Sythra kết liễu một mục tiêu bằng chính đòn tấn côn
 
 ## Hiệu Quả
 
-Crimson Spire triệu gọi một Bone Spire từ `the_void` của phe sở hữu sau khi Sythra kết liễu mục tiêu.
+Crimson Spire triệu gọi một Bone Spire từ `the_void` của phe sở hữu vào ô trống đầu tiên ở hàng trước sau khi Sythra kết liễu mục tiêu. Nếu không có Bone Spire trong `the_void` hoặc hàng trước không còn ô trống, passive không tạo thêm hành động.
 
 ## Thẻ Liên Kết
 

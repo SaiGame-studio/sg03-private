@@ -126,14 +126,7 @@ function mist_execution_execute(state, source_card, event_data, helpers)
         return {}, nil
     end
 
-    local target_was_defeated = false
-    for _, void_card in ipairs(state[defender_void_key] or {}) do
-        if void_card.inventory_item_id == defender_card.inventory_item_id then
-            target_was_defeated = true
-            break
-        end
-    end
-    if not target_was_defeated then
+    if battle.find_card_in_line_by_id(state[defender_void_key], defender_card.inventory_item_id) == nil then
         battle.dlog("[ability] mist_execution: skip - attack target survived")
         return {}, nil
     end
@@ -152,14 +145,7 @@ function mist_execution_execute(state, source_card, event_data, helpers)
         return {}, nil
     end
 
-    local empty_slot_index = nil
-    for index = 1, 5 do
-        local line_card = back_line[index]
-        if line_card == nil or line_card.inventory_item_id == nil or line_card.inventory_item_id == "" then
-            empty_slot_index = index
-            break
-        end
-    end
+    local empty_slot_index = battle.find_first_empty_line_slot(back_line, 5)
     if empty_slot_index == nil then
         battle.dlog("[ability] mist_execution: skip - back_line has no free slots")
         return {}, nil
@@ -201,5 +187,68 @@ function mist_execution_execute(state, source_card, event_data, helpers)
             ",ability=mist_execution,target=" .. abyssal_mist_card.inventory_item_id,
         source_side .. "_void_to_back_line:" .. abyssal_mist_card.inventory_item_id ..
             "," .. tostring(abyssal_mist_card.slot_index),
+    }, nil
+end
+
+-- passive: crimson_spire (Sythra)
+-- After Sythra defeats her attack target, summon one Bone Spire from the
+-- owning side's void into the first empty front-line slot. Like other attack
+-- passives, damage resolution precedes this handler, so the defeated target
+-- must already be in the defender's void.
+function crimson_spire_execute(state, source_card, event_data, helpers)
+    local battle = helpers.lib_battle_common
+    local defender_card = (event_data or {}).defender_card
+    local defender_void_key = (event_data or {}).defender_side_void
+    if defender_card == nil or defender_void_key == nil then
+        battle.dlog("[ability] crimson_spire: skip - attack target or target void is unavailable")
+        return {}, nil
+    end
+
+    if battle.find_card_in_line_by_id(state[defender_void_key], defender_card.inventory_item_id) == nil then
+        battle.dlog("[ability] crimson_spire: skip - attack target survived")
+        return {}, nil
+    end
+
+    local source_side = helpers.find_card_side(state, source_card)
+    if source_side == nil or source_side == "unknown" then
+        battle.dlog("[ability] crimson_spire: skip - Sythra is not on the battlefield")
+        return {}, nil
+    end
+
+    local front_line_key = source_side .. "_front_line"
+    local front_line = state[front_line_key] or {}
+    state[front_line_key] = front_line
+    local empty_slot_index = battle.find_first_empty_line_slot(front_line, 5)
+    if empty_slot_index == nil then
+        battle.dlog("[ability] crimson_spire: skip - front_line has no free slots")
+        return {}, nil
+    end
+
+    local own_void_key = source_side .. "_the_void"
+    local own_void = state[own_void_key] or {}
+    state[own_void_key] = own_void
+    local bone_spire_card, bone_spire_index = battle.find_card_in_line_by_code(own_void, "bone_spire")
+    if bone_spire_card == nil then
+        battle.dlog("[ability] crimson_spire: skip - no Bone Spire in " .. own_void_key)
+        return {}, nil
+    end
+
+    table.remove(own_void, bone_spire_index)
+    battle.reset_card_turn_state(state.item_defs, bone_spire_card, state)
+    bone_spire_card.slot_index = empty_slot_index - 1
+    bone_spire_card.trigger = false
+    bone_spire_card.face_up = true
+    bone_spire_card.expose = true
+    bone_spire_card.defeated_from_line_key = nil
+    front_line[empty_slot_index] = bone_spire_card
+
+    battle.dlog("[ability] crimson_spire: Sythra=" .. source_card.inventory_item_id ..
+        " summoned Bone Spire=" .. bone_spire_card.inventory_item_id ..
+        " to " .. front_line_key .. " slot=" .. bone_spire_card.slot_index)
+    return {
+        source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
+            ",ability=crimson_spire,target=" .. bone_spire_card.inventory_item_id,
+        source_side .. "_void_to_front_line:" .. bone_spire_card.inventory_item_id ..
+            "," .. tostring(bone_spire_card.slot_index),
     }, nil
 end

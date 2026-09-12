@@ -94,6 +94,18 @@ function find_card_in_line_by_id(line, inventory_item_id)
     return nil, nil
 end
 
+-- Returns the first unoccupied fixed-line slot, or nil when the line is full.
+function find_first_empty_line_slot(line, slot_count)
+    local max_slots = tonumber(slot_count) or 5
+    for index = 1, max_slots do
+        local line_card = line ~= nil and line[index] or nil
+        if line_card == nil or line_card.inventory_item_id == nil or line_card.inventory_item_id == "" then
+            return index
+        end
+    end
+    return nil
+end
+
 -- Collects all card matches on a side's front and back lines matching code_name.
 -- Each match is a table: { card = card, line = line }
 function collect_side_cards_by_code(state, side, code_name)

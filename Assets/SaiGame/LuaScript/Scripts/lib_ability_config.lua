@@ -30,6 +30,11 @@ function get_ability_config(ability_key)
             event = "on_attack",
             target_positions = { "enemy_frontline", "enemy_backline" },
         },
+        crimson_spire = {
+            handler_group = "character_passives",
+            event = "on_attack",
+            target_positions = { "enemy_frontline", "enemy_backline" },
+        },
         eagle_eye = {
             handler_group = "human",
             target_positions = { "enemy_frontline" },
