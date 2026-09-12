@@ -144,47 +144,64 @@ function silent_strike_execute(state, source_card, event_data, helpers)
     return ability_actions, nil
 end
 
--- ability: let_her_go
--- The player selects a Bao that is currently targeted by a planned attack.
--- When the opponent has already lost HP and Bao will survive that attack,
--- Sapphire is summoned from the owner's void into Bao's first empty adjacent
--- front-line slot. The Ability is consumed whether or not Sapphire can enter.
-function let_her_go_execute(state, source_card, event_data, helpers)
+-- Validates the shared target and planned-attack conditions for Bao's Sapphire
+-- reactions. `requires_bao_defeat` distinguishes I Will Revenge from Let Her Go.
+local function validate_bao_sapphire_reaction(state, source_card, event_data, helpers,
+                                               ability_key, requires_bao_defeat)
     local battle = helpers.lib_battle_common
     local target_card = (event_data or {}).defender_card
     if target_card == nil then
-        return {}, "let_her_go requires a Bao target"
+        return nil, ability_key .. " requires a Bao target"
     end
 
     local source_side = helpers.find_card_side(state, source_card)
     if source_side == nil or source_side == "unknown" then
-        return {}, "let_her_go source card is not on a battle line"
+        return nil, ability_key .. " source card is not on a battle line"
     end
 
     local front_line = state[source_side .. "_front_line"] or {}
     local bao_card, bao_index = battle.find_card_in_line_by_id(
         front_line, target_card.inventory_item_id)
     if bao_card == nil then
-        return {}, "let_her_go target must be Bao in own front_line"
+        return nil, ability_key .. " target must be Bao in own front_line"
     end
     if bao_card.item_definition_code_name ~= "bao" then
-        return {}, "let_her_go target must be Bao"
+        return nil, ability_key .. " target must be Bao"
     end
     if not helpers.is_character_be_attacked(state, bao_card) then
-        return {}, "let_her_go target Bao is not being attacked"
+        return nil, ability_key .. " target Bao is not being attacked"
     end
 
     local incoming_damage = helpers.get_character_incoming_damage(state, bao_card)
-    if helpers.is_character_gonna_dead(bao_card, incoming_damage) then
-        return {}, "let_her_go requires Bao to survive the planned attack"
+    local bao_would_be_defeated = helpers.is_character_gonna_dead(bao_card, incoming_damage)
+    if requires_bao_defeat and not bao_would_be_defeated then
+        return nil, ability_key .. " requires Bao to be defeated by the planned attack"
+    end
+    if not requires_bao_defeat and bao_would_be_defeated then
+        return nil, ability_key .. " requires Bao to survive the planned attack"
     end
 
     local enemy_side = source_side == "alpha" and "omega" or "alpha"
     local enemy_hp = tonumber(state[enemy_side .. "_hp"]) or 0
     local enemy_max_hp = tonumber(state[enemy_side .. "_max_hp"]) or 0
     if enemy_hp >= enemy_max_hp then
-        return {}, "let_her_go requires enemy hp to be below maximum"
+        return nil, ability_key .. " requires enemy hp to be below maximum"
     end
+
+    return {
+        source_side = source_side,
+        front_line = front_line,
+        bao_card = bao_card,
+        bao_index = bao_index,
+    }, nil
+end
+
+-- Resolves Sapphire's void summon and consumes the selected Bao reaction Ability.
+local function resolve_bao_sapphire_reaction(state, source_card, helpers, ability_key, reaction)
+    local battle = helpers.lib_battle_common
+    local source_side = reaction.source_side
+    local front_line = reaction.front_line
+    local bao_card = reaction.bao_card
 
     local void_key = source_side .. "_the_void"
     local void_zone = state[void_key] or {}
@@ -197,7 +214,7 @@ function let_her_go_execute(state, source_card, event_data, helpers)
     end
 
     local summon_index = nil
-    for _, index in ipairs({ bao_index - 1, bao_index + 1 }) do
+    for _, index in ipairs({ reaction.bao_index - 1, reaction.bao_index + 1 }) do
         local adjacent_card = front_line[index]
         if index >= 1 and index <= #front_line and
             (adjacent_card == nil or adjacent_card.inventory_item_id == nil or adjacent_card.inventory_item_id == "") then
@@ -217,14 +234,14 @@ function let_her_go_execute(state, source_card, event_data, helpers)
         sapphire_card.defeated_from_line_key = nil
         front_line[summon_index] = sapphire_card
         table.insert(actions, source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
-            ",ability=let_her_go,target=" .. bao_card.inventory_item_id ..
+            ",ability=" .. ability_key .. ",target=" .. bao_card.inventory_item_id ..
             ",selected=" .. bao_card.inventory_item_id .. ",result=success,summoned=" .. sapphire_card.inventory_item_id)
         table.insert(actions, source_side .. "_void_to_front_line:" .. sapphire_card.inventory_item_id ..
             "," .. tostring(sapphire_card.slot_index))
     else
         local reason = sapphire_card == nil and "no_sapphire_in_void" or "no_adjacent_position"
         table.insert(actions, source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
-            ",ability=let_her_go,target=" .. bao_card.inventory_item_id ..
+            ",ability=" .. ability_key .. ",target=" .. bao_card.inventory_item_id ..
             ",selected=" .. bao_card.inventory_item_id .. ",result=failed,reason=" .. reason)
     end
 
@@ -233,6 +250,24 @@ function let_her_go_execute(state, source_card, event_data, helpers)
     table.insert(void_zone, source_card)
     battle.append_card_sent_to_void_action(actions, source_side, source_card)
     return actions, nil
+end
+
+-- ability: let_her_go
+-- Summons Sapphire beside Bao only when the planned attack will not defeat Bao.
+function let_her_go_execute(state, source_card, event_data, helpers)
+    local reaction, reaction_err = validate_bao_sapphire_reaction(
+        state, source_card, event_data, helpers, "let_her_go", false)
+    if reaction_err ~= nil then return {}, reaction_err end
+    return resolve_bao_sapphire_reaction(state, source_card, helpers, "let_her_go", reaction)
+end
+
+-- ability: i_will_revenge
+-- Uses the same Sapphire reaction flow, but requires the planned attack to defeat Bao.
+function i_will_revenge_execute(state, source_card, event_data, helpers)
+    local reaction, reaction_err = validate_bao_sapphire_reaction(
+        state, source_card, event_data, helpers, "i_will_revenge", true)
+    if reaction_err ~= nil then return {}, reaction_err end
+    return resolve_bao_sapphire_reaction(state, source_card, helpers, "i_will_revenge", reaction)
 end
 
 -- ability: brute_call

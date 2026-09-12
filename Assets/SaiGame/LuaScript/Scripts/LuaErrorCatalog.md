@@ -97,6 +97,11 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 
 | Error Key | Original Pattern / Server Text | English Default Text | Vietnamese Reference | Source Files |
 | :--- | :--- | :--- | :--- | :--- |
+| `ERR_ABILITY_I_WILL_REVENGE_TARGET_INVALID` | `i_will_revenge requires a Bao target` / `i_will_revenge target must be Bao in own front_line` / `i_will_revenge target must be Bao` | I Will Revenge requires targeting Bao on your front line. | I Will Revenge yêu cầu nhắm Bao ở hàng trước của bạn. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_I_WILL_REVENGE_SOURCE_INVALID` | `i_will_revenge source card is not on a battle line` | I Will Revenge must be activated from a battle line. | I Will Revenge phải được kích hoạt từ một hàng trên sân đấu. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_I_WILL_REVENGE_NOT_ATTACKED` | `i_will_revenge target Bao is not being attacked` | I Will Revenge requires Bao to be targeted by an incoming attack. | I Will Revenge yêu cầu Bao đang bị nhắm tấn công. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_I_WILL_REVENGE_BAO_MUST_BE_DEFEATED` | `i_will_revenge requires Bao to be defeated by the planned attack` | I Will Revenge requires the planned attack to defeat Bao. | I Will Revenge yêu cầu đòn tấn công đã lên kế hoạch phải đánh bại Bao. | `lib_ability_natureborn.lua` |
+| `ERR_ABILITY_I_WILL_REVENGE_ENEMY_HP_FULL` | `i_will_revenge requires enemy hp to be below maximum` | I Will Revenge requires the enemy to have lost HP. | I Will Revenge yêu cầu HP đối thủ đã bị giảm. | `lib_ability_natureborn.lua` |
 | `ERR_ABILITY_LET_HER_GO_TARGET_INVALID` | `let_her_go requires a Bao target` / `let_her_go target must be Bao in own front_line` / `let_her_go target must be Bao` | Let Her Go requires targeting Bao on your front line. | Let Her Go yêu cầu nhắm Bao ở hàng trước của bạn. | `lib_ability_natureborn.lua` |
 | `ERR_ABILITY_LET_HER_GO_SOURCE_INVALID` | `let_her_go source card is not on a battle line` | Let Her Go must be activated from a battle line. | Let Her Go phải được kích hoạt từ một hàng trên sân đấu. | `lib_ability_natureborn.lua` |
 | `ERR_ABILITY_LET_HER_GO_NOT_ATTACKED` | `let_her_go target Bao is not being attacked` | Let Her Go requires Bao to be targeted by an incoming attack. | Let Her Go yêu cầu Bao đang bị nhắm tấn công. | `lib_ability_natureborn.lua` |
