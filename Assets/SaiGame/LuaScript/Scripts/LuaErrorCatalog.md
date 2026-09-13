@@ -11,7 +11,7 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | :--- | :--- | :--- | :--- | :--- |
 | `ERR_SESSION_NOT_FOUND` | `current battle session not found` / `no active battle session found` / `battle session not found` | No active battle session found. | Không tìm thấy phiên trận đấu. | `battle_debug_turn.lua`, `battle_end.lua`, `lib_battle_common.lua`, `get_card_definitions.lua` |
 | `ERR_SESSION_RESOLVE_FAILED` | `failed to resolve session_id` | Failed to resolve battle session ID. | Không thể xác định ID phiên đấu. | `alpha_card_active.lua` |
-| `ERR_BATTLE_ALREADY_COMPLETED` | `battle is already completed` | The battle has already completed. | Trận đấu đã kết thúc. | `alpha_card_active.lua`, `alpha_card_deploy.lua`, `alpha_defending_end.lua`, `alpha_turn_end.lua`, `battle_debug_turn.lua` |
+| `ERR_BATTLE_ALREADY_COMPLETED` | `battle is already completed` | The battle has already completed. | Trận đấu đã kết thúc. | `alpha_card_active.lua`, `alpha_card_deploy.lua`, `alpha_cheat_select_draws.lua`, `alpha_defending_end.lua`, `alpha_turn_end.lua`, `battle_debug_turn.lua` |
 | `ERR_BATTLE_STATE_SAVE_FAILED` | `failed to save battle state: {0}` / `failed to save item_defs to battle state: {0}` | Failed to save battle state: {0}. | Không thể lưu trạng thái trận đấu. | `alpha_card_active.lua`, `alpha_card_deploy.lua`, `alpha_defending_end.lua`, `get_card_definitions.lua` |
 
 ---
@@ -35,6 +35,8 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | `ERR_PAYLOAD_CARD_NOT_IN_STATE` | `payload item ({0}) does not exist in battle state` / `state item ({0}) is missing from payload` | Deploy data does not match current battle state. | Thẻ {0} không khớp với trạng thái trận đấu. | `alpha_card_deploy.lua` |
 | `ERR_PAYLOAD_TARGET_INVALID` | `target must be 'alpha' or 'omega'` | Target must be either alpha or omega. | Mục tiêu phải là alpha hoặc omega. | `battle_debug_turn.lua` |
 | `ERR_PAYLOAD_HP_REQUIRED` | `hp is required` | HP parameter is required. | Giá trị HP là bắt buộc. | `battle_debug_turn.lua` |
+| `ERR_ALPHA_CHEAT_DRAW_SELECTION_INVALID` | `alpha cheat draw selection is invalid` | Select up to two cards currently in Alpha's Source. | Chọn tối đa hai lá hiện có trong Source của Alpha. | `alpha_cheat_select_draws.lua` |
+| `ERR_ALPHA_CHEAT_DEVELOPMENT_ONLY` | `alpha cheat is only available in development` | Alpha draw cheat is available only in development. | Cheat rút bài Alpha chỉ khả dụng ở development. | `alpha_cheat_select_draws.lua` |
 
 ---
 

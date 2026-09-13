@@ -404,6 +404,27 @@
     justify-content: center;
 }
 
+.source-grid-card--selectable:hover {
+    border-color: rgb(177, 123, 255);
+}
+
+.source-grid-card--selected {
+    border-color: rgb(207, 174, 255);
+    background-color: rgba(72, 44, 112, 0.98);
+}
+
+.source-grid-card-selection-label {
+    position: absolute;
+    right: 4px;
+    bottom: 4px;
+    padding: 2px 5px;
+    border-radius: 4px;
+    background-color: rgba(92, 51, 151, 0.94);
+    color: rgb(255, 255, 255);
+    font-size: 11px;
+    -unity-font-style: bold;
+}
+
 .void-grid-card-art {
     flex-grow: 1;
     min-height: 0;

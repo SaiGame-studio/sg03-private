@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using SaiGame.Services;
 using SG03.UI;
@@ -26,6 +27,7 @@ namespace SG03
         [SerializeField] private string scriptNameAlphaCardDeploy    = "alpha_card_deploy";
         [SerializeField] private string scriptNameAlphaTurnEnd       = "alpha_turn_end";
         [SerializeField] private string scriptNameAlphaDefendingEnd  = "alpha_defending_end";
+        [SerializeField] private string scriptNameAlphaCheatSelectDraws = "alpha_cheat_select_draws";
 
         private BattleScript battleScript => SaiServer.Instance != null ? SaiServer.Instance.BattleScript : null;
 
@@ -164,6 +166,15 @@ namespace SG03
             this.RunWithLock(this.scriptNameAlphaDefendingEnd, null, onSuccess, onError);
         }
 
+        public void RunAlphaCheatSelectDraws(IReadOnlyList<string> inventoryItemIds,
+            Action<string> onSuccess, Action<string> onError)
+        {
+            if (this.IsBattleScriptMissing(nameof(this.RunAlphaCheatSelectDraws))) return;
+            string requestBody = this.BuildAlphaCheatSelectDrawsRequestBody(inventoryItemIds);
+            this.LogPayload("RunAlphaCheatSelectDraws", "#B57BFF", requestBody);
+            this.RunWithLock(this.scriptNameAlphaCheatSelectDraws, requestBody, onSuccess, onError);
+        }
+
         /// <summary>Guards against concurrent requests; acquires the lock and dispatches the script call.</summary>
         private void RunWithLock(string scriptName, string requestBody, Action<string> onSuccess, Action<string> onError)
         {
@@ -263,6 +274,14 @@ namespace SG03
         private string BuildAlphaAttackingRequestBody(string attackerInventoryItemId, string defenderInventoryItemId, string attackerItemDefinitionCodeName, string defenderItemDefinitionCodeName)
         {
             return $"{{\"payload\":{{\"attacker_inventory_item_id\":\"{attackerInventoryItemId}\",\"defender_inventory_item_id\":\"{defenderInventoryItemId}\",\"attacker_item_definition_code_name\":\"{attackerItemDefinitionCodeName}\",\"defender_item_definition_code_name\":\"{defenderItemDefinitionCodeName}\"}}}}";
+        }
+
+        private string BuildAlphaCheatSelectDrawsRequestBody(IReadOnlyList<string> inventoryItemIds)
+        {
+            if (inventoryItemIds == null) return "{\"payload\":{\"inventory_item_ids\":[]}}";
+            string[] ids = new string[inventoryItemIds.Count];
+            for (int i = 0; i < inventoryItemIds.Count; i++) ids[i] = inventoryItemIds[i] ?? string.Empty;
+            return $"{{\"payload\":{{\"inventory_item_ids\":{this.ToJsonStringArray(ids)}}}}}";
         }
 
         private string BuildAlphaCardDeployRequestBody()

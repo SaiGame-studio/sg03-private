@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SaiGame.Services;
 using SG03;
@@ -67,11 +68,13 @@ namespace SG03.UI
         private readonly Dictionary<string, Texture2D> cardArtCache = new Dictionary<string, Texture2D>();
         private readonly Dictionary<string, List<Image>> pendingCardArtImages = new Dictionary<string, List<Image>>();
         private readonly Dictionary<string, AsyncOperationHandle<CardData>> cardArtHandles = new Dictionary<string, AsyncOperationHandle<CardData>>();
+        private readonly List<string> selectedNextDrawIds = new List<string>();
         private int currentPage;
         private VoidCardSortMode sortMode = VoidCardSortMode.NewestFirst;
         private Owner voidOwner = Owner.alpha;
         private bool isVisible;
         private bool isDisposed;
+        private bool isSavingNextDrawSelection;
 
         public int Columns => Mathf.Max(1, this.columns);
         public int Rows => Mathf.Max(1, this.rows);
@@ -364,6 +367,7 @@ namespace SG03.UI
 
         private void OnBattleStatusChanged()
         {
+            this.RemoveUnavailableSelectedCards();
             if (!this.isVisible) return;
             this.Refresh();
         }
@@ -478,7 +482,9 @@ namespace SG03.UI
         private void UpdateHeader(int cardCount)
         {
             if (this.titleLabel == null) return;
-            this.titleLabel.text = $"{this.GetVoidOwnerLabel()} - The Source ({cardCount})";
+            this.titleLabel.text = this.CanSelectAlphaNextDraw()
+                ? $"Alpha - The Source ({cardCount}) | Next draws: {this.selectedNextDrawIds.Count} / 2"
+                : $"{this.GetVoidOwnerLabel()} - The Source ({cardCount})";
         }
 
         private void UpdatePagination(int pageCount)
@@ -541,7 +547,112 @@ namespace SG03.UI
             this.AddCardTextOverlays(artArea, slot);
             card.Add(artArea);
             this.LoadCardArt(artImage, slot.item_definition_code_name);
+            this.ConfigureNextDrawSelection(card, artArea, slot);
             return card;
+        }
+
+        private void ConfigureNextDrawSelection(VisualElement card, VisualElement artArea, BattleCardSlot slot)
+        {
+            if (!this.CanSelectAlphaNextDraw()) return;
+            if (string.IsNullOrWhiteSpace(slot?.inventory_item_id)) return;
+
+            card.AddToClassList("source-grid-card--selectable");
+            int selectedIndex = this.selectedNextDrawIds.IndexOf(slot.inventory_item_id);
+            if (selectedIndex >= 0)
+            {
+                card.AddToClassList("source-grid-card--selected");
+                Label selectionLabel = new Label($"NEXT {selectedIndex + 1}");
+                selectionLabel.AddToClassList("source-grid-card-selection-label");
+                artArea.Add(selectionLabel);
+            }
+
+            card.RegisterCallback<ClickEvent>(evt => this.OnSourceCardClicked(evt, slot.inventory_item_id));
+        }
+
+        private void OnSourceCardClicked(ClickEvent evt, string inventoryItemId)
+        {
+            evt.StopPropagation();
+            if (!this.CanSelectAlphaNextDraw() || this.isSavingNextDrawSelection) return;
+
+            List<string> nextSelection = new List<string>(this.selectedNextDrawIds);
+            if (nextSelection.Contains(inventoryItemId))
+            {
+                nextSelection.Remove(inventoryItemId);
+            }
+            else
+            {
+                if (nextSelection.Count >= 2) return;
+                nextSelection.Add(inventoryItemId);
+            }
+
+            this.SaveNextDrawSelection(nextSelection);
+        }
+
+        private bool CanSelectAlphaNextDraw()
+        {
+            return this.voidOwner == Owner.alpha
+                   && this.battleStateCtrl?.BattleState?.IsDevelopment == true;
+        }
+
+        private void SaveNextDrawSelection(List<string> nextSelection)
+        {
+            BattleScripts scripts = this.battleStateCtrl?.BattleScripts;
+            if (scripts == null || scripts.IsRunning) return;
+
+            this.isSavingNextDrawSelection = true;
+            scripts.RunAlphaCheatSelectDraws(nextSelection,
+                response => this.OnNextDrawSelectionSaved(response, nextSelection),
+                _ => this.OnNextDrawSelectionSaveFailed());
+        }
+
+        private void OnNextDrawSelectionSaved(string response, List<string> nextSelection)
+        {
+            this.isSavingNextDrawSelection = false;
+            if (this.HasScriptOutputError(response))
+            {
+                this.Refresh();
+                return;
+            }
+
+            this.selectedNextDrawIds.Clear();
+            this.selectedNextDrawIds.AddRange(nextSelection);
+            this.Refresh();
+        }
+
+        private void OnNextDrawSelectionSaveFailed()
+        {
+            this.isSavingNextDrawSelection = false;
+            this.Refresh();
+        }
+
+        private bool HasScriptOutputError(string response)
+        {
+            if (string.IsNullOrWhiteSpace(response)) return true;
+            try
+            {
+                BattleStatusScriptResponse result = JsonUtility.FromJson<BattleStatusScriptResponse>(response);
+                return !string.IsNullOrWhiteSpace(result?.output?.error);
+            }
+            catch (ArgumentException)
+            {
+                return true;
+            }
+        }
+
+        private void RemoveUnavailableSelectedCards()
+        {
+            if (this.selectedNextDrawIds.Count == 0) return;
+            List<BattleCardSlot> sourceCards = this.GetSourceCards();
+            this.selectedNextDrawIds.RemoveAll(id => !this.ContainsSourceCard(sourceCards, id));
+        }
+
+        private bool ContainsSourceCard(List<BattleCardSlot> sourceCards, string inventoryItemId)
+        {
+            foreach (BattleCardSlot card in sourceCards)
+            {
+                if (card.inventory_item_id == inventoryItemId) return true;
+            }
+            return false;
         }
 
         private void AddCardTextOverlays(VisualElement artArea, BattleCardSlot slot)

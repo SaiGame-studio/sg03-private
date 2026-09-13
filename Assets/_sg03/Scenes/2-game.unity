@@ -7995,6 +7995,7 @@ MonoBehaviour:
   scriptNameAlphaCardDeploy: alpha_card_deploy
   scriptNameAlphaTurnEnd: alpha_turn_end
   scriptNameAlphaDefendingEnd: alpha_defending_end
+  scriptNameAlphaCheatSelectDraws: alpha_cheat_select_draws
   battleState: {fileID: 2015755439}
   gamePanelUI: {fileID: 2030001004}
   logPayload: 1
