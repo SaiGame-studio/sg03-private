@@ -391,6 +391,10 @@ end
 -- ─── dlog ────────────────────────────────────────────────────────────────────
 -- Appends msg to output.debug_log only when ctx.game.status == "development".
 -- Safe to call unconditionally; no-ops in production.
+function is_development()
+    return ctx.game ~= nil and ctx.game.status == "development"
+end
+
 function dlog(msg)
     if ctx.game == nil or ctx.game.status ~= "development" then return end
     if output.debug_log == nil then output.debug_log = {} end

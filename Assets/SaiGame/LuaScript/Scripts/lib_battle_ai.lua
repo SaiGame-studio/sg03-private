@@ -195,7 +195,8 @@ function alpha_draw_random(state, card_count)
         if #source == 0 then break end
         local slot = state.alpha_hand[i]
         if slot == nil or slot.inventory_item_id == nil or slot.inventory_item_id == "" then
-            local idx  = math.random(1, #source)
+            local idx  = lib_cheat.consume_alpha_next_draw_index(state, source)
+            if idx == nil then idx = math.random(1, #source) end
             local card = source[idx]
             table.remove(source, idx)
             card.slot_index  = i - 1

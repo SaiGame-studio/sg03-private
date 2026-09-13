@@ -1,5 +1,6 @@
 require "lib_battle_common"
 require "lib_ability_config"
+require "lib_cheat"
 require "lib_ability_core"
 require "lib_ability_aura"
 require "lib_battle_ai"
