@@ -200,6 +200,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a916cf9adef9d084999839d345726092
+    m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/LuminarBastion/bloodmight.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: aab3c5d84d4b984409a76c5b649df611
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/Xena/xena2.asset
     m_ReadOnly: 0

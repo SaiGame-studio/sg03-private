@@ -11,7 +11,7 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | :--- | :--- | :--- | :--- | :--- |
 | `ERR_SESSION_NOT_FOUND` | `current battle session not found` / `no active battle session found` / `battle session not found` | No active battle session found. | Không tìm thấy phiên trận đấu. | `battle_debug_turn.lua`, `battle_end.lua`, `lib_battle_common.lua`, `get_card_definitions.lua` |
 | `ERR_SESSION_RESOLVE_FAILED` | `failed to resolve session_id` | Failed to resolve battle session ID. | Không thể xác định ID phiên đấu. | `alpha_card_active.lua` |
-| `ERR_BATTLE_ALREADY_COMPLETED` | `battle is already completed` | The battle has already completed. | Trận đấu đã kết thúc. | `alpha_card_active.lua`, `alpha_card_deploy.lua`, `alpha_defending_end.lua`, `alpha_turn_end.lua`, `battle_debug_turn.lua` |
+| `ERR_BATTLE_ALREADY_COMPLETED` | `battle is already completed` | The battle has already completed. | Trận đấu đã kết thúc. | `alpha_card_active.lua`, `alpha_card_deploy.lua`, `alpha_cheat_select_draws.lua`, `alpha_defending_end.lua`, `alpha_turn_end.lua`, `battle_debug_turn.lua` |
 | `ERR_BATTLE_STATE_SAVE_FAILED` | `failed to save battle state: {0}` / `failed to save item_defs to battle state: {0}` | Failed to save battle state: {0}. | Không thể lưu trạng thái trận đấu. | `alpha_card_active.lua`, `alpha_card_deploy.lua`, `alpha_defending_end.lua`, `get_card_definitions.lua` |
 
 ---
@@ -35,6 +35,8 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | `ERR_PAYLOAD_CARD_NOT_IN_STATE` | `payload item ({0}) does not exist in battle state` / `state item ({0}) is missing from payload` | Deploy data does not match current battle state. | Thẻ {0} không khớp với trạng thái trận đấu. | `alpha_card_deploy.lua` |
 | `ERR_PAYLOAD_TARGET_INVALID` | `target must be 'alpha' or 'omega'` | Target must be either alpha or omega. | Mục tiêu phải là alpha hoặc omega. | `battle_debug_turn.lua` |
 | `ERR_PAYLOAD_HP_REQUIRED` | `hp is required` | HP parameter is required. | Giá trị HP là bắt buộc. | `battle_debug_turn.lua` |
+| `ERR_ALPHA_CHEAT_DRAW_SELECTION_INVALID` | `alpha cheat draw selection is invalid` | Select up to two cards currently in Alpha's Source. | Chọn tối đa hai lá hiện có trong Source của Alpha. | `alpha_cheat_select_draws.lua` |
+| `ERR_ALPHA_CHEAT_DEVELOPMENT_ONLY` | `alpha cheat is only available in development` | Alpha draw cheat is available only in development. | Cheat rút bài Alpha chỉ khả dụng ở development. | `alpha_cheat_select_draws.lua` |
 
 ---
 
@@ -157,6 +159,12 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | `ERR_ABILITY_ABYSSAL_MIST_ALREADY_ACTIVE` | `abyssal_mist is already active` | Abyssal Mist is already active. | Abyssal Mist đang hoạt động. | `lib_ability_aura.lua` |
 | `ERR_ABILITY_ABYSSAL_MIST_NO_MISTHY` | `abyssal_mist requires untriggered misthy on the battlefield` | Abyssal Mist requires an active Misthy on the battlefield. | Abyssal Mist yêu cầu Misthy chưa kích hoạt trên bàn đấu. | `lib_ability_aura.lua` |
 | `ERR_ABILITY_ABYSSAL_MIST_STATS_INVALID` | `abyssal_mist requires positive base_stats.atk_added and base_stats.def_added` | Abyssal Mist requires positive ATK and DEF bonus values. | Abyssal Mist yêu cầu chỉ số cộng ATK và DEF dương. | `lib_ability_aura.lua` |
+| `ERR_ABILITY_BLOODMIGHT_SOURCE_INVALID` | `bloodmight source card is not on the battlefield` | Bloodmight must be activated from the battlefield. | Bloodmight phải được kích hoạt trên bàn đấu. | `lib_ability_aura.lua` |
+| `ERR_ABILITY_BLOODMIGHT_BACKLINE_REQUIRED` | `bloodmight requires source card in own backline` | Bloodmight must be on its owner's back line. | Bloodmight phải ở hậu tuyến phe sở hữu. | `lib_ability_aura.lua` |
+| `ERR_ABILITY_BLOODMIGHT_ALREADY_ACTIVE` | `bloodmight is already active` | Bloodmight is already active. | Bloodmight đang hoạt động. | `lib_ability_aura.lua` |
+| `ERR_ABILITY_BLOODMIGHT_NO_SYTHRA` | `bloodmight requires sythra in own front_line` | Bloodmight requires Sythra on your front line. | Bloodmight yêu cầu Sythra ở hàng trước phe bạn. | `lib_ability_aura.lua` |
+| `ERR_ABILITY_BLOODMIGHT_NO_BONE_SPIRES` | `bloodmight requires 3 bone_spire in own front_line` | Bloodmight requires three Bone Spires on your front line. | Bloodmight yêu cầu ba Bone Spire ở hàng trước phe bạn. | `lib_ability_aura.lua` |
+| `ERR_ABILITY_BLOODMIGHT_ATK_INVALID` | `bloodmight requires positive base_stats.atk_added` | Bloodmight requires a positive ATK bonus value. | Bloodmight yêu cầu chỉ số cộng ATK dương. | `lib_ability_aura.lua` |
 | `ERR_ABILITY_LUX_MAXIMA_NO_TARGET` | `lux_maxima requires a target Darkborn Aura` | Lux Maxima requires a Darkborn Aura target. | Lux Maxima yêu cầu một Aura Darkborn mục tiêu. | `lib_ability_lightborn.lua` |
 | `ERR_ABILITY_LUX_MAXIMA_SOURCE_INVALID` | `lux_maxima source card is not on a battle line` | Lux Maxima must be activated from a battle line. | Lux Maxima phải được kích hoạt trên bàn đấu. | `lib_ability_lightborn.lua` |
 | `ERR_ABILITY_LUX_MAXIMA_NO_DIANA` | `lux_maxima requires Diana on the battlefield` | Lux Maxima requires Diana on the battlefield. | Lux Maxima yêu cầu Diana có mặt trên bàn đấu. | `lib_ability_lightborn.lua` |

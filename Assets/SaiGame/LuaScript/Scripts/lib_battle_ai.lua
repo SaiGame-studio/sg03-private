@@ -167,6 +167,19 @@ function _find_and_remove_by_code(list, code)
     return nil
 end
 
+function _consume_alpha_draw_priority_index(state, source)
+    local selected_ids = state.alpha_draw_priority_ids
+    if type(selected_ids) ~= "table" then return nil end
+
+    while #selected_ids > 0 do
+        local inventory_item_id = table.remove(selected_ids, 1)
+        for index, card in ipairs(source or {}) do
+            if card.inventory_item_id == inventory_item_id then return index end
+        end
+    end
+    return nil
+end
+
 -- ── alpha_draw_random ─────────────────────────────────────────────────────────
 -- Draws up to card_count (default: get_draw_card_count()) random cards from
 -- alpha_the_source into the first available empty slots of state.alpha_hand.
@@ -195,7 +208,8 @@ function alpha_draw_random(state, card_count)
         if #source == 0 then break end
         local slot = state.alpha_hand[i]
         if slot == nil or slot.inventory_item_id == nil or slot.inventory_item_id == "" then
-            local idx  = math.random(1, #source)
+            local idx  = _consume_alpha_draw_priority_index(state, source)
+            if idx == nil then idx = math.random(1, #source) end
             local card = source[idx]
             table.remove(source, idx)
             card.slot_index  = i - 1

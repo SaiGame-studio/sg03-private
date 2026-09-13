@@ -18,10 +18,11 @@ Mỗi lần Sythra kết liễu một mục tiêu bằng chính đòn tấn côn
 - Sythra phải tấn công một thẻ Character.
 - Mục tiêu phải bị đánh bại trong chính đòn tấn công đó của Sythra.
 - `the_void` của phe sở hữu phải có Bone Spire.
+- Bloodmight không được ở hàng sau của phe sở hữu.
 
 ## Hiệu Quả
 
-Crimson Spire triệu gọi một Bone Spire từ `the_void` của phe sở hữu vào ô trống đầu tiên ở hàng trước sau khi Sythra kết liễu mục tiêu. Nếu không có Bone Spire trong `the_void` hoặc hàng trước không còn ô trống, passive không tạo thêm hành động.
+Crimson Spire triệu gọi một Bone Spire từ `the_void` của phe sở hữu vào ô trống đầu tiên ở hàng trước sau khi Sythra kết liễu mục tiêu. Nếu Bloodmight đang ở hàng sau, không có Bone Spire trong `the_void`, hoặc hàng trước không còn ô trống, passive không tạo thêm hành động.
 
 ## Thẻ Liên Kết
 
