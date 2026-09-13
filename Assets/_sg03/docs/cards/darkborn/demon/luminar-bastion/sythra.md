@@ -2,7 +2,7 @@
 
 - **Tên**: Sythra
 - **Code Name**: `sythra`
-- **Số sao**: 2
+- **Số sao**: 3
 - **Tấn Công (ATK)**: 150
 - **Phòng Thủ (DEF)**: 360
 - **Loại Thẻ**: [`character`](../../../../03_characters.md)
@@ -17,6 +17,10 @@ Sythra là một tư tế Demon duy trì Bloodmight trên đội hình Darkborn 
 ## Kỹ Năng Bị Động
 
 - [Crimson Spire](abilities/crimson_spire.md)
+
+## Kỹ Năng Chủ Động
+
+- [Bloodmight](abilities/bloodmight.md)
 
 ## Thẻ Triệu Hồi Liên Kết
 

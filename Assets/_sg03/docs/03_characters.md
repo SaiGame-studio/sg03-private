@@ -25,7 +25,7 @@ Nằm tại thư mục [`cards/darkborn/demon/`](cards/darkborn/demon/)
 
 6. [Kira](cards/darkborn/demon/common/kira.md) — Số sao: 1
 7. [Misthy](cards/darkborn/demon/common/misthy.md) — Số sao: 2
-8. [Sythra](cards/darkborn/demon/luminar-bastion/sythra.md) — Số sao: 2
+8. [Sythra](cards/darkborn/demon/luminar-bastion/sythra.md) — Số sao: 3
 9. [Bone Spire](cards/darkborn/demon/luminar-bastion/bone_spire.md) — Số sao: 2
 10. [Xena I](cards/darkborn/demon/xena/xena1.md) — Số sao: 1
 11. [Xena II](cards/darkborn/demon/xena/xena2.md) — Số sao: 2
