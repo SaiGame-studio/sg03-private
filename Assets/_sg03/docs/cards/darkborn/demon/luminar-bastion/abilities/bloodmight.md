@@ -10,7 +10,7 @@
 
 ## Mô Tả Kỹ Năng
 
-Bloodmight trở thành Aura trên chiến trường và cộng `base_stats.atk_added` của chính nó cho mọi Character Darkborn cùng phe với Aura.
+Bloodmight trở thành Aura trên chiến trường và cộng `base_stats.atk_added` của chính nó cho mọi Character Darkborn cùng phe với Aura có `base_stats.atk` lớn hơn `0`.
 
 ## Điều Kiện Kích Hoạt
 
@@ -20,7 +20,7 @@ Bloodmight trở thành Aura trên chiến trường và cộng `base_stats.atk_
 
 ## Hiệu Quả
 
-Khi kích hoạt, Bloodmight đưa đúng ba Bone Spire ở hàng trước phe sở hữu vào `the_void` của phe đó, sau đó duy trì Aura. Aura chỉ buff `final_atk` cho Character Darkborn cùng phe; Darkborn của đối thủ không nhận buff. Khi Bloodmight rời chiến trường, toàn bộ buff ATK do Aura này áp dụng bị gỡ.
+Khi kích hoạt, Bloodmight đưa đúng ba Bone Spire ở hàng trước phe sở hữu vào `the_void` của phe đó, sau đó duy trì Aura. Aura chỉ buff `final_atk` cho Character Darkborn cùng phe có `base_stats.atk` lớn hơn `0`; Darkborn của đối thủ và Character có ATK gốc `0` không nhận buff. Khi Bloodmight rời chiến trường, toàn bộ buff ATK do Aura này áp dụng bị gỡ.
 
 ## Thẻ Liên Kết
 

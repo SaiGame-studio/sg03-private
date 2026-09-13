@@ -307,7 +307,12 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
 end
 
 local function refresh_bloodmight_target(state, target_card, target_side, context, source_ids)
+    local target_def = lib_battle_common.find_item_def(
+        state.item_defs, target_card.item_definition_code_name)
+    local target_base_atk = target_def ~= nil
+        and tonumber((target_def.base_stats or {}).atk) or 0
     local is_eligible = context.source_id ~= nil and target_side == context.source_side
+        and target_base_atk > 0
         and lib_battle_common.is_character_of_races(state.item_defs, target_card, { "darkborn" })
     local changed = apply_persistent_stat_bonus(state, target_card, "atk", context.source_id,
         is_eligible and context.atk_added or 0, source_ids)
