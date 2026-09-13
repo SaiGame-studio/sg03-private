@@ -26,10 +26,10 @@
             <ui:VisualElement name="WorldViewSpace" class="game-world-view-space">
                 <ui:Label name="OmegaHpLabel" text="HP: --" class="battle-hp-label battle-hp-label--omega" />
                 <ui:Label name="AlphaHpLabel" text="HP: --" class="battle-hp-label battle-hp-label--alpha" />
-                <ui:Label name="OmeraSourceCountLabel" text="Source: --" class="battle-source-count-label battle-source-count-label--top-right" />
+                <ui:Label name="OmeraSourceCountLabel" text="Source: --" tooltip="Show Omega Source cards" class="battle-source-count-label battle-source-count-label--top-right battle-source-count-label--interactive" />
                 <ui:Label name="OmegaTheVoidCountLabel" text="Void: --" tooltip="Show Omega Void cards" class="battle-source-count-label battle-source-count-label--top-right-2 battle-source-count-label--interactive" />
                 <ui:Label name="AlphaTheVoidCountLabel" text="Void: --" tooltip="Show Alpha Void cards" class="battle-source-count-label battle-source-count-label--bottom-right-2 battle-source-count-label--interactive" />
-                <ui:Label name="AlphaSourceCountLabel" text="Source: --" class="battle-source-count-label battle-source-count-label--bottom-right" />
+                <ui:Label name="AlphaSourceCountLabel" text="Source: --" tooltip="Show Alpha Source cards" class="battle-source-count-label battle-source-count-label--bottom-right battle-source-count-label--interactive" />
             </ui:VisualElement>
 
             <ui:VisualElement name="BottomMenu" class="game-bottom-menu">
@@ -80,6 +80,22 @@
                     <ui:Button name="VoidGridPreviousButton" text="Previous" class="void-grid-page-button" />
                     <ui:Label name="VoidGridPageLabel" text="Page 1 / 1" class="void-grid-page-label" />
                     <ui:Button name="VoidGridNextButton" text="Next" class="void-grid-page-button" />
+                </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="SourceGridPanel" class="void-grid-panel" style="display: none;">
+                <ui:VisualElement class="void-grid-header">
+                    <ui:Label name="SourceGridTitle" text="Alpha - The Source" class="void-grid-title" />
+                    <ui:Button name="SourceGridCloseButton" text="X" tooltip="Close" class="void-grid-close-button" />
+                </ui:VisualElement>
+                <ui:VisualElement class="void-grid-toolbar">
+                    <ui:DropdownField name="SourceGridSortField" label="Sort" class="void-grid-sort-field" />
+                </ui:VisualElement>
+                <ui:VisualElement name="SourceGridContent" class="void-grid-content" />
+                <ui:VisualElement class="void-grid-footer">
+                    <ui:Button name="SourceGridPreviousButton" text="Previous" class="void-grid-page-button" />
+                    <ui:Label name="SourceGridPageLabel" text="Page 1 / 1" class="void-grid-page-label" />
+                    <ui:Button name="SourceGridNextButton" text="Next" class="void-grid-page-button" />
                 </ui:VisualElement>
         </ui:VisualElement>
 
