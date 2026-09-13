@@ -382,7 +382,7 @@ local function main()
     local payload_err = validate_payload()
     if payload_err ~= nil then output.error = payload_err ; return end
 
-    local is_development = ctx.game ~= nil and ctx.game.status == "development"
+    local is_development = lib_battle_common.is_development()
 
     local session_id, session_err = lib_battle_common.resolve_session_id()
     if session_err ~= nil then output.error = session_err ; return end

@@ -389,14 +389,14 @@ function get_hand_size()
 end
 
 -- ─── dlog ────────────────────────────────────────────────────────────────────
--- Appends msg to output.debug_log only when ctx.game.status == "development".
+-- Appends msg to output.debug_log only for development games.
 -- Safe to call unconditionally; no-ops in production.
 function is_development()
     return ctx.game ~= nil and ctx.game.status == "development"
 end
 
 function dlog(msg)
-    if ctx.game == nil or ctx.game.status ~= "development" then return end
+    if not is_development() then return end
     if output.debug_log == nil then output.debug_log = {} end
     table.insert(output.debug_log, msg)
 end
@@ -517,15 +517,15 @@ function battle_status()
     local session_id, state, resolve_err = resolve_battle_session()
     if resolve_err ~= nil then output.error = resolve_err ; return end
 
-    local is_development  = ctx.game ~= nil and ctx.game.status == "development"
-    output.is_development = is_development
+    local development_mode = is_development()
+    output.is_development = development_mode
     output.game_status    = ctx.game ~= nil and ctx.game.status or nil
 
-    mask_omega_hand(state, is_development)
+    mask_omega_hand(state, development_mode)
     write_alpha_state_output(state, session_id)
     hide_unrevealed_omega_cards(state)
-    write_omega_state_output(state, is_development)
-    output.item_defs         = is_development and state.item_defs or nil
+    write_omega_state_output(state, development_mode)
+    output.item_defs         = development_mode and state.item_defs or nil
     -- output.item_defs_actions = build_card_action_list(state)
     write_battle_meta_output(state)
 end
