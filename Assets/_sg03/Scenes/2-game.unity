@@ -413,7 +413,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c832dcdd38554f84f8a63e7ef94c7a8b, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SG03.CardHolderCtrl
 --- !u!1001 &122122036
 PrefabInstance:
@@ -624,7 +624,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 4ae79fc8a26efbc4aa4a82d278ebe81d, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SG03.Card3DCtrl
 --- !u!1 &142583022
 GameObject:
@@ -8202,7 +8202,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06dbb299b2a844fbb252f81e6cf34c19, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SG03.UI.SourceManagerGrid
   columns: 6
   rows: 2
@@ -8223,7 +8223,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5a26f56c0b004e07bfc9d0638a0772d6, type: 3}
-  m_Name:
+  m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SG03.UI.ModalDimLayer
   dimLayerAsset: {fileID: 9197481963319205126, guid: 49c9d2926f2a4fe4a8dd9302b79ebf75, type: 3}
 --- !u!114 &2034349439 stripped
