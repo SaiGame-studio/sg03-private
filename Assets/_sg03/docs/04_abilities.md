@@ -22,7 +22,7 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 9. [Demon Rite](cards/darkborn/demon/xena/abilities/demon_rite.md): 3 sao
 10. [Abyssal Mist](cards/darkborn/demon/common/abilities/abyssal_mist.md): 4 sao
 11. [Bloodmight](cards/darkborn/demon/luminar-bastion/abilities/bloodmight.md): 4 sao
-12. [Wailing Mist](cards/darkborn/demon/luminar-bastion/abilities/wailing_mist.md): 3 sao
+12. [Blood Mist](cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md): 3 sao
 - [Mist Execution](cards/darkborn/demon/common/abilities/mist_execution.md): bị động
 - [Crimson Spire](cards/darkborn/demon/luminar-bastion/abilities/crimson_spire.md): bị động
 
