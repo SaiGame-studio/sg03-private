@@ -59,13 +59,57 @@ function refresh_removed_aura(state, ability_key, removed_source)
     return refresh_handler(state, "aura_removed", removed_source)
 end
 
-local function abyssal_mist_field_lines(state)
+-- All battlefield Aura scans use this one ordered view. The stable ordering
+-- also makes primary-source selection deterministic.
+local function get_battlefield_lines(state)
     return {
         { side = "alpha", line = state.alpha_front_line or {} },
         { side = "alpha", line = state.alpha_back_line or {} },
         { side = "omega", line = state.omega_front_line or {} },
         { side = "omega", line = state.omega_back_line or {} },
     }
+end
+
+local function collect_aura_sources(state, ability_key, active_flag_key)
+    local source_ids_key = ability_key .. "_source_ids"
+    state[source_ids_key] = state[source_ids_key] or {}
+    local sources = { ids = state[source_ids_key], active = {}, by_id = {}, side_by_id = {} }
+    for _, line_data in ipairs(get_battlefield_lines(state)) do
+        for _, card in ipairs(line_data.line) do
+            local source_id = card.inventory_item_id
+            if source_id ~= nil and source_id ~= ""
+                and card.item_definition_code_name == ability_key then
+                sources.ids[source_id] = true
+                if card[active_flag_key] == true then
+                    table.insert(sources.active, card)
+                    sources.by_id[source_id] = card
+                    sources.side_by_id[source_id] = line_data.side
+                end
+            end
+        end
+    end
+    return sources
+end
+
+local function get_aura_context(state, sources, removed_source, primary_state_key, stat_fields)
+    local primary_source = sources.by_id[state[primary_state_key]]
+    if primary_source == nil then
+        primary_source = sources.active[1]
+        state[primary_state_key] = primary_source ~= nil and primary_source.inventory_item_id or nil
+    end
+    local source_id = primary_source ~= nil and primary_source.inventory_item_id or nil
+    local removed_id = removed_source ~= nil and removed_source.id or nil
+    local context = {
+        source_id = source_id,
+        action_source_id = source_id or removed_id,
+        source_side = source_id ~= nil and sources.side_by_id[source_id]
+            or (removed_source ~= nil and removed_source.side or nil),
+    }
+    for context_key, source_field in pairs(stat_fields or {}) do
+        context[context_key] = primary_source ~= nil
+            and (tonumber(primary_source[source_field]) or 0) or 0
+    end
+    return context
 end
 
 -- Abyssal Mist remains on the battlefield only while its owner has a Misthy
@@ -107,7 +151,7 @@ end
 -- retains the source line and owner so callers can move all matches safely.
 function find_configured_darkborn_auras(state, allowed_codes, required_code)
     local matches = {}
-    for _, line_data in ipairs(abyssal_mist_field_lines(state)) do
+    for _, line_data in ipairs(get_battlefield_lines(state)) do
         for _, card in ipairs(line_data.line) do
             local matches_required_code = required_code == nil
                 or card.item_definition_code_name == required_code
@@ -133,29 +177,30 @@ local function create_aura_result_action(side, source_id, ability_key, checked_c
         ",affected_cards=" .. affected_cards
 end
 
-local function collect_abyssal_mist_sources(state)
-    state.abyssal_mist_source_ids = state.abyssal_mist_source_ids or {}
-    local sources = {
-        ids = state.abyssal_mist_source_ids,
-        active = {},
-        by_id = {},
-        side_by_id = {},
-    }
-    for _, line_data in ipairs(abyssal_mist_field_lines(state)) do
-        for _, card in ipairs(line_data.line) do
-            local source_id = card.inventory_item_id
-            local is_mist = card.item_definition_code_name == "abyssal_mist"
-            if source_id ~= nil and source_id ~= "" and is_mist then
-                sources.ids[source_id] = true
-                if card.abyssal_mist_active == true then
-                    table.insert(sources.active, card)
-                    sources.by_id[source_id] = card
-                    sources.side_by_id[source_id] = line_data.side
-                end
+local function refresh_aura_targets(state, ability_key, context, source_ids, refresh_target)
+    local actions = {}
+    local checked_card_count = 0
+    local eligible_card_count = 0
+    local affected_card_count = 0
+    for _, line_data in ipairs(get_battlefield_lines(state)) do
+        for _, target_card in ipairs(line_data.line) do
+            checked_card_count = checked_card_count + 1
+            local is_eligible, bonus_changed = refresh_target(
+                state, target_card, line_data.side, context, source_ids)
+            if is_eligible then eligible_card_count = eligible_card_count + 1 end
+            if bonus_changed and context.action_source_id ~= nil then
+                table.insert(actions, create_aura_effect_action(
+                    line_data.side, context.action_source_id, target_card, ability_key))
+                affected_card_count = affected_card_count + 1
             end
         end
     end
-    return sources
+    if context.action_source_id ~= nil then
+        table.insert(actions, create_aura_result_action(
+            context.source_side, context.action_source_id, ability_key, checked_card_count,
+            eligible_card_count, affected_card_count))
+    end
+    return actions
 end
 
 -- Returns whether the specified side already has an active Abyssal Mist in
@@ -163,28 +208,6 @@ end
 -- the one-active-Abyssal-Mist-per-side rule.
 function has_active_abyssal_mist(state, side)
     return lib_battle_common.has_active_back_line_card_code(state, side, "abyssal_mist", "abyssal_mist_active")
-end
-
-local function get_abyssal_mist_context(state, sources, removed_source)
-    local primary_source = sources.by_id[state.abyssal_mist_primary_source_id]
-    if primary_source == nil then
-        primary_source = sources.active[1]
-        state.abyssal_mist_primary_source_id = primary_source ~= nil
-            and primary_source.inventory_item_id or nil
-    end
-
-    local primary_id = primary_source ~= nil and primary_source.inventory_item_id or nil
-    local removed_id = removed_source ~= nil and removed_source.id or nil
-    return {
-        primary_id = primary_id,
-        action_source_id = primary_id or removed_id,
-        action_source_side = primary_id ~= nil and sources.side_by_id[primary_id]
-            or (removed_source ~= nil and removed_source.side or nil),
-        def_added = primary_source ~= nil
-            and (tonumber(primary_source.abyssal_mist_def_added) or 0) or 0,
-        atk_added = primary_source ~= nil
-            and (tonumber(primary_source.abyssal_mist_atk_added) or 0) or 0,
-    }
 end
 
 local function clear_persistent_bonus(card, bonus_key, source_ids)
@@ -198,39 +221,28 @@ local function clear_persistent_bonus(card, bonus_key, source_ids)
     return total
 end
 
-local function apply_abyssal_mist_def_bonus(target_card, context, is_eligible, source_ids)
-    local old_bonus = clear_persistent_bonus(target_card, "persistent_def_bonuses", source_ids)
-    local new_bonus = is_eligible and context.def_added or 0
+local function apply_persistent_stat_bonus(state, target_card, stat_key, source_id, new_bonus, source_ids)
+    local bonus_key = "persistent_" .. stat_key .. "_bonuses"
+    local final_key = "final_" .. stat_key
+    local old_bonus = clear_persistent_bonus(target_card, bonus_key, source_ids)
     if new_bonus > 0 then
-        target_card.persistent_def_bonuses = target_card.persistent_def_bonuses or {}
-        target_card.persistent_def_bonuses[context.primary_id] = new_bonus
-    end
-    if old_bonus == new_bonus then return false end
-    target_card.final_def = math.max(0, (target_card.final_def or 0) - old_bonus + new_bonus)
-    return true
-end
-
-local function apply_abyssal_mist_atk_bonus(state, target_card, context, source_ids)
-    local old_bonus = clear_persistent_bonus(target_card, "persistent_atk_bonuses", source_ids)
-    local is_misthy = target_card.item_definition_code_name == "misthy"
-    local new_bonus = is_misthy and context.atk_added or 0
-    if new_bonus > 0 then
-        target_card.persistent_atk_bonuses = target_card.persistent_atk_bonuses or {}
-        target_card.persistent_atk_bonuses[context.primary_id] = new_bonus
+        target_card[bonus_key] = target_card[bonus_key] or {}
+        target_card[bonus_key][source_id] = new_bonus
     end
     if old_bonus == new_bonus then return false end
     local item_def = lib_battle_common.find_item_def(state.item_defs, target_card.item_definition_code_name)
-    local base_atk = item_def ~= nil and tonumber((item_def.base_stats or {}).atk) or 0
-    target_card.final_atk = math.max(0, (target_card.final_atk or base_atk) - old_bonus + new_bonus)
+    local base_stat = item_def ~= nil and tonumber((item_def.base_stats or {})[stat_key]) or 0
+    target_card[final_key] = math.max(0, (target_card[final_key] or base_stat) - old_bonus + new_bonus)
     return true
 end
 
-local function refresh_abyssal_mist_target(state, target_card, context, source_ids)
-    local is_eligible = context.primary_id ~= nil and lib_battle_common.is_character_of_races(
+local function refresh_abyssal_mist_target(state, target_card, target_side, context, source_ids)
+    local is_eligible = context.source_id ~= nil and lib_battle_common.is_character_of_races(
         state.item_defs, target_card, { "darkborn", "natureborn" })
-    local def_changed = apply_abyssal_mist_def_bonus(
-        target_card, context, is_eligible, source_ids)
-    local atk_changed = apply_abyssal_mist_atk_bonus(state, target_card, context, source_ids)
+    local def_changed = apply_persistent_stat_bonus(state, target_card, "def", context.source_id,
+        is_eligible and context.def_added or 0, source_ids)
+    local atk_changed = apply_persistent_stat_bonus(state, target_card, "atk", context.source_id,
+        target_card.item_definition_code_name == "misthy" and context.atk_added or 0, source_ids)
     return is_eligible, def_changed or atk_changed
 end
 
@@ -238,32 +250,13 @@ end
 -- source contributes. If it leaves, the next active Mist takes over without
 -- increasing the bonus.
 function abyssal_mist_refresh_aura(state, lifecycle_event, removed_source)
-    local sources = collect_abyssal_mist_sources(state)
-    local context = get_abyssal_mist_context(state, sources, removed_source)
-    local actions = {}
-    local checked_card_count = 0
-    local eligible_card_count = 0
-    local affected_card_count = 0
-
-    for _, line_data in ipairs(abyssal_mist_field_lines(state)) do
-        for _, target_card in ipairs(line_data.line) do
-            checked_card_count = checked_card_count + 1
-            local is_eligible, bonuses_changed = refresh_abyssal_mist_target(
-                state, target_card, context, sources.ids)
-            if is_eligible then eligible_card_count = eligible_card_count + 1 end
-            if context.action_source_id ~= nil and bonuses_changed then
-                table.insert(actions, create_aura_effect_action(
-                    line_data.side, context.action_source_id, target_card, "abyssal_mist"))
-                affected_card_count = affected_card_count + 1
-            end
-        end
-    end
-    if context.action_source_id ~= nil then
-        table.insert(actions, create_aura_result_action(
-            context.action_source_side, context.action_source_id, "abyssal_mist", checked_card_count,
-            eligible_card_count, affected_card_count))
-    end
-    return actions
+    local sources = collect_aura_sources(state, "abyssal_mist", "abyssal_mist_active")
+    local context = get_aura_context(state, sources, removed_source, "abyssal_mist_primary_source_id", {
+        atk_added = "abyssal_mist_atk_added",
+        def_added = "abyssal_mist_def_added",
+    })
+    return refresh_aura_targets(state, "abyssal_mist", context, sources.ids,
+        refresh_abyssal_mist_target)
 end
 
 function abyssal_mist_execute(state, source_card, event_data, helpers)
@@ -313,85 +306,21 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
     return actions, nil
 end
 
-local function collect_bloodmight_sources(state)
-    state.bloodmight_source_ids = state.bloodmight_source_ids or {}
-    local sources = { ids = state.bloodmight_source_ids, by_id = {}, side_by_id = {} }
-    for _, line_data in ipairs(abyssal_mist_field_lines(state)) do
-        for _, card in ipairs(line_data.line) do
-            local source_id = card.inventory_item_id
-            if source_id ~= nil and source_id ~= ""
-                and card.item_definition_code_name == "bloodmight" then
-                sources.ids[source_id] = true
-                if card.bloodmight_active == true then
-                    sources.by_id[source_id] = card
-                    sources.side_by_id[source_id] = line_data.side
-                end
-            end
-        end
-    end
-    return sources
-end
-
-local function get_bloodmight_context(sources, removed_source)
-    local source_id = nil
-    for candidate_id, _ in pairs(sources.by_id) do
-        source_id = candidate_id
-        break
-    end
-    local source_card = source_id ~= nil and sources.by_id[source_id] or nil
-    local removed_id = removed_source ~= nil and removed_source.id or nil
-    return {
-        source_id = source_id,
-        source_side = source_id ~= nil and sources.side_by_id[source_id]
-            or (removed_source ~= nil and removed_source.side or nil),
-        action_source_id = source_id or removed_id,
-        atk_added = source_card ~= nil and (tonumber(source_card.bloodmight_atk_added) or 0) or 0,
-    }
-end
-
 local function refresh_bloodmight_target(state, target_card, target_side, context, source_ids)
-    local old_bonus = clear_persistent_bonus(target_card, "persistent_atk_bonuses", source_ids)
     local is_eligible = context.source_id ~= nil and target_side == context.source_side
         and lib_battle_common.is_character_of_races(state.item_defs, target_card, { "darkborn" })
-    local new_bonus = is_eligible and context.atk_added or 0
-    if new_bonus > 0 then
-        target_card.persistent_atk_bonuses = target_card.persistent_atk_bonuses or {}
-        target_card.persistent_atk_bonuses[context.source_id] = new_bonus
-    end
-    if old_bonus == new_bonus then return is_eligible, false end
-    local item_def = lib_battle_common.find_item_def(state.item_defs, target_card.item_definition_code_name)
-    local base_atk = item_def ~= nil and tonumber((item_def.base_stats or {}).atk) or 0
-    target_card.final_atk = math.max(0, (target_card.final_atk or base_atk) - old_bonus + new_bonus)
-    return is_eligible, true
+    local changed = apply_persistent_stat_bonus(state, target_card, "atk", context.source_id,
+        is_eligible and context.atk_added or 0, source_ids)
+    return is_eligible, changed
 end
 
 function bloodmight_refresh_aura(state, lifecycle_event, removed_source)
-    local sources = collect_bloodmight_sources(state)
-    local context = get_bloodmight_context(sources, removed_source)
-    local actions = {}
-    local checked_card_count = 0
-    local eligible_card_count = 0
-    local affected_card_count = 0
-
-    for _, line_data in ipairs(abyssal_mist_field_lines(state)) do
-        for _, target_card in ipairs(line_data.line) do
-            checked_card_count = checked_card_count + 1
-            local is_eligible, bonus_changed = refresh_bloodmight_target(
-                state, target_card, line_data.side, context, sources.ids)
-            if is_eligible then eligible_card_count = eligible_card_count + 1 end
-            if bonus_changed and context.action_source_id ~= nil then
-                table.insert(actions, create_aura_effect_action(
-                    line_data.side, context.action_source_id, target_card, "bloodmight"))
-                affected_card_count = affected_card_count + 1
-            end
-        end
-    end
-    if context.action_source_id ~= nil then
-        table.insert(actions, create_aura_result_action(
-            context.source_side, context.action_source_id, "bloodmight", checked_card_count,
-            eligible_card_count, affected_card_count))
-    end
-    return actions
+    local sources = collect_aura_sources(state, "bloodmight", "bloodmight_active")
+    local context = get_aura_context(state, sources, removed_source, "bloodmight_primary_source_id", {
+        atk_added = "bloodmight_atk_added",
+    })
+    return refresh_aura_targets(state, "bloodmight", context, sources.ids,
+        refresh_bloodmight_target)
 end
 
 -- Bloodmight consumes exactly three allied Bone Spires from Sythra's front
