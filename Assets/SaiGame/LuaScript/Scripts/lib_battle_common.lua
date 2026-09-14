@@ -208,7 +208,11 @@ function reset_card_turn_state(item_defs, reset_card, state)
             end
         end
     end
-    reset_card.final_atk             = base_atk + get_active_persistent_bonus(state, reset_card.persistent_atk_bonuses)
+    local final_atk = base_atk + get_active_persistent_bonus(state, reset_card.persistent_atk_bonuses)
+    if reset_card.blood_mist_atk_floor == true then
+        final_atk = math.max(1, final_atk)
+    end
+    reset_card.final_atk             = final_atk
     reset_card.final_def             = base_def + get_active_persistent_bonus(state, reset_card.persistent_def_bonuses)
     reset_card.total_damage_received = 0
 end
@@ -227,7 +231,13 @@ function get_attack_damage(state, attacker_def, attacker_line_key, attacker_card
         state,
         attacker_card ~= nil and attacker_card.persistent_atk_bonuses or nil
     )
-    if base_stats.atk_added == nil then return base_atk + persistent_atk_added end
+    if base_stats.atk_added == nil then
+        -- final_atk is the authoritative runtime value shown by AtkUI. It
+        -- includes Blood Mist's minimum-1 floor and must also drive damage.
+        local final_atk = attacker_card ~= nil and tonumber(attacker_card.final_atk) or nil
+        if final_atk ~= nil then return final_atk end
+        return base_atk + persistent_atk_added
+    end
 
     local required_character_code = attacker_def.metadata ~= nil and attacker_def.metadata.char_code_required
     local added_atk = tonumber(base_stats.atk_added) or 0
