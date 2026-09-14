@@ -19,6 +19,7 @@ local DEFAULT_CHARACTER_PASSIVES = {
     azure_blade = "twin_reaper",
     lyra = "scout_strike",
     sythra = "crimson_spire",
+    mireya = "blood_drain",
 }
 
 -- Parses card.metadata.abilities into an array of trimmed, non-empty keys.

@@ -81,6 +81,18 @@ function find_card_in_line_by_code(line, code_name, exclude_item_id)
     return nil, nil
 end
 
+-- Returns every card and fixed-line index matching code_name.
+function collect_line_cards_by_code(line, code_name)
+    if type(line) ~= "table" or code_name == nil or code_name == "" then return {} end
+    local matches = {}
+    for index, card in ipairs(line) do
+        if card.item_definition_code_name == code_name then
+            table.insert(matches, { card = card, index = index })
+        end
+    end
+    return matches
+end
+
 -- Returns the card and its index in line matching inventory_item_id, or nil, nil.
 function find_card_in_line_by_id(line, inventory_item_id)
     if type(line) ~= "table" or inventory_item_id == nil or inventory_item_id == "" then

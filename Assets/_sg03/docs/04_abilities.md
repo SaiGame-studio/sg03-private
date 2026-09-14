@@ -25,6 +25,7 @@ Danh mục bên dưới liệt kê tên và số sao của từng thẻ Ability 
 12. [Blood Mist](cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md): 3 sao
 - [Mist Execution](cards/darkborn/demon/common/abilities/mist_execution.md): bị động
 - [Crimson Spire](cards/darkborn/demon/luminar-bastion/abilities/crimson_spire.md): bị động
+- [Blood Drain](cards/darkborn/demon/luminar-bastion/abilities/blood_drain.md): bị động
 
 ### Lightborn
 

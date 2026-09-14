@@ -18,6 +18,10 @@ Mireya là nữ pháp sư Demon điều khiển Blood Mist trong cuộc vây hã
 
 - [Blood Mist](abilities/blood_mist.md)
 
+## Kỹ Năng Bị Động
+
+- [Blood Drain](abilities/blood_drain.md)
+
 ## Truyện liên quan
 
 - [The Oath of Luminar Bastion](../../../_lore/the_oath_of_luminar_bastion.md)
