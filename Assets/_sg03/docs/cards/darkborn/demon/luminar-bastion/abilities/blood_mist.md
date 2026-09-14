@@ -10,7 +10,13 @@
 
 ## Mô Tả Kỹ Năng
 
-Blood Mist trở thành Aura trên chiến trường của Mireya. Aura này dùng [Bone Spire](../bone_spire.md) hút máu của những chiến binh đã ngã xuống trên chiến trường, nâng cấp Bone Spire đó thành [Blood Spire](../blood_spire.md). Blood Spire tạo ra màn sương đỏ sẫm phủ lên đội hình đối phương và làm suy yếu khả năng tấn công của Character enemy.
+Blood Mist chỉ kích hoạt khi target được chọn là Mireya và hàng trước phe sở hữu đã có một Blood Spire. Khi kích hoạt, thẻ trở thành Aura trên chiến trường của Mireya; màn sương đỏ sẫm từ Blood Spire phủ lên đội hình đối phương và làm suy yếu khả năng tấn công của Character enemy.
+
+## Điều Kiện Kích Hoạt
+
+- Target phải là [Mireya](../mireya.md).
+- Blood Mist phải ở hàng sau của phe sở hữu.
+- Hàng trước phe sở hữu phải có ít nhất một [Blood Spire](../blood_spire.md).
 
 ## Hiệu Ứng
 
@@ -18,8 +24,11 @@ Blood Mist trở thành Aura trên chiến trường của Mireya. Aura này dù
 - `final_atk` sau giảm không thấp hơn `0`.
 - Khi Blood Mist rời chiến trường, toàn bộ giảm ATK do Aura này áp dụng bị gỡ.
 
+## Kỹ Năng Khắc Chế
+
+- [Lux Maxima](../../../../../lightborn/lumina/diana/lux_maxima.md) có thể khắc chế Blood Mist khi Aura này đang bị lộ diện ở hàng sau.
+
 ## Thẻ Liên Kết
 
 - [Mireya](../mireya.md)
-- [Bone Spire](../bone_spire.md)
 - [Blood Spire](../blood_spire.md)

@@ -128,6 +128,7 @@ function get_ability_config(ability_key)
             resolves_without_attack = true,
             counterable_darkborn_aura_codes = {
                 abyssal_mist = true,
+                blood_mist = true,
             },
         },
         skeleton_shield = {
@@ -139,6 +140,12 @@ function get_ability_config(ability_key)
             handler_group = "aura",
             event = "on_misthy_kill",
             target_positions = { "own_frontline", "own_backline" },
+            resolves_without_attack = true,
+        },
+        blood_mist = {
+            handler_group = "aura",
+            target_positions = { "own_frontline", "own_backline" },
+            requires_target_card = true,
             resolves_without_attack = true,
         },
         bloodmight = {
