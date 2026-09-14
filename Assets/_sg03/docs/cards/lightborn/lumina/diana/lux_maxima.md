@@ -28,6 +28,7 @@ Aura Darkborn khác code name với mục tiêu đã chọn không bị ảnh h�
 ## Danh Sách Thẻ Aura Darkborn Bị Khắc Chế
 
 - [Abyssal Mist](../../../../cards/darkborn/demon/common/abilities/abyssal_mist.md)
+- [Blood Mist](../../../../cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md)
 
 ## Quy Ước Mở Rộng
 

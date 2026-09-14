@@ -5,12 +5,13 @@
 -- persistent battlefield auras.
 
 local function get_aura_keys()
-    return { "abyssal_mist", "bloodmight" }
+    return { "abyssal_mist", "blood_mist", "bloodmight" }
 end
 
 local function get_aura_refresh_events(ability_key)
     local events_by_aura = {
         abyssal_mist = { "alpha_end_turn", "omega_end_turn", "aura_source_deployed" },
+        blood_mist = { "alpha_end_turn", "omega_end_turn", "aura_source_deployed" },
         bloodmight = { "alpha_end_turn", "omega_end_turn", "aura_source_deployed" },
     }
     return events_by_aura[ability_key] or {}
@@ -225,7 +226,7 @@ local function apply_persistent_stat_bonus(state, target_card, stat_key, source_
     local bonus_key = "persistent_" .. stat_key .. "_bonuses"
     local final_key = "final_" .. stat_key
     local old_bonus = clear_persistent_bonus(target_card, bonus_key, source_ids)
-    if new_bonus > 0 then
+    if new_bonus ~= 0 then
         target_card[bonus_key] = target_card[bonus_key] or {}
         target_card[bonus_key][source_id] = new_bonus
     end
@@ -303,6 +304,67 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
     local actions = abyssal_mist_refresh_aura(state)
     table.insert(actions, source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
         ",ability=abyssal_mist,selected=" .. misthy_card.inventory_item_id)
+    return actions, nil
+end
+
+-- Blood Mist is an Aura that lowers the final ATK of enemy Characters. Its
+-- value is stored as a negative persistent ATK bonus so normal Aura removal
+-- restores every affected card through the shared refresh path.
+local function refresh_blood_mist_target(state, target_card, target_side, context, source_ids)
+    local is_eligible = context.source_id ~= nil and target_side ~= context.source_side
+        and lib_battle_common.check_card_type(state.item_defs, target_card, "character")
+    local changed = apply_persistent_stat_bonus(state, target_card, "atk", context.source_id,
+        is_eligible and -context.atk_reduced or 0, source_ids)
+    return is_eligible, changed
+end
+
+function blood_mist_refresh_aura(state, lifecycle_event, removed_source)
+    local sources = collect_aura_sources(state, "blood_mist", "blood_mist_active")
+    local context = get_aura_context(state, sources, removed_source, "blood_mist_primary_source_id", {
+        atk_reduced = "blood_mist_atk_reduced",
+    })
+    return refresh_aura_targets(state, "blood_mist", context, sources.ids,
+        refresh_blood_mist_target)
+end
+
+function blood_mist_execute(state, source_card, event_data, helpers)
+    local source_side = helpers.find_card_side(state, source_card)
+    if source_side == nil or source_side == "unknown" then
+        return {}, "blood_mist source card is not on the battlefield"
+    end
+    if helpers.lib_battle_common.find_card_in_line_by_id(
+        state[source_side .. "_back_line"], source_card.inventory_item_id) == nil then
+        return {}, "blood_mist requires source card in own backline"
+    end
+    if source_card.blood_mist_active == true then
+        return {}, "blood_mist is already active"
+    end
+
+    local target_card = (event_data or {}).defender_card
+    if target_card == nil or target_card.item_definition_code_name ~= "mireya"
+        or helpers.find_card_side(state, target_card) ~= source_side then
+        return {}, "blood_mist requires Mireya as an allied target"
+    end
+    if not helpers.lib_battle_common.has_front_line_card_code(state, source_side, "blood_spire") then
+        return {}, "blood_mist requires blood_spire in own front_line"
+    end
+
+    local atk_reduced = tonumber(helpers.get_card_stat(state, source_card, "atk_reduced"))
+    if atk_reduced == nil or atk_reduced <= 0 then
+        return {}, "blood_mist requires positive base_stats.atk_reduced"
+    end
+
+    source_card.blood_mist_active = true
+    source_card.blood_mist_atk_reduced = atk_reduced
+    state.blood_mist_source_ids = state.blood_mist_source_ids or {}
+    state.blood_mist_source_ids[source_card.inventory_item_id] = true
+    if state.blood_mist_primary_source_id == nil then
+        state.blood_mist_primary_source_id = source_card.inventory_item_id
+    end
+
+    local actions = blood_mist_refresh_aura(state)
+    table.insert(actions, source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
+        ",ability=blood_mist,target=" .. target_card.inventory_item_id)
     return actions, nil
 end
 
