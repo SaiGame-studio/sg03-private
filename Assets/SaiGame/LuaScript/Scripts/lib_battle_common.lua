@@ -81,6 +81,18 @@ function find_card_in_line_by_code(line, code_name, exclude_item_id)
     return nil, nil
 end
 
+-- Returns every card and fixed-line index matching code_name.
+function collect_line_cards_by_code(line, code_name)
+    if type(line) ~= "table" or code_name == nil or code_name == "" then return {} end
+    local matches = {}
+    for index, card in ipairs(line) do
+        if card.item_definition_code_name == code_name then
+            table.insert(matches, { card = card, index = index })
+        end
+    end
+    return matches
+end
+
 -- Returns the card and its index in line matching inventory_item_id, or nil, nil.
 function find_card_in_line_by_id(line, inventory_item_id)
     if type(line) ~= "table" or inventory_item_id == nil or inventory_item_id == "" then
@@ -319,6 +331,15 @@ function append_card_sent_to_void_action(actions, side, card)
     table.insert(actions, side .. "_card_sent_to_void:" .. card.inventory_item_id)
 end
 
+-- Emits runtime combat stats after the server resets a card for its next turn.
+-- It is separate from card_aura so reset synchronization never replays an aura.
+function append_card_stat_update_action(state, side, card)
+    if state == nil or side == nil or card == nil then return end
+    if card.inventory_item_id == nil or card.inventory_item_id == "" then return end
+    append_client_action(state, side .. "_card_stat_update:target=" .. card.inventory_item_id ..
+        ",final_atk=" .. tostring(card.final_atk or 0))
+end
+
 -- State-backed variant used by scripts which append actions directly to the
 -- session queue instead of returning an ability action list. Set
 -- expose_before_move to false when a hidden source card enters Void at init.
@@ -364,6 +385,7 @@ function reset_turn_cards(state, next_active_side)
         if line_data.side == next_active_side then
             for _, reset_card in ipairs(line_data.line) do
                 reset_card_turn_state(state.item_defs, reset_card, state)
+                append_card_stat_update_action(state, line_data.side, reset_card)
                 if reset_card.skip_next_turn == true then
                     reset_card.trigger = true
                     reset_card.skip_next_turn = nil

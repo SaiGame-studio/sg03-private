@@ -223,6 +223,12 @@ function crimson_spire_execute(state, source_card, event_data, helpers)
     local front_line_key = source_side .. "_front_line"
     local front_line = state[front_line_key] or {}
     state[front_line_key] = front_line
+    local blood_spire_card = battle.find_card_in_line_by_code(front_line, "blood_spire")
+    if blood_spire_card ~= nil then
+        battle.dlog("[ability] crimson_spire: skip - Blood Spire is already in own front_line")
+        return {}, nil
+    end
+
     local empty_slot_index = battle.find_first_empty_line_slot(front_line, 5)
     if empty_slot_index == nil then
         battle.dlog("[ability] crimson_spire: skip - front_line has no free slots")
@@ -256,4 +262,66 @@ function crimson_spire_execute(state, source_card, event_data, helpers)
         source_side .. "_void_to_front_line:" .. bone_spire_card.inventory_item_id ..
             "," .. tostring(bone_spire_card.slot_index),
     }, nil
+end
+
+-- passive: blood_drain (Mireya)
+-- After Mireya defeats her attack target, exactly two Bone Spires in her front
+-- line are consumed. Blood Spire enters the first consumed Spire's slot when
+-- it is available in the owner's void; the consumption still happens when it is not.
+function blood_drain_execute(state, source_card, event_data, helpers)
+    local battle = helpers.lib_battle_common
+    local defender_card = (event_data or {}).defender_card
+    local defender_void_key = (event_data or {}).defender_side_void
+    if defender_card == nil or defender_void_key == nil then return {}, nil end
+
+    if battle.find_card_in_line_by_id(state[defender_void_key], defender_card.inventory_item_id) == nil then
+        return {}, nil
+    end
+
+    local source_side = helpers.find_card_side(state, source_card)
+    if source_side == nil or source_side == "unknown" then return {}, nil end
+
+    local front_line_key = source_side .. "_front_line"
+    local front_line = state[front_line_key] or {}
+    state[front_line_key] = front_line
+    local bone_spires = battle.collect_line_cards_by_code(front_line, "bone_spire")
+    if #bone_spires ~= 2 then return {}, nil end
+
+    local own_void_key = source_side .. "_the_void"
+    local own_void = state[own_void_key] or {}
+    state[own_void_key] = own_void
+    local blood_spire_slot_index = bone_spires[1].index
+    local actions = {
+        source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
+            ",ability=blood_drain,target=" .. defender_card.inventory_item_id,
+    }
+
+    for _, bone_spire in ipairs(bone_spires) do
+        battle.remove_card_from_line(front_line, bone_spire.card.inventory_item_id)
+        table.insert(own_void, bone_spire.card)
+        battle.append_card_sent_to_void_action(actions, source_side, bone_spire.card)
+    end
+
+    source_card.final_atk = (tonumber(source_card.final_atk) or 0) + 100
+    table.insert(actions, source_side .. "_card_aura:source=" .. source_card.inventory_item_id ..
+        ",ability=blood_drain,target=" .. source_card.inventory_item_id ..
+        ",final_atk=" .. tostring(source_card.final_atk))
+
+    local frontline_blood_spire = battle.find_card_in_line_by_code(front_line, "blood_spire")
+    if frontline_blood_spire ~= nil then return actions, nil end
+
+    local blood_spire_card, blood_spire_index = battle.find_card_in_line_by_code(own_void, "blood_spire")
+    if blood_spire_card == nil then return actions, nil end
+
+    table.remove(own_void, blood_spire_index)
+    battle.reset_card_turn_state(state.item_defs, blood_spire_card, state)
+    blood_spire_card.slot_index = blood_spire_slot_index - 1
+    blood_spire_card.trigger = false
+    blood_spire_card.face_up = true
+    blood_spire_card.expose = true
+    blood_spire_card.defeated_from_line_key = nil
+    front_line[blood_spire_slot_index] = blood_spire_card
+    table.insert(actions, source_side .. "_void_to_front_line:" .. blood_spire_card.inventory_item_id ..
+        "," .. tostring(blood_spire_card.slot_index))
+    return actions, nil
 end
