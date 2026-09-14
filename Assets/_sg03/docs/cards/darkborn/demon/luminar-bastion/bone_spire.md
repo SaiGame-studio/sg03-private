@@ -4,7 +4,7 @@
 - **Code Name**: `bone_spire`
 - **Số sao**: 2
 - **Tấn Công (ATK)**: 0
-- **Phòng Thủ (DEF)**: 350
+- **Phòng Thủ (DEF)**: 300
 - **Loại Thẻ**: [`character`](../../../../03_characters.md)
 - **Chủng Tộc Chính**: **Darkborn**
 - **Tộc Nhánh**: **Demon** (định danh kỹ thuật: `darkborn` / `demon`)
@@ -17,3 +17,4 @@ Bone Spire là trụ xương do Sythra triệu gọi. Khi Sythra triệu gọi �
 ## Nhân Vật Liên Kết
 
 - [Sythra](sythra.md)
+- [Blood Spire](blood_spire.md)

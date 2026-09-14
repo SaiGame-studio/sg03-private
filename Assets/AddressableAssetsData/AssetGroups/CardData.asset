@@ -280,6 +280,11 @@ MonoBehaviour:
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e5d0464e62a9e0f47bb38f28a5827973
+    m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/LuminarBastion/blood_spire.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: e933c94a8970a1442bc70ecf6c01160e
     m_Address: Assets/_sg03/Card/Data/Character/Darkborn/Demon/LuminarBastion/mireya.asset
     m_ReadOnly: 0

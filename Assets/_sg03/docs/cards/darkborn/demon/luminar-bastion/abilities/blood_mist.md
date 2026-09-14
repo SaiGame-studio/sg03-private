@@ -10,7 +10,7 @@
 
 ## Mô Tả Kỹ Năng
 
-Blood Mist trở thành Aura trên chiến trường của Mireya. Aura này dùng Bone Spire hút máu của những chiến binh đã ngã xuống trên chiến trường, nâng cấp Bone Spire đó thành Blood Spire. Blood Spire tạo ra màn sương đỏ sẫm phủ lên đội hình đối phương và làm suy yếu khả năng tấn công của Character enemy.
+Blood Mist trở thành Aura trên chiến trường của Mireya. Aura này dùng [Bone Spire](../bone_spire.md) hút máu của những chiến binh đã ngã xuống trên chiến trường, nâng cấp Bone Spire đó thành [Blood Spire](../blood_spire.md). Blood Spire tạo ra màn sương đỏ sẫm phủ lên đội hình đối phương và làm suy yếu khả năng tấn công của Character enemy.
 
 ## Hiệu Ứng
 
@@ -22,3 +22,4 @@ Blood Mist trở thành Aura trên chiến trường của Mireya. Aura này dù
 
 - [Mireya](../mireya.md)
 - [Bone Spire](../bone_spire.md)
+- [Blood Spire](../blood_spire.md)

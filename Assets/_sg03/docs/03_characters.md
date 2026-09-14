@@ -28,11 +28,12 @@ Nằm tại thư mục [`cards/darkborn/demon/`](cards/darkborn/demon/)
 8. [Sythra](cards/darkborn/demon/luminar-bastion/sythra.md) — Số sao: 3
 9. [Mireya](cards/darkborn/demon/luminar-bastion/mireya.md) — Số sao: 1
 10. [Bone Spire](cards/darkborn/demon/luminar-bastion/bone_spire.md) — Số sao: 2
-11. [Xena I](cards/darkborn/demon/xena/xena1.md) — Số sao: 1
-12. [Xena II](cards/darkborn/demon/xena/xena2.md) — Số sao: 2
-13. [Xena III](cards/darkborn/demon/xena/xena3.md) — Số sao: 3
-14. [Xena IV](cards/darkborn/demon/xena/xena4.md) — Số sao: 4
-15. [Xena V](cards/darkborn/demon/xena/xena5.md) — Số sao: 5
+11. [Blood Spire](cards/darkborn/demon/luminar-bastion/blood_spire.md) — Số sao: 4
+12. [Xena I](cards/darkborn/demon/xena/xena1.md) — Số sao: 1
+13. [Xena II](cards/darkborn/demon/xena/xena2.md) — Số sao: 2
+14. [Xena III](cards/darkborn/demon/xena/xena3.md) — Số sao: 3
+15. [Xena IV](cards/darkborn/demon/xena/xena4.md) — Số sao: 4
+16. [Xena V](cards/darkborn/demon/xena/xena5.md) — Số sao: 5
 
 ---
 
@@ -45,14 +46,14 @@ Tộc nhánh hiện có: Light Elf và Lumina.
 
 Nằm tại thư mục [`cards/lightborn/light_elf/`](cards/lightborn/light_elf/)
 
-16. [Zelena](cards/lightborn/light_elf/common/zelena.md) — Số sao: 2
-17. [Azura](cards/lightborn/light_elf/azura/azura.md) — Số sao: 3
+17. [Zelena](cards/lightborn/light_elf/common/zelena.md) — Số sao: 2
+18. [Azura](cards/lightborn/light_elf/azura/azura.md) — Số sao: 3
 
 ### Lumina
 
 Nằm tại thư mục [`cards/lightborn/lumina/`](cards/lightborn/lumina/)
 
-18. [Diana](cards/lightborn/lumina/diana/diana.md) — Số sao: 2
+19. [Diana](cards/lightborn/lumina/diana/diana.md) — Số sao: 2
 
 ---
 
@@ -64,24 +65,24 @@ Tộc nhánh hiện có: Goblin và Furry. Các định danh `goblin` và `furry
 
 Nằm tại thư mục [`cards/natureborn/goblin/`](cards/natureborn/goblin/)
 
-19. [Goblin Grunt](cards/natureborn/goblin/goblin_grunt.md) — Số sao: 1
-20. [Goblin Saboteur](cards/natureborn/goblin/goblin_saboteur.md) — Số sao: 2
-21. [Goblin Shaman](cards/natureborn/goblin/goblin_shaman.md) — Số sao: 3
-22. [Goblin Brute](cards/natureborn/goblin/goblin_brute.md) — Số sao: 4
+20. [Goblin Grunt](cards/natureborn/goblin/goblin_grunt.md) — Số sao: 1
+21. [Goblin Saboteur](cards/natureborn/goblin/goblin_saboteur.md) — Số sao: 2
+22. [Goblin Shaman](cards/natureborn/goblin/goblin_shaman.md) — Số sao: 3
+23. [Goblin Brute](cards/natureborn/goblin/goblin_brute.md) — Số sao: 4
 
 ### Furry
 
 Nằm tại thư mục [`cards/natureborn/furry/`](cards/natureborn/furry/)
 
-23. [Bao](cards/natureborn/furry/bao/bao.md) — Số sao: 1
-24. [Sapphire](cards/natureborn/furry/bao/sapphire.md) — Số sao: 4
+24. [Bao](cards/natureborn/furry/bao/bao.md) — Số sao: 1
+25. [Sapphire](cards/natureborn/furry/bao/sapphire.md) — Số sao: 4
 
 ---
 
 ## Humans
 Nằm tại thư mục [`cards/human/`](cards/human/)
 
-25. [Ren](cards/human/ren/azure_blade.md) — Số sao: 3
-26. [Lyra](cards/human/lyra/lyra.md) — Số sao: 2
-27. [Titan](cards/human/ren/titan.md) — Số sao: 5
-28. [Sai](cards/human/sai.md) — Số sao: 3
+26. [Ren](cards/human/ren/azure_blade.md) — Số sao: 3
+27. [Lyra](cards/human/lyra/lyra.md) — Số sao: 2
+28. [Titan](cards/human/ren/titan.md) — Số sao: 5
+29. [Sai](cards/human/sai.md) — Số sao: 3
