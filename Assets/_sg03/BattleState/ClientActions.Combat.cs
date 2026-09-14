@@ -289,6 +289,31 @@ namespace SG03
             return this.StartCoroutine(this.CardAuraRoutine(sourceId, targetId, finalAtk));
         }
 
+        private void ExecuteCardStatUpdate(string[] parameters)
+        {
+            if (parameters == null || parameters.Length == 0) return;
+
+            string targetId = null;
+            int? finalAtk = null;
+            foreach (string parameter in parameters)
+            {
+                string[] keyValue = parameter.Split('=');
+                if (keyValue.Length != 2) continue;
+
+                string key = keyValue[0].Trim().ToLowerInvariant();
+                string value = keyValue[1].Trim();
+                switch (key)
+                {
+                    case "target": targetId = value; break;
+                    case "final_atk": if (int.TryParse(value, out int atk)) finalAtk = atk; break;
+                }
+            }
+
+            if (string.IsNullOrEmpty(targetId) || !finalAtk.HasValue) return;
+            Card3DCtrl targetCard = this.cardSpawning?.FindCardById(targetId);
+            if (targetCard != null) targetCard.SetAuraAtk(finalAtk.Value);
+        }
+
         private IEnumerator CardAuraRoutine(string sourceId, string targetId, int? finalAtk)
         {
             Card3DCtrl sourceCard = this.cardSpawning?.FindCardById(sourceId);

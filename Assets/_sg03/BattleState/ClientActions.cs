@@ -448,6 +448,8 @@ namespace SG03
                 case "omega_card_ability": result = this.ExecuteCardAbility(parameters); break;
                 case "alpha_card_aura": result = this.ExecuteCardAura(parameters); break;
                 case "omega_card_aura": result = this.ExecuteCardAura(parameters); break;
+                case "alpha_card_stat_update": this.ExecuteCardStatUpdate(parameters); break;
+                case "omega_card_stat_update": this.ExecuteCardStatUpdate(parameters); break;
                 case "alpha_card_guarded": result = this.ExecuteCardGuarded(parameters); break;
                 case "omega_card_guarded": result = this.ExecuteCardGuarded(parameters); break;
                 case "alpha_card_swapped": result = this.ExecuteCardSwapped(parameters); break;

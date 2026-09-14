@@ -223,6 +223,12 @@ function crimson_spire_execute(state, source_card, event_data, helpers)
     local front_line_key = source_side .. "_front_line"
     local front_line = state[front_line_key] or {}
     state[front_line_key] = front_line
+    local blood_spire_card = battle.find_card_in_line_by_code(front_line, "blood_spire")
+    if blood_spire_card ~= nil then
+        battle.dlog("[ability] crimson_spire: skip - Blood Spire is already in own front_line")
+        return {}, nil
+    end
+
     local empty_slot_index = battle.find_first_empty_line_slot(front_line, 5)
     if empty_slot_index == nil then
         battle.dlog("[ability] crimson_spire: skip - front_line has no free slots")

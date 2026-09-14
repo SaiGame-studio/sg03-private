@@ -3,7 +3,7 @@
 - **Tên**: Sythra
 - **Code Name**: `sythra`
 - **Số sao**: 3
-- **Tấn Công (ATK)**: 150
+- **Tấn Công (ATK)**: 200
 - **Phòng Thủ (DEF)**: 360
 - **Loại Thẻ**: [`character`](../../../../03_characters.md)
 - **Chủng Tộc Chính**: **Darkborn**
