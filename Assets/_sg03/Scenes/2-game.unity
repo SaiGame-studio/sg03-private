@@ -8814,6 +8814,30 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 331941082}
     m_Modifications:
+    - target: {fileID: 3471930897440109911, guid: 2c8366195287d504bb5b3a0d8cb4b153, type: 3}
+      propertyPath: cardAddresses.Array.size
+      value: 62
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471930897440109911, guid: 2c8366195287d504bb5b3a0d8cb4b153, type: 3}
+      propertyPath: 'cardAddresses.Array.data[57]'
+      value: Assets/_sg03/Card/Data/Cheat/seppuku.asset
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471930897440109911, guid: 2c8366195287d504bb5b3a0d8cb4b153, type: 3}
+      propertyPath: 'cardAddresses.Array.data[58]'
+      value: Assets/_sg03/Card/Data/Env/abyssal_mist.asset
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471930897440109911, guid: 2c8366195287d504bb5b3a0d8cb4b153, type: 3}
+      propertyPath: 'cardAddresses.Array.data[59]'
+      value: Assets/_sg03/Card/Data/Env/graveyard.asset
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471930897440109911, guid: 2c8366195287d504bb5b3a0d8cb4b153, type: 3}
+      propertyPath: 'cardAddresses.Array.data[60]'
+      value: Assets/_sg03/Card/Data/Env/gright_forest.asset
+      objectReference: {fileID: 0}
+    - target: {fileID: 3471930897440109911, guid: 2c8366195287d504bb5b3a0d8cb4b153, type: 3}
+      propertyPath: 'cardAddresses.Array.data[61]'
+      value: Assets/_sg03/Card/Data/Env/iron_citadel.asset
+      objectReference: {fileID: 0}
     - target: {fileID: 3901108077790416459, guid: 2c8366195287d504bb5b3a0d8cb4b153, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
