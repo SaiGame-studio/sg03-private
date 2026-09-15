@@ -2395,7 +2395,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.size
-      value: 29
+      value: 30
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[0].fileName
@@ -2859,6 +2859,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[28].hasLocalFile
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[29].fileName
+      value: cheat_seppuku.lua
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[29].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[29].scriptName
+      value: cheat_seppuku
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[29].hasLocalFile
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6971719431293405431, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
@@ -7996,6 +8012,7 @@ MonoBehaviour:
   scriptNameAlphaTurnEnd: alpha_turn_end
   scriptNameAlphaDefendingEnd: alpha_defending_end
   scriptNameAlphaCheatSelectDraws: alpha_cheat_select_draws
+  scriptNameCheatSeppuku: cheat_seppuku
   battleState: {fileID: 2015755439}
   gamePanelUI: {fileID: 2030001004}
   logPayload: 1

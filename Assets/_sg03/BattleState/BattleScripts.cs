@@ -28,6 +28,7 @@ namespace SG03
         [SerializeField] private string scriptNameAlphaTurnEnd       = "alpha_turn_end";
         [SerializeField] private string scriptNameAlphaDefendingEnd  = "alpha_defending_end";
         [SerializeField] private string scriptNameAlphaCheatSelectDraws = "alpha_cheat_select_draws";
+        [SerializeField] private string scriptNameCheatSeppuku = "cheat_seppuku";
 
         private BattleScript battleScript => SaiServer.Instance != null ? SaiServer.Instance.BattleScript : null;
 
@@ -175,6 +176,15 @@ namespace SG03
             this.RunWithLock(this.scriptNameAlphaCheatSelectDraws, requestBody, onSuccess, onError);
         }
 
+        public void RunCheatSeppuku(string sourceInventoryItemId, string targetInventoryItemId,
+            Action<string> onSuccess, Action<string> onError)
+        {
+            if (this.IsBattleScriptMissing(nameof(this.RunCheatSeppuku))) return;
+            string requestBody = this.BuildCheatSeppukuRequestBody(sourceInventoryItemId, targetInventoryItemId);
+            this.LogPayload("RunCheatSeppuku", "#B57BFF", requestBody);
+            this.RunWithLock(this.scriptNameCheatSeppuku, requestBody, onSuccess, onError);
+        }
+
         /// <summary>Guards against concurrent requests; acquires the lock and dispatches the script call.</summary>
         private void RunWithLock(string scriptName, string requestBody, Action<string> onSuccess, Action<string> onError)
         {
@@ -282,6 +292,11 @@ namespace SG03
             string[] ids = new string[inventoryItemIds.Count];
             for (int i = 0; i < inventoryItemIds.Count; i++) ids[i] = inventoryItemIds[i] ?? string.Empty;
             return $"{{\"payload\":{{\"inventory_item_ids\":{this.ToJsonStringArray(ids)}}}}}";
+        }
+
+        private string BuildCheatSeppukuRequestBody(string sourceInventoryItemId, string targetInventoryItemId)
+        {
+            return $"{{\"payload\":{{\"source_inventory_item_id\":\"{sourceInventoryItemId ?? string.Empty}\",\"target_inventory_item_id\":\"{targetInventoryItemId ?? string.Empty}\"}}}}";
         }
 
         private string BuildAlphaCardDeployRequestBody()
