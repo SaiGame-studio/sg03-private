@@ -85,4 +85,3 @@ Nằm tại thư mục [`cards/human/`](cards/human/)
 26. [Ren](cards/human/ren/azure_blade.md) — Số sao: 3
 27. [Lyra](cards/human/lyra/lyra.md) — Số sao: 2
 28. [Titan](cards/human/ren/titan.md) — Số sao: 5
-29. [Sai](cards/human/sai.md) — Số sao: 3

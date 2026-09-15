@@ -106,7 +106,7 @@ MonoBehaviour:
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
   - m_GUID: 446518e902255cb4aa6c295392c646a6
-    m_Address: Assets/_sg03/Card/Data/Character/Human/Sai/sai.asset
+    m_Address: Assets/_sg03/Card/Data/Cheat/sai.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
     FlaggedDuringContentUpdateRestriction: 0
