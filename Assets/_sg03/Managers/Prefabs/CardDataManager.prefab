@@ -82,7 +82,6 @@ MonoBehaviour:
   - Assets/_sg03/Card/Data/Character/Human/abilities/Titan/titan_spear_sweep.asset
   - Assets/_sg03/Card/Data/Character/Human/azure_blade.asset
   - Assets/_sg03/Card/Data/Character/Human/lyra.asset
-  - Assets/_sg03/Card/Data/Character/Human/Sai/sai.asset
   - Assets/_sg03/Card/Data/Character/Human/titan.asset
   - Assets/_sg03/Card/Data/Character/Lightborn/abilities/holy_glow.asset
   - Assets/_sg03/Card/Data/Character/Lightborn/LightElf/azura/abilities/lightning_strike.asset
@@ -104,6 +103,8 @@ MonoBehaviour:
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/goblin_grunt.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/goblin_saboteur.asset
   - Assets/_sg03/Card/Data/Character/Natureborn/Goblin/goblin_shaman.asset
+  - Assets/_sg03/Card/Data/Cheat/sai.asset
+  - Assets/_sg03/Card/Data/Cheat/seppuku.asset
   - Assets/_sg03/Card/Data/Env/abyssal_mist.asset
   - Assets/_sg03/Card/Data/Env/graveyard.asset
   - Assets/_sg03/Card/Data/Env/gright_forest.asset

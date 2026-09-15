@@ -85,6 +85,7 @@ namespace SG03
             Card3DCtrl source = this.targetingSource;
             CardHolderCtrl holder = this.holderHover;
             if (source == null || holder == null) return;
+            if (this.IsCheatSeppukuSource(source)) return;
             string defenderId = this.ResolveDefenderId(holder);
             this.CancelTargeting();
             Debug.Log($"<color=#00FFAA>[Targeting] <b>{source.name}</b> → <b>{holder.name}</b> ({defenderId})</color>");
@@ -99,10 +100,33 @@ namespace SG03
 
         private void DispatchAttackingScripts(Card3DCtrl source, Card3DCtrl target)
         {
+            if (this.IsCheatSeppukuSource(source))
+            {
+                this.RunCheatSeppuku(source, target);
+                return;
+            }
             if (this.IsAlphaDrawPhase())
                 this.RunAlphaCardDeployThenAttack(source, target);
             else
                 this.battleStateCtrl?.BattleScripts?.RunAlphaAttacking(source.InventoryItemId, this.ResolveDefenderId(target), source.CodeName, target.CodeName, this.OnAlphaAttackingSuccess, this.OnAlphaAttackingError);
+        }
+
+        private bool IsCheatSeppukuSource(Card3DCtrl source)
+        {
+            return source != null
+                && source.CardOwner == Owner.alpha
+                && source.Location == Location.in_back
+                && source.CodeName == "seppuku";
+        }
+
+        private void RunCheatSeppuku(Card3DCtrl source, Card3DCtrl target)
+        {
+            if (target == null || !target.IsCharacter()) return;
+            this.battleStateCtrl?.BattleScripts?.RunCheatSeppuku(
+                source.InventoryItemId,
+                target.InventoryItemId,
+                this.OnAlphaAttackingSuccess,
+                this.OnAlphaAttackingError);
         }
 
         private bool IsAlphaDrawPhase()

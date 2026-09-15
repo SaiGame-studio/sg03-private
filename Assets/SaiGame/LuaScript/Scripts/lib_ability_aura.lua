@@ -315,6 +315,16 @@ local function refresh_blood_mist_target(state, target_card, target_side, contex
         and lib_battle_common.check_card_type(state.item_defs, target_card, "character")
     local changed = apply_persistent_stat_bonus(state, target_card, "atk", context.source_id,
         is_eligible and -context.atk_reduced or 0, source_ids)
+    if is_eligible then
+        target_card.blood_mist_atk_floor = true
+        local final_atk = tonumber(target_card.final_atk) or 0
+        if final_atk < 1 then
+            target_card.final_atk = 1
+            changed = true
+        end
+    else
+        target_card.blood_mist_atk_floor = nil
+    end
     return is_eligible, changed
 end
 

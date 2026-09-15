@@ -37,6 +37,13 @@ It standardizes every raw error string into a unique `ErrorKey`, regex pattern, 
 | `ERR_PAYLOAD_HP_REQUIRED` | `hp is required` | HP parameter is required. | Giá trị HP là bắt buộc. | `battle_debug_turn.lua` |
 | `ERR_ALPHA_CHEAT_DRAW_SELECTION_INVALID` | `alpha cheat draw selection is invalid` | Select up to two cards currently in Alpha's Source. | Chọn tối đa hai lá hiện có trong Source của Alpha. | `alpha_cheat_select_draws.lua` |
 | `ERR_ALPHA_CHEAT_DEVELOPMENT_ONLY` | `alpha cheat is only available in development` | Alpha draw cheat is available only in development. | Cheat rút bài Alpha chỉ khả dụng ở development. | `alpha_cheat_select_draws.lua` |
+| `ERR_SEPPUKU_DEVELOPMENT_ONLY` | `seppuku cheat is only available in development` | Seppuku cheat is available only in development. | Cheat Seppuku chỉ khả dụng ở development. | `cheat_seppuku.lua` |
+| `ERR_SEPPUKU_SOURCE_REQUIRED` | `missing source_inventory_item_id` | Seppuku requires its source card ID. | Seppuku yêu cầu ID lá nguồn. | `cheat_seppuku.lua` |
+| `ERR_SEPPUKU_SOURCE_NOT_BACKLINE` | `seppuku source must be deployed on alpha backline` | Seppuku must be deployed on Alpha's back line. | Seppuku phải được triển khai ở hàng sau của Alpha. | `cheat_seppuku.lua` |
+| `ERR_SEPPUKU_SOURCE_INVALID` | `seppuku source must be the seppuku card` | Seppuku source must be the Seppuku card. | Lá nguồn phải là Seppuku. | `cheat_seppuku.lua` |
+| `ERR_SEPPUKU_TARGET_REQUIRED` | `missing target_inventory_item_id` | Seppuku requires a target card ID. | Seppuku yêu cầu ID thẻ mục tiêu. | `cheat_seppuku.lua` |
+| `ERR_SEPPUKU_TARGET_NOT_FOUND` | `seppuku target character not found in battle lines` | Seppuku target Character was not found on the battlefield. | Không tìm thấy Character mục tiêu Seppuku trên chiến trường. | `cheat_seppuku.lua` |
+| `ERR_SEPPUKU_TARGET_NOT_CHARACTER` | `seppuku target must be a character` | Seppuku can target only a Character. | Seppuku chỉ có thể nhắm một Character. | `cheat_seppuku.lua` |
 
 ---
 

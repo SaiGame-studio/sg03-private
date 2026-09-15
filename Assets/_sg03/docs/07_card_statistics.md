@@ -2,16 +2,19 @@
 
 Số liệu trong tài liệu này được tổng hợp từ [Danh Mục Thẻ Nhân Vật](03_characters.md), [Danh Mục Kỹ Năng](04_abilities.md), và [Tổng Quan PvE](pve/pve_overview.md). Chỉ Ability chủ động được cộng vào tổng Ability và tổng số card.
 
+> [!NOTE]
+> Các card Cheat [Sai](cards/cheat/sai.md) và [Seppuku](cards/cheat/seppuku.md) không được tính trong thống kê này.
+
 ## Tổng Quan
 
 ### Thống Kê Thẻ Bài
 
 | Loại thẻ | Số lượng |
 | --- | ---: |
-| [Character](03_characters.md) | 29 |
+| [Character](03_characters.md) | 28 |
 | [Ability](04_abilities.md) | 28 |
 | Ability bị động | 5 |
-| **Tổng số card** | **57** |
+| **Tổng số card** | **56** |
 
 ### Thống Kê Enemy AI (PvE)
 
@@ -29,8 +32,8 @@ Số liệu trong tài liệu này được tổng hợp từ [Danh Mục Thẻ 
 | Darkborn | 16 | 12 | 3 | 28 |
 | Lightborn | 3 | 4 | 0 | 7 |
 | Natureborn | 6 | 7 | 0 | 13 |
-| Humans | 4 | 5 | 2 | 9 |
-| **Tổng** | **29** | **28** | **5** | **57** |
+| Humans | 3 | 5 | 2 | 8 |
+| **Tổng** | **28** | **28** | **5** | **56** |
 
 ## Thống Kê Theo Tộc Nhánh
 
@@ -42,8 +45,8 @@ Số liệu trong tài liệu này được tổng hợp từ [Danh Mục Thẻ 
 | Lightborn | Lumina | 1 | 1 | 0 | 2 |
 | Natureborn | Goblin | 4 | 3 | 0 | 7 |
 | Natureborn | Furry | 2 | 4 | 0 | 6 |
-| Humans | - | 4 | 5 | 2 | 9 |
-| **Tổng** |  | **29** | **28** | **5** | **57** |
+| Humans | - | 3 | 5 | 2 | 8 |
+| **Tổng** |  | **28** | **28** | **5** | **56** |
 
 ## Thống Kê Chi Tiết Enemy AI
 
