@@ -328,12 +328,14 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
     return actions, nil
 end
 
--- Blood Mist is an Aura that lowers the final ATK of enemy Characters. Its
--- value is stored as a negative persistent ATK bonus so normal Aura removal
--- restores every affected card through the shared refresh path.
+-- Blood Mist is an Aura that lowers the final ATK of enemy Human, Lightborn,
+-- and Natureborn Characters. Darkborn Characters are unaffected. Its value is
+-- stored as a negative persistent ATK bonus so normal Aura removal restores
+-- every affected card through the shared refresh path.
 local function refresh_blood_mist_target(state, target_card, target_side, context, source_ids)
     local is_eligible = context.source_id ~= nil and target_side ~= context.source_side
-        and lib_battle_common.check_card_type(state.item_defs, target_card, "character")
+        and lib_battle_common.is_character_of_races(
+            state.item_defs, target_card, { "human", "lightborn", "natureborn" })
     local changed = apply_persistent_stat_bonus(state, target_card, "atk", context.source_id,
         is_eligible and -context.atk_reduced or 0, source_ids)
     if is_eligible then

@@ -21,7 +21,7 @@ Blood Mist chỉ kích hoạt khi target được chọn là Mireya và hàng tr
 
 ## Hiệu Ứng
 
-- Mỗi Character enemy bị giảm `final_atk` theo giá trị `atk_reduced` dương của Blood Mist.
+- Character enemy thuộc Human, Lightborn hoặc Natureborn bị giảm `final_atk` theo giá trị `atk_reduced` dương của Blood Mist; Darkborn không bị ảnh hưởng.
 - `final_atk` sau giảm không thấp hơn `0`.
 - Nếu không còn Mireya nào ở hàng trước phe sở hữu, Blood Mist tự chuyển vào `the_void` của phe đó.
 - Khi Blood Mist rời chiến trường, toàn bộ giảm ATK do Aura này áp dụng bị gỡ.
