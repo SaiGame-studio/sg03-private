@@ -19,7 +19,7 @@
 >   - Điểm Void: 250
 >   - Điểm chiến thuật: 900
 >
-> Xem [cách tính chi tiết](../enemy_power_score.md#ví-dụ-bastion-blood).
+> Xem [công thức dùng chung](../enemy_power_score.md#công-thức).
 
 > **Quy tắc cơ bản**: Xem [Quy Tắc Trận Đấu Cơ Bản Cho Enemy AI](../enemy_ai_basic_rules.md).
 

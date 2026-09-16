@@ -22,19 +22,19 @@
 
 The Bent Spoon #1 có điểm bộ bài **7,770**, thấp nhất trong ba Enemy được xếp hạng. Dù nó có **500** điểm chiến thuật từ điều phối Misthy kết liễu, Abyssal Mist và Eagle Eye, điểm choose **1,010** cùng điểm Void metadata **0** đưa tổng lực chiến về **9,280**.
 
-Nguồn điểm: [bảng card và lực chiến The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md) và [công thức](enemy_power_score.md#ví-dụ-the-bent-spoon-1).
+Nguồn điểm: [bảng card và lực chiến The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md) và [công thức](enemy_power_score.md#công-thức).
 
 ### 2. Silas
 
 Silas đạt **10,110** điểm: bộ bài **8,640** cao hơn The Bent Spoon #1, choose **1,020**, Void metadata **0**, và **450** điểm chiến thuật. Cụm chiến thuật này chỉ gồm phản ứng Totem Pulse, Brute Call triệu hồi từ Void và giữ hai slot cho combo; vì vậy Silas ít điểm chiến thuật hơn The Bent Spoon #1, nhưng vẫn vượt tổng lực chiến nhờ chỉ số bộ bài.
 
-Nguồn điểm: [bảng card và lực chiến Silas](normal_enemies/silas.md) và [công thức](enemy_power_score.md#ví-dụ-silas).
+Nguồn điểm: [bảng card và lực chiến Silas](normal_enemies/silas.md) và [công thức](enemy_power_score.md#công-thức).
 
 ### 3. Bastion Blood
 
 Với tổng **11,420**, Bastion Blood đứng đầu vì đồng thời có điểm bộ bài **9,360** cao nhất, choose **910**, điểm Void **250** từ hai Bone Spire đã khai báo và **900** điểm chiến thuật. Điểm chiến thuật này phản ánh điều phối đòn kết liễu, triệu hồi Bone Spire, chuyển thành Blood Spire, Aura Blood Mist và việc giữ slot cho chuỗi combo.
 
-Nguồn điểm: [bảng card và lực chiến Bastion Blood](normal_enemies/bastion_blood.md) và [công thức](enemy_power_score.md#ví-dụ-bastion-blood).
+Nguồn điểm: [bảng card và lực chiến Bastion Blood](normal_enemies/bastion_blood.md) và [công thức](enemy_power_score.md#công-thức).
 
 ## Elite Và Boss
 

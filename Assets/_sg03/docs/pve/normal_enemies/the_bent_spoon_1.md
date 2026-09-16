@@ -21,7 +21,7 @@
 >   - Điểm Void: 0
 >   - Điểm chiến thuật: 500
 >
-> Xem [cách tính chi tiết](../enemy_power_score.md#ví-dụ-the-bent-spoon-1).
+> Xem [công thức dùng chung](../enemy_power_score.md#công-thức).
 
 ## Tổng quan
 
