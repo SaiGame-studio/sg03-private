@@ -196,8 +196,8 @@ function static_bind_execute(state, source_card, event_data, helpers)
         source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
             ",ability=static_bind,target=" .. target_id .. ",damage=" .. tostring(damage) ..
             ",cancelled_plan=" .. tostring(cancelled_plan) .. ",skip_next_turn=true,selected=" .. azura_card.inventory_item_id,
-        source_side .. "_card_expose:" .. azura_card.inventory_item_id,
-        target_side .. "_card_expose:" .. target_id,
+        helpers.lib_battle_common.build_card_expose_action(source_side, azura_card),
+        helpers.lib_battle_common.build_card_expose_action(target_side, target_card or target_id),
     }
 
     local damage_actions, damage_err = helpers.deal_damage_to_character(
@@ -270,6 +270,7 @@ function lux_maxima_execute(state, source_card, event_data, helpers)
 
     -- Lux Maxima must first reveal Diana; the core trigger then reveals Lux
     -- before it dispatches this ability action and its remaining effects.
+    diana_card.trigger = true
     local actions = {
         helpers.expose_ability_selected_card(state, diana_card),
         source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
@@ -392,7 +393,7 @@ function lightning_strike_execute(state, source_card, event_data, helpers)
     ability_action = ability_action .. ",damage=" .. tostring(damage) .. ",selected=" .. azura_card.inventory_item_id
     local actions = {
         ability_action,
-        source_side .. "_card_expose:" .. azura_card.inventory_item_id,
+        helpers.lib_battle_common.build_card_expose_action(source_side, azura_card),
     }
 
     local function cancel_target_attack(target)

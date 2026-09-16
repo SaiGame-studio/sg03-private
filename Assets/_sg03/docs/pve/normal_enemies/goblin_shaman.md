@@ -1,10 +1,23 @@
 # Chiến thuật AI Goblin Shaman
 
+## Thông Tin Enemy
+
 > Phân loại: Normal Enemy
 >
 > Enemy key: `goblin_shaman`
 >
 > Script chính: [`enemy_ai_goblin_shaman.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_goblin_shaman.lua)
+
+> Lực chiến dự kiến:
+>
+> **9,700 điểm**
+>
+>   - Điểm bộ bài: 8,730
+>   - Điểm choose: 820
+>   - Điểm Void: 0
+>   - Điểm chiến thuật: 150
+>
+> Xem [công thức dùng chung](../enemy_power_score.md#công-thức).
 
 ## Tổng quan
 
@@ -14,6 +27,47 @@ AI Goblin Shaman ([`enemy_ai_goblin_shaman.lua`](../../../../SaiGame/LuaScript/S
 2. **Triển khai hậu tuyến**: Đặt toàn bộ lá `totem_pulse` trên tay vào hậu tuyến ở trạng thái úp (`face_up = false`, `expose = false`).
 3. **Phòng thủ phản ứng (`defend`)**: Sử dụng helper dùng chung `enemy_ai_core.defend_with_back_line_ability_when_front_line_takes_damage` để tự động kích hoạt `totem_pulse` nâng DEF cho toàn tiền tuyến khi tiền tuyến Omega sắp chịu sát thương.
 4. **Tấn công chiến thuật (`plan_attack`)**: Duy trì quy tắc "giữ lại đúng 1 Character úp". Khi có nhiều hơn 1 Character úp ở tiền tuyến, AI chọn lật một lá úp dư thừa để tấn công.
+
+---
+
+## Cấu Hình Deck Đề Xuất
+
+> Mục tiêu: lấy Totem Pulse làm chiến thuật chính, bảo đảm lực chiến thấp hơn Silas (10,110 điểm) và đáp ứng ngưỡng tối thiểu 25 card.
+
+### Metadata Đề Xuất
+
+| Thuộc tính | Giá trị |
+| --- | --- |
+| `choose_card_1` | `goblin_shaman` |
+| `choose_card_2` | `totem_pulse` |
+| `choose_card_3` | `goblin_grunt` |
+| Void card | Không khai báo |
+
+`choose_card_1` đưa Goblin Shaman vào tay đầu trận để làm điều kiện Totem Pulse; `choose_card_2` bảo đảm có Totem Pulse trên tay; `choose_card_3` thêm một Character tiền tuyến chi phí thấp. AI hiện có sẽ triển khai mọi Totem Pulse trên tay xuống hậu tuyến và chỉ kích hoạt khi tiền tuyến bị tấn công.
+
+### Danh Sách Card
+
+Deck có 9 loại card, mỗi loại 3 bản theo `ENEMY_CARD_COUNT_DEFAULT`: **27 card**, nên không cần gợi ý thêm card để đạt ngưỡng 25.
+
+| Card code | Số lượng | ATK | DEF | Điểm cơ bản | Vai trò |
+| --- | ---: | ---: | ---: | ---: | --- |
+| [`goblin_shaman`](../../cards/natureborn/goblin/goblin_shaman.md) | 3 | 200 | 310 | 1,530 | Điều kiện kích hoạt Totem Pulse |
+| [`goblin_saboteur`](../../cards/natureborn/goblin/goblin_saboteur.md) | 3 | 230 | 280 | 1,530 | Character chiến đấu |
+| [`bao`](../../cards/natureborn/furry/bao/bao.md) | 3 | 150 | 160 | 930 | Character sát thủ chi phí thấp |
+| [`goblin_grunt`](../../cards/natureborn/goblin/goblin_grunt.md) | 3 | 100 | 210 | 930 | Character tiền tuyến chi phí thấp |
+| [`totem_pulse`](../../cards/natureborn/goblin/abilities/totem_pulse.md) | 3 | 0 | 0 | 0 | Chiến thuật chính: phản ứng phòng thủ tiền tuyến |
+| [`zombie_male`](../../cards/darkborn/undead/common/zombie_male.md) | 3 | 70 | 240 | 930 | Character phòng thủ |
+| [`zombie_female`](../../cards/darkborn/undead/common/zombie_female.md) | 3 | 50 | 200 | 750 | Character phòng thủ |
+| [`kira`](../../cards/darkborn/demon/common/kira.md) | 3 | 140 | 160 | 900 | Character chiến đấu |
+| [`lyra`](../../cards/human/lyra/lyra.md) | 3 | 170 | 240 | 1,230 | Character hỗ trợ trinh sát |
+| **Tổng** | **27** | **3,330** | **5,400** | **8,730** | Xem [công thức dùng chung](../enemy_power_score.md#công-thức) |
+
+### Chiến Thuật Totem Pulse
+
+1. Mở trận với `goblin_shaman`, `totem_pulse` và `goblin_grunt` từ ba choose card.
+2. Deploy Goblin Shaman hoặc Character đầu tiên vào tiền tuyến theo AI hiện có; deploy mọi Totem Pulse trên tay xuống hậu tuyến ở trạng thái úp.
+3. Khi Alpha gây sát thương vào tiền tuyến và Goblin Shaman chưa trigger, AI kích hoạt một Totem Pulse để cộng `def_added` cho toàn bộ Character tiền tuyến; Totem sau đó vào Void.
+4. Duy trì tối đa một Character úp để che giấu thông tin. Không dùng Brute Call hoặc combo triệu hồi, nhằm giữ lực chiến dưới Silas.
 
 ---
 

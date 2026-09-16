@@ -85,12 +85,27 @@ end
 function collect_line_cards_by_code(line, code_name)
     if type(line) ~= "table" or code_name == nil or code_name == "" then return {} end
     local matches = {}
-    for index, card in ipairs(line) do
-        if card.item_definition_code_name == code_name then
+    for index = 1, get_hand_size() do
+        local card = line[index]
+        if card ~= nil and card.item_definition_code_name == code_name then
             table.insert(matches, { card = card, index = index })
         end
     end
     return matches
+end
+
+-- Produces a compact, stable view of occupied fixed-line slots for diagnostics.
+function describe_line_cards(line)
+    local descriptions = {}
+    for index = 1, get_hand_size() do
+        local card = (line or {})[index]
+        local card_id = card ~= nil and card.inventory_item_id or ""
+        if card_id ~= "" then
+            table.insert(descriptions, "slot=" .. tostring(index - 1) ..
+                ",code=" .. tostring(card.item_definition_code_name) .. ",id=" .. card_id)
+        end
+    end
+    return table.concat(descriptions, ";")
 end
 
 -- Returns the card and its index in line matching inventory_item_id, or nil, nil.
@@ -330,6 +345,62 @@ function append_client_action(state, action)
     table.insert(state.client_actions, index .. ":" .. action)
 end
 
+-- Builds a card expose action string formatted as "side_card_expose:inventory_item_id,code_name".
+function build_card_expose_action(side, card, override_code)
+    if card == nil then return "" end
+    local inventory_item_id = ""
+    local code = override_code or ""
+    if type(card) == "table" then
+        inventory_item_id = card.inventory_item_id or ""
+        if code == "" then
+            code = card.item_definition_code_name or ""
+        end
+    else
+        inventory_item_id = tostring(card or "")
+    end
+    if inventory_item_id == "" then return "" end
+    if code ~= nil and code ~= "" then
+        return side .. "_card_expose:" .. inventory_item_id .. "," .. code
+    end
+    return side .. "_card_expose:" .. inventory_item_id
+end
+
+-- Builds a card_ability action string with card code names attached to card IDs.
+-- Format: side_card_ability:source=id,source_code=code,ability=key,target=id,target_code=code,...
+function build_card_ability_action(side, source_card, ability_key, target_card, selected_card)
+    local action = side .. "_card_ability:source=" .. (source_card and source_card.inventory_item_id or "")
+    local source_code = source_card and source_card.item_definition_code_name or ""
+    if source_code ~= "" then
+        action = action .. ",source_code=" .. source_code
+    end
+    if ability_key ~= nil and ability_key ~= "" then
+        action = action .. ",ability=" .. ability_key
+    end
+    if target_card ~= nil then
+        if type(target_card) == "table" and target_card.inventory_item_id ~= nil then
+            action = action .. ",target=" .. target_card.inventory_item_id
+            local target_code = target_card.item_definition_code_name or ""
+            if target_code ~= "" then
+                action = action .. ",target_code=" .. target_code
+            end
+        else
+            action = action .. ",target=" .. tostring(target_card)
+        end
+    end
+    if selected_card ~= nil then
+        if type(selected_card) == "table" and selected_card.inventory_item_id ~= nil then
+            action = action .. ",selected=" .. selected_card.inventory_item_id
+            local selected_code = selected_card.item_definition_code_name or ""
+            if selected_code ~= "" then
+                action = action .. ",selected_code=" .. selected_code
+            end
+        else
+            action = action .. ",selected=" .. tostring(selected_card)
+        end
+    end
+    return action
+end
+
 -- Reveals a card and appends its expose action before its move-to-void action.
 -- This is the single ordering rule for every path that removes a card from a
 -- battle line, so the client never animates a hidden card directly into void.
@@ -337,7 +408,7 @@ function append_card_sent_to_void_action(actions, side, card)
     if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return end
     card.face_up = true
     card.expose = true
-    table.insert(actions, side .. "_card_expose:" .. card.inventory_item_id)
+    table.insert(actions, build_card_expose_action(side, card))
     table.insert(actions, side .. "_card_sent_to_void:" .. card.inventory_item_id)
 end
 
@@ -363,7 +434,7 @@ function append_card_sent_to_void_client_action(state, side, card, expose_before
     card.face_up = true
     card.expose = true
     if not is_already_exposed then
-        append_client_action(state, side .. "_card_expose:" .. card.inventory_item_id)
+        append_client_action(state, build_card_expose_action(side, card))
     end
     append_client_action(state, side .. "_card_sent_to_void:" .. card.inventory_item_id)
 end
@@ -578,8 +649,8 @@ local function expose_attack_pair(state, attacker_side, defender_side, attacker_
     attacker_card.expose  = true
     defender_card.face_up = true
     defender_card.expose  = true
-    append_client_action(state, attacker_side .. "_card_expose:" .. attacker_card.inventory_item_id)
-    append_client_action(state, defender_side .. "_card_expose:" .. defender_card.inventory_item_id)
+    append_client_action(state, build_card_expose_action(attacker_side, attacker_card))
+    append_client_action(state, build_card_expose_action(defender_side, defender_card))
 end
 
 local function fire_on_attack(state, attacker_card, attacker_def, defender_card, defender_def, defender_line_key, defender_side_void, damage_dealt)

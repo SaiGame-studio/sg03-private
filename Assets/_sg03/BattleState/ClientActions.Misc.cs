@@ -42,7 +42,7 @@ namespace SG03
         {
             return this.ExecuteCardExposeInternal(
                 parameters,
-                beforeExpose: inventoryItemId => this.cardSpawning?.LoadOmegaCardData(inventoryItemId));
+                beforeExpose: (inventoryItemId, codeName) => this.cardSpawning?.LoadOmegaCardData(inventoryItemId, codeName));
         }
 
         private Coroutine ExecuteCardExpose(string[] parameters)
@@ -50,20 +50,37 @@ namespace SG03
             return this.ExecuteCardExposeInternal(parameters);
         }
 
-        private Coroutine ExecuteCardExposeInternal(string[] parameters, System.Action<string> beforeExpose = null)
+        private Coroutine ExecuteCardExposeInternal(string[] parameters, System.Action<string, string> beforeExpose = null)
         {
             if (parameters == null || parameters.Length == 0) return null;
+
             string inventoryItemId = parameters[0].Trim();
             if (string.IsNullOrEmpty(inventoryItemId)) return null;
-            // A battle-status response contains the resolved state, so an Omega
-            // card can already be marked FaceUp before this queued action runs.
-            // Prepare an Omega source card first when it goes directly to Void
-            // during init_cards; it has no ID until that action assigns one.
-            beforeExpose?.Invoke(inventoryItemId);
+
+            string codeName = parameters.Length > 1 ? parameters[1].Trim() : null;
+
             Card3DCtrl card = this.cardSpawning?.FindCardById(inventoryItemId);
+            bool alreadyExposed = card != null && card.Expose && card.FaceState == FaceState.FaceUp;
+
+            beforeExpose?.Invoke(inventoryItemId, codeName);
+
+            if (card == null) card = this.cardSpawning?.FindCardById(inventoryItemId);
             if (card == null) return null;
+
+            if (!string.IsNullOrEmpty(codeName) && (card.CodeName != codeName || card.Definition == null))
+            {
+                card.SetCodeName(codeName);
+                CardDefinitionData definition = this.battleCardDefinitions?.GetDefinitionByCode(codeName);
+                if (definition != null) card.SetDefinition(definition);
+                card.LoadCardByCodeName(codeName);
+            }
+
+            if (alreadyExposed) return null;
+
+            bool wasFaceUp = card.FaceState == FaceState.FaceUp;
             card.SetExpose(true);
-            if (card.FaceState == FaceState.FaceUp) return null;
+
+            if (wasFaceUp) return null;
             return this.StartCoroutine(this.CardExposeRoutine(card));
         }
 

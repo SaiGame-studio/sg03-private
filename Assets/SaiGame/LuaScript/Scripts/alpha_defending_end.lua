@@ -8,6 +8,7 @@ require "enemy_ai_core"
 require "enemy_ai_goblin_shaman"
 require "enemy_ai_silas"
 require "enemy_ai_the_bent_spoon_1"
+require "enemy_ai_bastion_blood"
 require "lib_ability_human"
 require "lib_ability_darkborn"
 require "lib_ability_lightborn"
@@ -226,7 +227,7 @@ local function execute_omega_attack_alpha_hp_plan(state, plan_entry)
     attacker_card.expose  = true
     -- Reveal before calculating or applying the direct attack, matching the
     -- reveal-before-damage ordering used for card-vs-card combat.
-    lib_battle_common.append_client_action(state, "omega_card_expose:" .. attacker_card.inventory_item_id)
+    lib_battle_common.append_client_action(state, lib_battle_common.build_card_expose_action("omega", attacker_card))
 
     local damage = lib_battle_common.get_attack_damage(state, attacker_def, attacker_line_key, attacker_card)
     lib_battle_common.dlog("[alpha_defending_end] omega attacking alpha_hp directly: damage=" .. damage)

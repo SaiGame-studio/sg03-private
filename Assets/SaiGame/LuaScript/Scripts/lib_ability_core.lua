@@ -299,7 +299,7 @@ function deal_damage_to_character(state, attacker_card, target_card, damage, tar
     if target_card.face_up ~= true or target_card.expose ~= true then
         target_card.face_up = true
         target_card.expose  = true
-        table.insert(damage_actions, target_side .. "_card_expose:" .. target_card.inventory_item_id)
+        table.insert(damage_actions, lib_battle_common.build_card_expose_action(target_side, target_card))
     end
 
     local final_def = target_card.final_def or 0
@@ -425,7 +425,7 @@ local function _expose_ability_selected_card(state, card)
     card.expose = true
     local side = _find_card_side(state, card)
     if side == nil or side == "unknown" then return nil end
-    return side .. "_card_expose:" .. card.inventory_item_id
+    return lib_battle_common.build_card_expose_action(side, card)
 end
 
 local function _build_ability_helpers()
@@ -495,7 +495,7 @@ function trigger_card_ability(state, source_card, trigger_event, event_data)
     source_card.face_up = true
     source_card.expose = true
     local source_side = _find_card_side(state, source_card)
-    table.insert(all_actions, source_side .. "_card_expose:" .. source_card.inventory_item_id)
+    table.insert(all_actions, lib_battle_common.build_card_expose_action(source_side, source_card))
 
     for _, ability_key in ipairs(keys) do
         local ability_actions, err = _dispatch_one_ability(state, source_card, ability_key, trigger_event, event_data)
@@ -517,7 +517,7 @@ function trigger_ability_by_key(state, source_card, ability_key, trigger_event, 
     source_card.face_up = true
     source_card.expose = true
     local source_side = _find_card_side(state, source_card)
-    local source_expose_action = source_side .. "_card_expose:" .. source_card.inventory_item_id
+    local source_expose_action = lib_battle_common.build_card_expose_action(source_side, source_card)
     local reveal_selected_before_source = ability_key == "lux_maxima"
     if not reveal_selected_before_source then
         table.insert(all_actions, source_expose_action)

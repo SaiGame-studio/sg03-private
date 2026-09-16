@@ -12,6 +12,16 @@ function find_empty_slot(line, slot_count)
     return nil
 end
 
+function count_empty_slots(line, slot_count)
+    local count = 0
+    for slot_i = 1, slot_count do
+        if is_empty_slot(line[slot_i]) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
 function find_adjacent_empty_slots(line, slot_count, required_count)
     required_count = required_count or 2
     for slot_i = 1, slot_count - required_count + 1 do
@@ -36,10 +46,65 @@ function find_card_by_code(cards, code_name, excluded_id)
     return nil
 end
 
+function count_line_cards_by_code(line, code_name)
+    local count = 0
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (line or {})[index]
+        if card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+            and card.item_definition_code_name == code_name then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+function get_omega_character_attack_damage(state, card)
+    if card == nil then return 0 end
+    local item_def = lib_battle_ai._find_item_def(state.item_defs, card.item_definition_code_name)
+    return lib_battle_common.get_attack_damage(state, item_def, "omega_front_line", card)
+end
+
+-- Returns the first Character whose printed ATK is above the threshold.
+-- This is suitable before deployment, when runtime frontline bonuses do not apply yet.
+function find_character_with_base_attack_above(cards, item_defs, threshold)
+    for _, card in ipairs(cards or {}) do
+        if lib_battle_common.check_card_type(item_defs, card, "character") then
+            local item_def = lib_battle_ai._find_item_def(item_defs, card.item_definition_code_name)
+            local base_stats = item_def ~= nil and item_def.base_stats or {}
+            local attack = tonumber(base_stats.atk)
+                or tonumber(item_def ~= nil and item_def.metadata ~= nil and item_def.metadata.atk or nil)
+                or 0
+            if attack > (threshold or 0) then return card end
+        end
+    end
+    return nil
+end
+
+-- A Character with 0 or 1 effective ATK must not consume Omega's attack plan.
+-- Uses runtime damage so active buffs and ATK floors are respected.
+function is_eligible_omega_attack_planner(state, card)
+    if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return false end
+    if card.trigger == true then return false end
+    if not lib_battle_common.check_card_type(state.item_defs, card, "character") then return false end
+    return get_omega_character_attack_damage(state, card) > 1
+end
+
+function find_eligible_omega_attack_planner(state, require_face_up)
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (state.omega_front_line or {})[index]
+        if is_eligible_omega_attack_planner(state, card)
+            and (require_face_up ~= true or card.face_up == true) then
+            return card
+        end
+    end
+    return nil
+end
+
 function find_line_card_by_code_prefer_exposed(line, code_name)
     local unexposed_fallback = nil
-    for _, card in ipairs(line or {}) do
-        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (line or {})[index]
+        if card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
             and card.item_definition_code_name == code_name then
             if card.expose == true then return card end
             if unexposed_fallback == nil then unexposed_fallback = card end
@@ -49,8 +114,9 @@ function find_line_card_by_code_prefer_exposed(line, code_name)
 end
 
 function find_untriggered_line_card_by_code(line, code_name)
-    for _, card in ipairs(line or {}) do
-        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (line or {})[index]
+        if card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
             and card.item_definition_code_name == code_name
             and card.trigger ~= true then
             return card
@@ -85,6 +151,21 @@ function append_client_actions(state, actions)
     for _, action in ipairs(actions or {}) do
         lib_battle_common.append_client_action(state, action)
     end
+end
+
+function append_omega_attack_plan(state, attacker, defender)
+    if attacker == nil then return end
+    state.omega_planning = state.omega_planning or {}
+    local defender_id = defender ~= nil and defender.inventory_item_id or "alpha_hp"
+    table.insert(state.omega_planning, {
+        action = defender ~= nil and "card_attack_card" or "omega_attack_alpha_hp",
+        attacker_inv_id = attacker.inventory_item_id,
+        defender_inv_id = defender_id,
+    })
+    lib_battle_common.append_client_action(
+        state,
+        lib_battle_ai.build_omega_planning_character_attack_action(state, attacker, defender_id)
+    )
 end
 
 function trigger_ability_and_append_actions(state, source_card, ability_key, trigger_event, event_data)
@@ -136,21 +217,53 @@ function pick_alpha_face_up_front_line_character_target(state)
     return selected_card
 end
 
--- Prefers the weakest face-up Alpha Character on the front line. If none is
--- face-up, returns the first face-down Character in slot order. Back-line cards,
--- including Ability cards, are intentionally not valid combat targets here.
-function pick_alpha_front_line_character_target(state)
-    local face_up_target = pick_alpha_face_up_front_line_character_target(state)
-    if face_up_target ~= nil then return face_up_target end
-
-    for _, card in ipairs(state.alpha_front_line or {}) do
-        local has_card = card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+local function pick_alpha_face_down_front_line_character_target(state)
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (state.alpha_front_line or {})[index]
+        local has_card = card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
         if has_card and card.face_up ~= true
             and lib_battle_common.check_card_type(state.item_defs, card, "character") then
             return card
         end
     end
     return nil
+end
+
+local function get_total_eligible_omega_attack_damage(state)
+    local total_damage = 0
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (state.omega_front_line or {})[index]
+        if is_eligible_omega_attack_planner(state, card) then
+            total_damage = total_damage + get_omega_character_attack_damage(state, card)
+        end
+    end
+    return total_damage
+end
+
+-- Prefer the weakest face-up Alpha Character while the available Omega damage
+-- can defeat it. Otherwise, reveal a face-down Alpha Character if possible.
+-- If Alpha has no face-down Character, attack the weakest face-up target anyway.
+function pick_alpha_front_line_character_target(state)
+    local face_up_target = pick_alpha_face_up_front_line_character_target(state)
+    if face_up_target == nil then
+        return pick_alpha_face_down_front_line_character_target(state)
+    end
+
+    local remaining_def = (face_up_target.final_def or 0) - (face_up_target.total_damage_received or 0)
+    local total_damage = get_total_eligible_omega_attack_damage(state)
+    if total_damage >= remaining_def then
+        return face_up_target
+    end
+
+    local face_down_target = pick_alpha_face_down_front_line_character_target(state)
+    if face_down_target ~= nil then
+        lib_battle_common.dlog("[enemy_ai] target fallback: face-up remaining_def=" ..
+            tostring(remaining_def) .. " exceeds total_damage=" .. tostring(total_damage) ..
+            "; choosing face-down target=" .. face_down_target.inventory_item_id)
+        return face_down_target
+    end
+
+    return face_up_target
 end
 
 -- Plans one Omega Character attack against defender, or Alpha HP when defender is nil.
@@ -162,15 +275,7 @@ function plan_omega_attack_with_target(state, defender)
         return nil
     end
 
-    local defender_id = defender ~= nil and defender.inventory_item_id or "alpha_hp"
-    table.insert(state.omega_planning, {
-        action = defender ~= nil and "card_attack_card" or "omega_attack_alpha_hp",
-        attacker_inv_id = attacker.inventory_item_id,
-        defender_inv_id = defender_id,
-    })
-    lib_battle_common.append_client_action(
-        state, lib_battle_ai.build_omega_planning_character_attack_action(state, attacker, defender_id)
-    )
+    append_omega_attack_plan(state, attacker, defender)
     return nil
 end
 
