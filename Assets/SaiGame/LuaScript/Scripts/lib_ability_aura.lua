@@ -113,28 +113,49 @@ local function get_aura_context(state, sources, removed_source, primary_state_ke
     return context
 end
 
--- Abyssal Mist remains on the battlefield only while its owner has a Misthy
--- in the front line. This is side-symmetric: callers supply Alpha or Omega.
-function reconcile_abyssal_mist_frontline_requirement(state, side)
-    if lib_battle_common.has_front_line_card_code(state, side, "misthy") then return {} end
+-- Moves an Aura to its owner's Void when its required Character no longer
+-- occupies that owner's front line, then removes its persistent Aura effects.
+local function reconcile_aura_frontline_requirement(state, side, required_character_code, aura_code)
+    if lib_battle_common.has_front_line_card_code(state, side, required_character_code) then return {} end
 
-    local mists = lib_battle_common.collect_side_cards_by_code(state, side, "abyssal_mist")
-    if #mists == 0 then return {} end
+    local auras = lib_battle_common.collect_side_cards_by_code(state, side, aura_code)
+    if #auras == 0 then return {} end
 
     local void_key = side .. "_the_void"
     state[void_key] = state[void_key] or {}
     local actions = {}
-    for _, match in ipairs(mists) do
+    for _, match in ipairs(auras) do
         lib_battle_common.remove_card_from_line(match.line, match.card.inventory_item_id)
         table.insert(state[void_key], match.card)
         lib_battle_common.append_card_sent_to_void_action(actions, side, match.card)
     end
 
-    local aura_actions = refresh_removed_aura(state, "abyssal_mist", {
-        id = mists[1].card.inventory_item_id,
+    local aura_actions = refresh_removed_aura(state, aura_code, {
+        id = auras[1].card.inventory_item_id,
         side = side,
     })
     for _, action in ipairs(aura_actions) do table.insert(actions, action) end
+    return actions
+end
+
+-- Abyssal Mist remains on the battlefield only while its owner has a Misthy
+-- in the front line. This is side-symmetric: callers supply Alpha or Omega.
+function reconcile_abyssal_mist_frontline_requirement(state, side)
+    return reconcile_aura_frontline_requirement(state, side, "misthy", "abyssal_mist")
+end
+
+-- Blood Mist remains on the battlefield only while its owner has a Mireya in
+-- the front line. This is side-symmetric: callers supply Alpha or Omega.
+function reconcile_blood_mist_frontline_requirement(state, side)
+    return reconcile_aura_frontline_requirement(state, side, "mireya", "blood_mist")
+end
+
+-- Reconciles Aura cards whose continued presence depends on a front-line
+-- Character after any Character leaves a battle line.
+function reconcile_frontline_aura_requirements(state, side)
+    local actions = reconcile_abyssal_mist_frontline_requirement(state, side)
+    local blood_mist_actions = reconcile_blood_mist_frontline_requirement(state, side)
+    for _, action in ipairs(blood_mist_actions) do table.insert(actions, action) end
     return actions
 end
 
@@ -307,12 +328,14 @@ function abyssal_mist_execute(state, source_card, event_data, helpers)
     return actions, nil
 end
 
--- Blood Mist is an Aura that lowers the final ATK of enemy Characters. Its
--- value is stored as a negative persistent ATK bonus so normal Aura removal
--- restores every affected card through the shared refresh path.
+-- Blood Mist is an Aura that lowers the final ATK of enemy Human, Lightborn,
+-- and Natureborn Characters. Darkborn Characters are unaffected. Its value is
+-- stored as a negative persistent ATK bonus so normal Aura removal restores
+-- every affected card through the shared refresh path.
 local function refresh_blood_mist_target(state, target_card, target_side, context, source_ids)
     local is_eligible = context.source_id ~= nil and target_side ~= context.source_side
-        and lib_battle_common.check_card_type(state.item_defs, target_card, "character")
+        and lib_battle_common.is_character_of_races(
+            state.item_defs, target_card, { "human", "lightborn", "natureborn" })
     local changed = apply_persistent_stat_bonus(state, target_card, "atk", context.source_id,
         is_eligible and -context.atk_reduced or 0, source_ids)
     if is_eligible then

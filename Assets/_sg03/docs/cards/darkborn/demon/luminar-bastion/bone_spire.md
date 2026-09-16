@@ -18,3 +18,8 @@ Bone Spire là trụ xương do Sythra triệu gọi. Khi Sythra triệu gọi �
 
 - [Sythra](sythra.md)
 - [Blood Spire](blood_spire.md)
+
+## Used by AI
+
+- [Bastion Blood](../../../../pve/normal_enemies/bastion_blood.md)
+

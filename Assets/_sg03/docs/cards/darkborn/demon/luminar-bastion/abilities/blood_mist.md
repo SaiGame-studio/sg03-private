@@ -17,11 +17,13 @@ Blood Mist chỉ kích hoạt khi target được chọn là Mireya và hàng tr
 - Target phải là [Mireya](../mireya.md).
 - Blood Mist phải ở hàng sau của phe sở hữu.
 - Hàng trước phe sở hữu phải có ít nhất một [Blood Spire](../blood_spire.md).
+- Phe sở hữu phải còn ít nhất một [Mireya](../mireya.md) ở hàng trước để Blood Mist tiếp tục ở trên chiến trường.
 
 ## Hiệu Ứng
 
-- Mỗi Character enemy bị giảm `final_atk` theo giá trị `atk_reduced` dương của Blood Mist.
+- Character enemy thuộc Human, Lightborn hoặc Natureborn bị giảm `final_atk` theo giá trị `atk_reduced` dương của Blood Mist; Darkborn không bị ảnh hưởng.
 - `final_atk` sau giảm không thấp hơn `0`.
+- Nếu không còn Mireya nào ở hàng trước phe sở hữu, Blood Mist tự chuyển vào `the_void` của phe đó.
 - Khi Blood Mist rời chiến trường, toàn bộ giảm ATK do Aura này áp dụng bị gỡ.
 
 ## Kỹ Năng Khắc Chế

@@ -1,4 +1,5 @@
 require "lib_battle_common"
+require "lib_ability_aura"
 
 local function validate_payload()
     if type(payload.source_inventory_item_id) ~= "string" or payload.source_inventory_item_id == "" then
@@ -49,6 +50,10 @@ local function move_target_to_owner_void(state, target_card, target_line, target
     if state[void_key] == nil then state[void_key] = {} end
     table.insert(state[void_key], target_card)
     lib_battle_common.append_card_sent_to_void_client_action(state, target_side, target_card)
+    local aura_actions = lib_ability_aura.reconcile_frontline_aura_requirements(state, target_side)
+    for _, action in ipairs(aura_actions) do
+        lib_battle_common.append_client_action(state, action)
+    end
     return nil
 end
 
