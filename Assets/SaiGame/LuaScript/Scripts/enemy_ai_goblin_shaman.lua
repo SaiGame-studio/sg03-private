@@ -63,7 +63,7 @@ function deploy(state)
     -- Keep the one-character-per-turn rule. Retain hidden information while
     -- Alpha still has a Character in its front line.
     if #character_cards >= 1 then
-        local deploy_card = character_cards[1]
+        local deploy_card = enemy_ai_core.find_card_by_code(character_cards, "goblin_shaman", nil) or character_cards[1]
         local face_up = not (has_face_up_character and alpha_front_line_character_count > 0)
         for slot_i = 1, slot_count do
             local existing = omega_front_line[slot_i]
