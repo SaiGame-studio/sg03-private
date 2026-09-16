@@ -39,6 +39,10 @@ local function try_trigger_blood_mist(state)
     if blood_spire == nil or mireya == nil then
         return nil
     end
+    if mireya.trigger == true then
+        lib_battle_common.dlog("[entity_ai] bastion_blood: skip blood_mist - mireya is triggered")
+        return nil
+    end
 
     local backup_mist = nil
     for _, card in ipairs(back_line) do

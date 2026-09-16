@@ -378,6 +378,9 @@ function blood_mist_execute(state, source_card, event_data, helpers)
         or helpers.find_card_side(state, target_card) ~= source_side then
         return {}, "blood_mist requires Mireya as an allied target"
     end
+    if target_card.trigger == true then
+        return {}, "blood_mist requires untriggered Mireya in own front_line"
+    end
     if not helpers.lib_battle_common.has_front_line_card_code(state, source_side, "blood_spire") then
         return {}, "blood_mist requires blood_spire in own front_line"
     end
