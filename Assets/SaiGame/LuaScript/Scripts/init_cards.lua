@@ -368,6 +368,49 @@ local function alpha_init_void(state)
     return move_auto_void_cards(state, "alpha")
 end
 
+-- Moves up to four configured Omega card instances from its source to Void
+-- before opening-hand selection. Unlike ItemDefinition metadata.location,
+-- this allows an enemy deck to split copies of the same card between Void and
+-- source (for example, two Bone Spires in Void and one left for random draw).
+local function omega_init_void(state)
+    lib_battle_common.dlog("[init_cards] == omega_init_void ==")
+    local omega = state.metadata ~= nil and state.metadata.omega or nil
+    local preset = omega ~= nil and omega.metadata or nil
+    if preset == nil then
+        return "metadata.omega.metadata not found in session state"
+    end
+
+    local source = state.omega_the_source
+    if source == nil then
+        return "omega_the_source not found in session state"
+    end
+    if state.omega_the_void == nil then
+        state.omega_the_void = {}
+    end
+
+    for slot_index = 1, 4 do
+        local code = preset["void_card_" .. slot_index]
+        if code ~= nil and code ~= "" then
+            local card = find_and_remove_by_code(source, code)
+            if card == nil then
+                lib_battle_common.dlog("[init_cards] Warning: omega void_card_" ..
+                    slot_index .. " (" .. code .. ") not found in omega_the_source")
+            else
+                if card.id == nil or card.id == "" then card.id = gen_id() end
+                if card.inventory_item_id == nil or card.inventory_item_id == "" then
+                    card.inventory_item_id = gen_id()
+                end
+                table.insert(state.omega_the_void, card)
+                lib_battle_common.append_card_sent_to_void_client_action(state, "omega", card, false)
+                lib_battle_common.dlog("[init_cards] Moved omega card to void (void_card_" ..
+                    slot_index .. "): " .. card.inventory_item_id)
+            end
+        end
+    end
+
+    return move_auto_void_cards(state, "omega")
+end
+
 -- Draws omega's opening hand: selected cards plus priority-or-random cards to reach five.
 -- Returns err or nil.
 local function omega_init_cards(state)
@@ -405,7 +448,7 @@ local function main()
         output.error = void_err; return
     end
 
-    local omega_void_err = move_auto_void_cards(state, "omega")
+    local omega_void_err = omega_init_void(state)
     if omega_void_err ~= nil then
         output.error = omega_void_err; return
     end
