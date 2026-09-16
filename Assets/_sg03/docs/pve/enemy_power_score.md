@@ -34,6 +34,7 @@ Với card không có `base_stats.atk` hoặc `base_stats.def`, giá trị thi�
 | Aura chủ động có điều kiện và có thể tái kích hoạt | 200 |
 | Giữ slot để bảo toàn chuỗi combo | 100 |
 | Phản ứng phòng thủ Ability trước khi đòn đánh giải quyết | 150 |
+| Ability expose Character úp trước khi lập kế hoạch tấn công | 100 |
 
 Chỉ cộng một dòng khi script AI và Ability handler hiện có thật sự thực thi mechanic đó. Không dùng bảng này để suy diễn buff, debuff hoặc synergy không tồn tại trong source.
 
@@ -110,3 +111,38 @@ Metadata Silas được cung cấp không có `void_card_n`, nên điểm Void t
 `8,640 + 1,020 + 0 + 450 = 10,110`
 
 **Điểm lực chiến dự kiến của Silas: 10,110.** Điểm này dùng để so sánh cấu hình Enemy; trận thực tế vẫn phụ thuộc lượt rút, điều kiện từ turn 4, vị trí trống và Goblin Brute trong Void.
+
+## Ví Dụ: The Bent Spoon #1
+
+Nguồn card và metadata: [The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md).
+
+### 1. Điểm Bộ Bài
+
+`3 × ((170 + 240) + (0 + 0) + (70 + 240) + (50 + 200) + (140 + 160) + (0 + 0) + (200 + 400) + (50 + 160) + (200 + 310)) = 7,770`
+
+`eagle_eye` và `abyssal_mist` không có ATK/DEF cơ bản trong định nghĩa hiện có, nên mỗi Ability nhận `0` ở phần lực chiến cơ bản.
+
+### 2. Điểm Choose
+
+`misthy` + `lyra` + `eagle_eye`:
+
+`(200 + 400) + (170 + 240) + (0 + 0) = 1,010`
+
+### 3. Điểm Void
+
+Metadata entity không khai báo `void_card_n`, nên điểm Void từ metadata là `0`. Abyssal Mist chỉ được chuyển từ Void ra hậu tuyến sau khi Misthy kết liễu theo Mist Execution; điều đó được chấm tại chiến thuật, không nhân thêm điểm Void từ metadata.
+
+### 4. Điểm Chiến Thuật
+
+| Mechanic The Bent Spoon #1 | Điểm | Bằng chứng |
+| --- | ---: | --- |
+| Điều phối đòn mồi cho Misthy kết liễu | 200 | [`enemy_ai_the_bent_spoon_1.lua`](../../../SaiGame/LuaScript/Scripts/enemy_ai_the_bent_spoon_1.lua) tính `remaining_def` và chọn setup attacker. |
+| Abyssal Mist Aura sau đòn kết liễu của Misthy | 200 | [Abyssal Mist](../cards/darkborn/demon/common/abilities/abyssal_mist.md) và Mist Execution trong `lib_ability_character_passives.lua`. |
+| Eagle Eye expose Character úp trước khi tấn công | 100 | [Eagle Eye](../cards/human/lyra/eagle_eye.md) và `stage_eagle_eye` trong AI. |
+| **Tổng** | **500** | |
+
+### Kết Quả
+
+`7,770 + 1,010 + 0 + 500 = 9,280`
+
+**Điểm lực chiến dự kiến của The Bent Spoon #1: 9,280.** Điểm này dùng để so sánh cấu hình Enemy; trận thực tế vẫn phụ thuộc Misthy có thể kết liễu, card Abyssal Mist nằm trong Void và trạng thái lộ diện của mục tiêu Alpha.

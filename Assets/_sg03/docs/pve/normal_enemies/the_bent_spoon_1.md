@@ -1,5 +1,7 @@
 # Chiến thuật AI The Bent Spoon #1
 
+## Thông Tin Enemy
+
 > Trạng thái: Đã triển khai AI
 >
 > Phân loại tài liệu: Normal Enemy
@@ -9,6 +11,17 @@
 > Enemy key: `the_bent_spoon_1`
 >
 > Script chính: [`enemy_ai_the_bent_spoon_1.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_the_bent_spoon_1.lua)
+
+> Lực chiến dự kiến:
+>
+> **9,280 điểm**
+>
+>   - Điểm bộ bài: 7,770
+>   - Điểm choose: 1,010
+>   - Điểm Void: 0
+>   - Điểm chiến thuật: 500
+>
+> Xem [cách tính chi tiết](../enemy_power_score.md#ví-dụ-the-bent-spoon-1).
 
 ## Tổng quan
 
@@ -25,7 +38,7 @@
 
 ## Cấu hình Entity & Bộ Bài
 
-Theo cấu hình NPC The Bent Spoon #1:
+Theo dữ liệu entity The Bent Spoon #1:
 
 | Thuộc tính | Giá trị |
 | --- | --- |
@@ -34,22 +47,24 @@ Theo cấu hình NPC The Bent Spoon #1:
 | Type | NPC |
 | Category | Normal Enemy |
 | `choose_card_1` | `misthy` |
-| `choose_card_2` | `abyssal_mist` |
+| `choose_card_2` | `lyra` |
 | `choose_card_3` | `eagle_eye` |
+| Drop Pack IDs | Win Items; Win Game Pack |
 
 Danh sách 27 card của The Bent Spoon #1 (9 loại, mỗi loại 3 bản):
 
-| Card code | Số lượng | Vai trò |
-| --- | ---: | --- |
-| `misthy` | 3 | Character chủ lực dồn sát thương kết liễu |
-| `lyra` | 3 | Character chiến đấu & trigger Eagle Eye |
-| `eagle_eye` | 3 | Ability của Lyra lật bài úp đối phương |
-| `abyssal_mist` | 3 | Ability hỗ trợ Misthy |
-| `kira` | 3 | Character chiến đấu |
-| `goblin_shaman` | 3 | Character chiến đấu |
-| `skeleton` | 3 | Character chiến đấu |
-| `zombie_male` | 3 | Character chiến đấu |
-| `zombie_female` | 3 | Character chiến đấu |
+| Card code | Số lượng | ATK | DEF | Điểm cơ bản | Vai trò |
+| --- | ---: | ---: | ---: | ---: | --- |
+| [`lyra`](../../cards/human/lyra/lyra.md) | 3 | 170 | 240 | 1,230 | Character chiến đấu & trigger Eagle Eye |
+| [`eagle_eye`](../../cards/human/lyra/eagle_eye.md) | 3 | 0 | 0 | 0 | Ability expose Character úp của đối thủ |
+| [`zombie_male`](../../cards/darkborn/undead/common/zombie_male.md) | 3 | 70 | 240 | 930 | Character chiến đấu |
+| [`zombie_female`](../../cards/darkborn/undead/common/zombie_female.md) | 3 | 50 | 200 | 750 | Character chiến đấu |
+| [`kira`](../../cards/darkborn/demon/common/kira.md) | 3 | 140 | 160 | 900 | Character chiến đấu |
+| [`abyssal_mist`](../../cards/darkborn/demon/common/abilities/abyssal_mist.md) | 3 | 0 | 0 | 0 | Ability Aura; `atk_added`/`def_added` được chấm ở chiến thuật |
+| [`misthy`](../../cards/darkborn/demon/common/misthy.md) | 3 | 200 | 400 | 1,800 | Character chủ lực dồn sát thương kết liễu |
+| [`skeleton`](../../cards/darkborn/undead/Ria/skeleton.md) | 3 | 50 | 160 | 630 | Character chiến đấu |
+| [`goblin_shaman`](../../cards/natureborn/goblin/goblin_shaman.md) | 3 | 200 | 310 | 1,530 | Character chiến đấu |
+| **Tổng** | **27** | **2,640** | **5,130** | **7,770** | Xem [cách tính lực chiến](../enemy_power_score.md) |
 
 ---
 
