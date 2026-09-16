@@ -10,9 +10,9 @@
 
 > Lực chiến dự kiến:
 >
-> **9,970 điểm**
+> **9,700 điểm**
 >
->   - Điểm bộ bài: 9,000
+>   - Điểm bộ bài: 8,730
 >   - Điểm choose: 820
 >   - Điểm Void: 0
 >   - Điểm chiến thuật: 150
@@ -52,15 +52,15 @@ Deck có 9 loại card, mỗi loại 3 bản theo `ENEMY_CARD_COUNT_DEFAULT`: **
 | Card code | Số lượng | ATK | DEF | Điểm cơ bản | Vai trò |
 | --- | ---: | ---: | ---: | ---: | --- |
 | [`goblin_shaman`](../../cards/natureborn/goblin/goblin_shaman.md) | 3 | 200 | 310 | 1,530 | Điều kiện kích hoạt Totem Pulse |
-| [`totem_pulse`](../../cards/natureborn/goblin/abilities/totem_pulse.md) | 3 | 0 | 0 | 0 | Chiến thuật chính: phản ứng phòng thủ tiền tuyến |
-| [`goblin_grunt`](../../cards/natureborn/goblin/goblin_grunt.md) | 3 | 100 | 210 | 930 | Character tiền tuyến chi phí thấp |
 | [`goblin_saboteur`](../../cards/natureborn/goblin/goblin_saboteur.md) | 3 | 230 | 280 | 1,530 | Character chiến đấu |
-| [`skeleton`](../../cards/darkborn/undead/Ria/skeleton.md) | 3 | 50 | 160 | 630 | Character phòng thủ chi phí thấp |
+| [`bao`](../../cards/natureborn/furry/bao/bao.md) | 3 | 150 | 160 | 930 | Character sát thủ chi phí thấp |
+| [`goblin_grunt`](../../cards/natureborn/goblin/goblin_grunt.md) | 3 | 100 | 210 | 930 | Character tiền tuyến chi phí thấp |
+| [`totem_pulse`](../../cards/natureborn/goblin/abilities/totem_pulse.md) | 3 | 0 | 0 | 0 | Chiến thuật chính: phản ứng phòng thủ tiền tuyến |
 | [`zombie_male`](../../cards/darkborn/undead/common/zombie_male.md) | 3 | 70 | 240 | 930 | Character phòng thủ |
 | [`zombie_female`](../../cards/darkborn/undead/common/zombie_female.md) | 3 | 50 | 200 | 750 | Character phòng thủ |
 | [`kira`](../../cards/darkborn/demon/common/kira.md) | 3 | 140 | 160 | 900 | Character chiến đấu |
-| [`misthy`](../../cards/darkborn/demon/common/misthy.md) | 3 | 200 | 400 | 1,800 | Character chiến đấu có DEF cao |
-| **Tổng** | **27** | **3,120** | **5,880** | **9,000** | Xem [công thức dùng chung](../enemy_power_score.md#công-thức) |
+| [`lyra`](../../cards/human/lyra/lyra.md) | 3 | 170 | 240 | 1,230 | Character hỗ trợ trinh sát |
+| **Tổng** | **27** | **3,330** | **5,400** | **8,730** | Xem [công thức dùng chung](../enemy_power_score.md#công-thức) |
 
 ### Chiến Thuật Totem Pulse
 
