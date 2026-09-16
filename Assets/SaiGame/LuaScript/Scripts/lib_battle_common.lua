@@ -345,6 +345,16 @@ function append_client_action(state, action)
     table.insert(state.client_actions, index .. ":" .. action)
 end
 
+-- Builds a card expose action string formatted as "side_card_expose:inventory_item_id,code_name".
+function build_card_expose_action(side, card)
+    if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return "" end
+    local code = card.item_definition_code_name or ""
+    if code ~= "" then
+        return side .. "_card_expose:" .. card.inventory_item_id .. "," .. code
+    end
+    return side .. "_card_expose:" .. card.inventory_item_id
+end
+
 -- Reveals a card and appends its expose action before its move-to-void action.
 -- This is the single ordering rule for every path that removes a card from a
 -- battle line, so the client never animates a hidden card directly into void.
@@ -352,7 +362,7 @@ function append_card_sent_to_void_action(actions, side, card)
     if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return end
     card.face_up = true
     card.expose = true
-    table.insert(actions, side .. "_card_expose:" .. card.inventory_item_id)
+    table.insert(actions, build_card_expose_action(side, card))
     table.insert(actions, side .. "_card_sent_to_void:" .. card.inventory_item_id)
 end
 
@@ -378,7 +388,7 @@ function append_card_sent_to_void_client_action(state, side, card, expose_before
     card.face_up = true
     card.expose = true
     if not is_already_exposed then
-        append_client_action(state, side .. "_card_expose:" .. card.inventory_item_id)
+        append_client_action(state, build_card_expose_action(side, card))
     end
     append_client_action(state, side .. "_card_sent_to_void:" .. card.inventory_item_id)
 end
@@ -593,8 +603,8 @@ local function expose_attack_pair(state, attacker_side, defender_side, attacker_
     attacker_card.expose  = true
     defender_card.face_up = true
     defender_card.expose  = true
-    append_client_action(state, attacker_side .. "_card_expose:" .. attacker_card.inventory_item_id)
-    append_client_action(state, defender_side .. "_card_expose:" .. defender_card.inventory_item_id)
+    append_client_action(state, build_card_expose_action(attacker_side, attacker_card))
+    append_client_action(state, build_card_expose_action(defender_side, defender_card))
 end
 
 local function fire_on_attack(state, attacker_card, attacker_def, defender_card, defender_def, defender_line_key, defender_side_void, damage_dealt)

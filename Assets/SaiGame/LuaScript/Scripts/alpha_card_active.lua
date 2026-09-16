@@ -298,7 +298,7 @@ local function resolve_alpha_attack(state,
         attacker_card.trigger = true
         attacker_card.face_up = true
         attacker_card.expose  = true
-        lib_battle_common.append_client_action(state, "alpha_card_expose:" .. attacker_card.inventory_item_id)
+        lib_battle_common.append_client_action(state, lib_battle_common.build_card_expose_action("alpha", attacker_card))
         return nil
     end
     lib_battle_common.dlog("[alpha_card_active] final_damage=" .. final_damage)
@@ -362,7 +362,7 @@ local function attack_omega_hp(session_id, state, attacker_card, attacker_line_k
     attacker_card.expose   = true
     -- Reveal before calculating or applying the direct attack, matching the
     -- reveal-before-damage ordering used for card-vs-card combat.
-    lib_battle_common.append_client_action(state, "alpha_card_expose:" .. attacker_card.inventory_item_id)
+    lib_battle_common.append_client_action(state, lib_battle_common.build_card_expose_action("alpha", attacker_card))
 
     local damage = compute_damage(state, attacker_card, attacker_def, attacker_line_key)
     lib_battle_common.dlog("[alpha_card_active] attacking omega_hp directly: damage=" .. damage)

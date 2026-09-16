@@ -554,7 +554,7 @@ namespace SG03
         /// Applies code name, fallback name, texture, and definition to an omega card
         /// found by inventoryItemId. Called before flipping the card face-up on expose.
         /// </summary>
-        public void LoadOmegaCardData(string inventoryItemId)
+        public void LoadOmegaCardData(string inventoryItemId, string overrideCodeName = null)
         {
             Card3DCtrl card = this.FindCardById(inventoryItemId);
             if (card == null)
@@ -562,7 +562,7 @@ namespace SG03
                 card = this.PrepareOmegaSourceCardForVoid(inventoryItemId);
             }
             if (card == null) return;
-            this.ApplyOmegaCardData(card, inventoryItemId);
+            this.ApplyOmegaCardData(card, inventoryItemId, overrideCodeName);
         }
 
         private Card3DCtrl PrepareOmegaSourceCardForVoid(string inventoryItemId)
@@ -580,13 +580,16 @@ namespace SG03
             return card;
         }
 
-        private void ApplyOmegaCardData(Card3DCtrl card, string inventoryItemId)
+        private void ApplyOmegaCardData(Card3DCtrl card, string inventoryItemId, string overrideCodeName = null)
         {
             if (card == null) return;
             BattleCardSlot slot = this.FindOmegaSlotById(inventoryItemId);
-            if (slot == null) return;
-            card.SetExpose(slot.expose);
-            string code = string.IsNullOrEmpty(slot.item_definition_code_name) ? card.CodeName : slot.item_definition_code_name;
+            if (slot != null) card.SetExpose(slot.expose);
+            string code = !string.IsNullOrEmpty(overrideCodeName)
+                ? overrideCodeName
+                : slot != null && !string.IsNullOrEmpty(slot.item_definition_code_name)
+                    ? slot.item_definition_code_name
+                    : card.CodeName;
             if (string.IsNullOrEmpty(code)) return;
             card.SetCodeName(code);
             CardDefinitionData omegaLoadDef = this.battleCardDefinitions?.GetDefinitionByCode(code);
