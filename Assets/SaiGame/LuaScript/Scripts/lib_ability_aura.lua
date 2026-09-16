@@ -113,12 +113,32 @@ local function get_aura_context(state, sources, removed_source, primary_state_ke
     return context
 end
 
--- Moves an Aura to its owner's Void when its required Character no longer
--- occupies that owner's front line, then removes its persistent Aura effects.
-local function reconcile_aura_frontline_requirement(state, side, required_character_code, aura_code)
-    if lib_battle_common.has_front_line_card_code(state, side, required_character_code) then return {} end
+local function has_required_front_line_cards(state, side, required_card_codes)
+    for _, required_card_code in ipairs(required_card_codes or {}) do
+        if not lib_battle_common.has_front_line_card_code(state, side, required_card_code) then
+            return false
+        end
+    end
+    return true
+end
 
-    local auras = lib_battle_common.collect_side_cards_by_code(state, side, aura_code)
+local function collect_reconcilable_aura_cards(state, side, aura_code, active_flag_key)
+    local reconcilable_auras = {}
+    for _, aura_data in ipairs(lib_battle_common.collect_side_cards_by_code(state, side, aura_code)) do
+        if active_flag_key == nil or aura_data.card[active_flag_key] == true then
+            table.insert(reconcilable_auras, aura_data)
+        end
+    end
+    return reconcilable_auras
+end
+
+-- Moves an Aura to its owner's Void when any card it requires no longer
+-- occupies that owner's front line, then removes its persistent Aura effects.
+local function reconcile_aura_frontline_requirements(
+    state, side, required_card_codes, aura_code, active_flag_key)
+    if has_required_front_line_cards(state, side, required_card_codes) then return {} end
+
+    local auras = collect_reconcilable_aura_cards(state, side, aura_code, active_flag_key)
     if #auras == 0 then return {} end
 
     local void_key = side .. "_the_void"
@@ -141,13 +161,15 @@ end
 -- Abyssal Mist remains on the battlefield only while its owner has a Misthy
 -- in the front line. This is side-symmetric: callers supply Alpha or Omega.
 function reconcile_abyssal_mist_frontline_requirement(state, side)
-    return reconcile_aura_frontline_requirement(state, side, "misthy", "abyssal_mist")
+    return reconcile_aura_frontline_requirements(state, side, { "misthy" }, "abyssal_mist")
 end
 
--- Blood Mist remains on the battlefield only while its owner has a Mireya in
--- the front line. This is side-symmetric: callers supply Alpha or Omega.
+-- Blood Mist remains on the battlefield only while its owner has both Mireya
+-- and Blood Spire in the front line. This is side-symmetric: callers supply
+-- Alpha or Omega.
 function reconcile_blood_mist_frontline_requirement(state, side)
-    return reconcile_aura_frontline_requirement(state, side, "mireya", "blood_mist")
+    return reconcile_aura_frontline_requirements(
+        state, side, { "mireya", "blood_spire" }, "blood_mist", "blood_mist_active")
 end
 
 -- Reconciles Aura cards whose continued presence depends on a front-line
