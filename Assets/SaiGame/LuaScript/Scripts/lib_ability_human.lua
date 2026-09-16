@@ -49,8 +49,8 @@ function eagle_eye_execute(state, source_card, event_data, helpers)
     local target_side = helpers.find_card_side(state, target_card)
     local ability_actions = {
         source_side .. "_attack:" .. lyra_card.inventory_item_id .. "," .. target_card.inventory_item_id,
-        source_side .. "_card_expose:" .. lyra_card.inventory_item_id,
-        target_side .. "_card_expose:" .. target_card.inventory_item_id,
+        helpers.lib_battle_common.build_card_expose_action(source_side, lyra_card),
+        helpers.lib_battle_common.build_card_expose_action(target_side, target_card),
         source_side .. "_card_ability:source=" .. source_card.inventory_item_id .. ",ability=eagle_eye,target=" .. target_card.inventory_item_id .. ",required=" .. lyra_card.inventory_item_id
     }
 

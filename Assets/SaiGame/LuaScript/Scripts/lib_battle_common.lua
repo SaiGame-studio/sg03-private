@@ -346,13 +346,59 @@ function append_client_action(state, action)
 end
 
 -- Builds a card expose action string formatted as "side_card_expose:inventory_item_id,code_name".
-function build_card_expose_action(side, card)
-    if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return "" end
-    local code = card.item_definition_code_name or ""
-    if code ~= "" then
-        return side .. "_card_expose:" .. card.inventory_item_id .. "," .. code
+function build_card_expose_action(side, card, override_code)
+    if card == nil then return "" end
+    local inventory_item_id = ""
+    local code = override_code or ""
+    if type(card) == "table" then
+        inventory_item_id = card.inventory_item_id or ""
+        if code == "" then
+            code = card.item_definition_code_name or ""
+        end
+    else
+        inventory_item_id = tostring(card or "")
     end
-    return side .. "_card_expose:" .. card.inventory_item_id
+    if inventory_item_id == "" then return "" end
+    if code ~= nil and code ~= "" then
+        return side .. "_card_expose:" .. inventory_item_id .. "," .. code
+    end
+    return side .. "_card_expose:" .. inventory_item_id
+end
+
+-- Builds a card_ability action string with card code names attached to card IDs.
+-- Format: side_card_ability:source=id,source_code=code,ability=key,target=id,target_code=code,...
+function build_card_ability_action(side, source_card, ability_key, target_card, selected_card)
+    local action = side .. "_card_ability:source=" .. (source_card and source_card.inventory_item_id or "")
+    local source_code = source_card and source_card.item_definition_code_name or ""
+    if source_code ~= "" then
+        action = action .. ",source_code=" .. source_code
+    end
+    if ability_key ~= nil and ability_key ~= "" then
+        action = action .. ",ability=" .. ability_key
+    end
+    if target_card ~= nil then
+        if type(target_card) == "table" and target_card.inventory_item_id ~= nil then
+            action = action .. ",target=" .. target_card.inventory_item_id
+            local target_code = target_card.item_definition_code_name or ""
+            if target_code ~= "" then
+                action = action .. ",target_code=" .. target_code
+            end
+        else
+            action = action .. ",target=" .. tostring(target_card)
+        end
+    end
+    if selected_card ~= nil then
+        if type(selected_card) == "table" and selected_card.inventory_item_id ~= nil then
+            action = action .. ",selected=" .. selected_card.inventory_item_id
+            local selected_code = selected_card.item_definition_code_name or ""
+            if selected_code ~= "" then
+                action = action .. ",selected_code=" .. selected_code
+            end
+        else
+            action = action .. ",selected=" .. tostring(selected_card)
+        end
+    end
+    return action
 end
 
 -- Reveals a card and appends its expose action before its move-to-void action.

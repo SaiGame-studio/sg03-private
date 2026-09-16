@@ -183,7 +183,7 @@ function titan_spear_sweep_execute(state, source_card, event_data, helpers)
     titan_card.expose = true
 
     local ability_actions = {
-        source_side .. "_card_expose:" .. titan_card.inventory_item_id,
+        helpers.lib_battle_common.build_card_expose_action(source_side, titan_card),
         source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
             ",ability=titan_spear_sweep,selected=" .. titan_card.inventory_item_id,
     }

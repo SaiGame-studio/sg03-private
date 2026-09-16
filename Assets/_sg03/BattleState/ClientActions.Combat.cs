@@ -226,20 +226,22 @@ namespace SG03
                 string[] kv = p.Split('=');
                 if (kv.Length == 2)
                 {
-                    string key = kv[0].Trim().ToLower();
-                    string value = kv[1].Trim();
-                    if (key == "source") sourceId = value;
-                    else if (key == "ability") abilityName = value;
-                    else if (key == "target") targetId = value;
-                    else if (key == "selected") selectedId = value;
-                    else if (key == "caster") casterId = value;
+                    string key = kv[0].Trim().ToLowerInvariant();
+                    string rawVal = kv[1].Trim();
+                    string value = rawVal.Split(',')[0].Trim();
+
+                    if (key == "source" || key == "source_id") sourceId = value;
+                    else if (key == "ability" || key == "ability_name") abilityName = value;
+                    else if (key == "target" || key == "target_id") targetId = value;
+                    else if (key == "selected" || key == "selected_id") selectedId = value;
+                    else if (key == "caster" || key == "caster_id") casterId = value;
                 }
             }
 
             // Fallback for old format just in case
             if (string.IsNullOrEmpty(sourceId) && parameters.Length > 0 && !parameters[0].Contains("="))
             {
-                sourceId = parameters[0].Trim();
+                sourceId = parameters[0].Trim().Split(',')[0];
             }
 
             if (string.IsNullOrEmpty(sourceId)) return null;
