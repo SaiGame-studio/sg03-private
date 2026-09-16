@@ -93,6 +93,17 @@ local function deploy_character_strategy(state, front_line, remaining_cards, slo
         if can_deploy_character and mireya_card ~= nil and slot_i ~= nil then
             enemy_ai_core.deploy_card(front_line, slot_i, mireya_card, true, front_deployed)
             table.insert(deployed_ids, mireya_card.id)
+            return
+        end
+
+        local character_cards = lib_battle_ai._split_cards_by_type(remaining_cards, state.item_defs)
+        for _, card in ipairs(character_cards) do
+            if can_deploy_character and slot_i ~= nil then
+                local face_up = card.item_definition_code_name == "sythra" or card.item_definition_code_name == "mireya"
+                enemy_ai_core.deploy_card(front_line, slot_i, card, face_up, front_deployed)
+                table.insert(deployed_ids, card.id)
+                break
+            end
         end
         return
     end
