@@ -217,21 +217,53 @@ function pick_alpha_face_up_front_line_character_target(state)
     return selected_card
 end
 
--- Prefers the weakest face-up Alpha Character on the front line. If none is
--- face-up, returns the first face-down Character in slot order. Back-line cards,
--- including Ability cards, are intentionally not valid combat targets here.
-function pick_alpha_front_line_character_target(state)
-    local face_up_target = pick_alpha_face_up_front_line_character_target(state)
-    if face_up_target ~= nil then return face_up_target end
-
-    for _, card in ipairs(state.alpha_front_line or {}) do
-        local has_card = card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+local function pick_alpha_face_down_front_line_character_target(state)
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (state.alpha_front_line or {})[index]
+        local has_card = card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
         if has_card and card.face_up ~= true
             and lib_battle_common.check_card_type(state.item_defs, card, "character") then
             return card
         end
     end
     return nil
+end
+
+local function get_total_eligible_omega_attack_damage(state)
+    local total_damage = 0
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (state.omega_front_line or {})[index]
+        if is_eligible_omega_attack_planner(state, card) then
+            total_damage = total_damage + get_omega_character_attack_damage(state, card)
+        end
+    end
+    return total_damage
+end
+
+-- Prefer the weakest face-up Alpha Character while the available Omega damage
+-- can defeat it. Otherwise, reveal a face-down Alpha Character if possible.
+-- If Alpha has no face-down Character, attack the weakest face-up target anyway.
+function pick_alpha_front_line_character_target(state)
+    local face_up_target = pick_alpha_face_up_front_line_character_target(state)
+    if face_up_target == nil then
+        return pick_alpha_face_down_front_line_character_target(state)
+    end
+
+    local remaining_def = (face_up_target.final_def or 0) - (face_up_target.total_damage_received or 0)
+    local total_damage = get_total_eligible_omega_attack_damage(state)
+    if total_damage >= remaining_def then
+        return face_up_target
+    end
+
+    local face_down_target = pick_alpha_face_down_front_line_character_target(state)
+    if face_down_target ~= nil then
+        lib_battle_common.dlog("[enemy_ai] target fallback: face-up remaining_def=" ..
+            tostring(remaining_def) .. " exceeds total_damage=" .. tostring(total_damage) ..
+            "; choosing face-down target=" .. face_down_target.inventory_item_id)
+        return face_down_target
+    end
+
+    return face_up_target
 end
 
 -- Plans one Omega Character attack against defender, or Alpha HP when defender is nil.
