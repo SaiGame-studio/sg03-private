@@ -270,6 +270,7 @@ function lux_maxima_execute(state, source_card, event_data, helpers)
 
     -- Lux Maxima must first reveal Diana; the core trigger then reveals Lux
     -- before it dispatches this ability action and its remaining effects.
+    diana_card.trigger = true
     local actions = {
         helpers.expose_ability_selected_card(state, diana_card),
         source_side .. "_card_ability:source=" .. source_card.inventory_item_id ..
