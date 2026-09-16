@@ -12,6 +12,16 @@ function find_empty_slot(line, slot_count)
     return nil
 end
 
+function count_empty_slots(line, slot_count)
+    local count = 0
+    for slot_i = 1, slot_count do
+        if is_empty_slot(line[slot_i]) then
+            count = count + 1
+        end
+    end
+    return count
+end
+
 function find_adjacent_empty_slots(line, slot_count, required_count)
     required_count = required_count or 2
     for slot_i = 1, slot_count - required_count + 1 do
@@ -34,6 +44,23 @@ function find_card_by_code(cards, code_name, excluded_id)
         end
     end
     return nil
+end
+
+function count_line_cards_by_code(line, code_name)
+    local count = 0
+    for _, card in ipairs(line or {}) do
+        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+            and card.item_definition_code_name == code_name then
+            count = count + 1
+        end
+    end
+    return count
+end
+
+function get_omega_character_attack_damage(state, card)
+    if card == nil then return 0 end
+    local item_def = lib_battle_ai._find_item_def(state.item_defs, card.item_definition_code_name)
+    return lib_battle_common.get_attack_damage(state, item_def, "omega_front_line", card)
 end
 
 function find_line_card_by_code_prefer_exposed(line, code_name)
@@ -85,6 +112,21 @@ function append_client_actions(state, actions)
     for _, action in ipairs(actions or {}) do
         lib_battle_common.append_client_action(state, action)
     end
+end
+
+function append_omega_attack_plan(state, attacker, defender)
+    if attacker == nil then return end
+    state.omega_planning = state.omega_planning or {}
+    local defender_id = defender ~= nil and defender.inventory_item_id or "alpha_hp"
+    table.insert(state.omega_planning, {
+        action = defender ~= nil and "card_attack_card" or "omega_attack_alpha_hp",
+        attacker_inv_id = attacker.inventory_item_id,
+        defender_inv_id = defender_id,
+    })
+    lib_battle_common.append_client_action(
+        state,
+        lib_battle_ai.build_omega_planning_character_attack_action(state, attacker, defender_id)
+    )
 end
 
 function trigger_ability_and_append_actions(state, source_card, ability_key, trigger_event, event_data)
@@ -162,15 +204,7 @@ function plan_omega_attack_with_target(state, defender)
         return nil
     end
 
-    local defender_id = defender ~= nil and defender.inventory_item_id or "alpha_hp"
-    table.insert(state.omega_planning, {
-        action = defender ~= nil and "card_attack_card" or "omega_attack_alpha_hp",
-        attacker_inv_id = attacker.inventory_item_id,
-        defender_inv_id = defender_id,
-    })
-    lib_battle_common.append_client_action(
-        state, lib_battle_ai.build_omega_planning_character_attack_action(state, attacker, defender_id)
-    )
+    append_omega_attack_plan(state, attacker, defender)
     return nil
 end
 

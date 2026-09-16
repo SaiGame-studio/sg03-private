@@ -54,3 +54,10 @@ Mọi script Enemy AI trong chế độ PvE phía server Lua (phe Omega) phải 
 ## 6. Quy Tắc Phòng Thủ & Úp Bài (Defense & Face-Down Rules)
 
 - **Giấu thông tin phòng thủ**: Khi ưu tiên phòng thủ, các lá bài công trình hoặc bài phòng thủ (như `Bone Spire`, `Totem Pulse`) được đặt xuống sân ở trạng thái **úp (`face_up = false`)** để giấu thông tin bài trước đối thủ.
+
+---
+
+## 7. Tái Sử Dụng Generic Helpers (Reusing Shared Helpers)
+
+- **Ưu tiên Shared Helpers**: Các thao tác cơ bản trên Lua (như tra cứu định nghĩa lá bài, đếm số lá trên hàng, đếm slot trống, tính sát thương Character, kiểm tra loại bài hoặc trạng thái bàn đấu, ghi nhận plan tấn công) phải ưu tiên tái sử dụng các helper có sẵn trong thư viện dùng chung (`lib_battle_ai`, `enemy_ai_core`, `lib_battle_common`).
+- **Phát triển Helper dùng chung**: Khi phát sinh nhu cầu xử lý cơ bản chưa có helper sẵn, phải bổ sung helper tổng quát vào thư viện dùng chung tương ứng (ví dụ `enemy_ai_core`), tránh viết các hàm trùng lặp hoặc đặt tên theo riêng một kỹ năng/lá bài cụ thể. Chỉ giữ các helper nội bộ trong script AI nếu logic đó thực sự duy nhất cho lá bài/chiến thuật đó.
