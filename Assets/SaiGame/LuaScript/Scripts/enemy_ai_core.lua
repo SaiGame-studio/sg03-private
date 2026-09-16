@@ -64,6 +64,22 @@ function get_omega_character_attack_damage(state, card)
     return lib_battle_common.get_attack_damage(state, item_def, "omega_front_line", card)
 end
 
+-- Returns the first Character whose printed ATK is above the threshold.
+-- This is suitable before deployment, when runtime frontline bonuses do not apply yet.
+function find_character_with_base_attack_above(cards, item_defs, threshold)
+    for _, card in ipairs(cards or {}) do
+        if lib_battle_common.check_card_type(item_defs, card, "character") then
+            local item_def = lib_battle_ai._find_item_def(item_defs, card.item_definition_code_name)
+            local base_stats = item_def ~= nil and item_def.base_stats or {}
+            local attack = tonumber(base_stats.atk)
+                or tonumber(item_def ~= nil and item_def.metadata ~= nil and item_def.metadata.atk or nil)
+                or 0
+            if attack > (threshold or 0) then return card end
+        end
+    end
+    return nil
+end
+
 -- A Character with 0 or 1 effective ATK must not consume Omega's attack plan.
 -- Uses runtime damage so active buffs and ATK floors are respected.
 function is_eligible_omega_attack_planner(state, card)

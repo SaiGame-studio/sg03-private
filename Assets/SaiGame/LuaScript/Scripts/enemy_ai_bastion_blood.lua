@@ -130,10 +130,20 @@ function deploy(state)
 
     local remaining_hand = lib_battle_ai._rebuild_hand(hand, deployed_ids)
     local remaining_cards = lib_battle_ai._collect_cards(remaining_hand)
+    local bone_spire_count = enemy_ai_core.count_line_cards_by_code(front_line, "bone_spire")
+    local priority_character = nil
+    if bone_spire_count >= 2 then
+        priority_character = enemy_ai_core.find_character_with_base_attack_above(
+            remaining_cards, state.item_defs, 0
+        )
+    end
 
     local bone_spire_card = enemy_ai_core.find_card_by_code(remaining_cards, "bone_spire", nil)
-    if bone_spire_card ~= nil then
-        local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
+    local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
+    if priority_character ~= nil and slot_i ~= nil then
+        enemy_ai_core.deploy_card(front_line, slot_i, priority_character, true, front_deployed)
+        table.insert(deployed_ids, priority_character.id)
+    elseif bone_spire_card ~= nil then
         if slot_i ~= nil then
             enemy_ai_core.deploy_card(front_line, slot_i, bone_spire_card, false, front_deployed)
             table.insert(deployed_ids, bone_spire_card.id)
