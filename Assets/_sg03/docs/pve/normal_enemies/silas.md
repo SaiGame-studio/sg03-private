@@ -1,5 +1,7 @@
 # Chiến thuật AI Silas
 
+## Thông Tin Enemy
+
 > Trạng thái: Đã triển khai AI
 >
 > Phân loại tài liệu: Normal Enemy
@@ -9,6 +11,17 @@
 > Enemy key: `silas`
 >
 > Script chính: [`enemy_ai_silas.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua)
+
+> Lực chiến dự kiến:
+>
+> **10,110 điểm**
+>
+>   - Điểm bộ bài: 8,640
+>   - Điểm choose: 1,020
+>   - Điểm Void: 0
+>   - Điểm chiến thuật: 450
+>
+> Xem [cách tính chi tiết](../enemy_power_score.md#ví-dụ-silas).
 
 ## Tổng quan
 
@@ -23,7 +36,7 @@ Silas ([`enemy_ai_silas.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_sil
 
 ## Cấu hình Entity & Bộ Bài
 
-Theo cấu hình NPC Silas:
+Theo dữ liệu entity Silas:
 
 | Thuộc tính | Giá trị |
 | --- | --- |
@@ -34,20 +47,22 @@ Theo cấu hình NPC Silas:
 | `choose_card_1` | `goblin_shaman` |
 | `choose_card_2` | `brute_call` |
 | `choose_card_3` | `goblin_saboteur` |
+| Drop Pack IDs | Win Game Pack; Win Items |
 
 Danh sách 27 card của Silas (9 loại, mỗi loại 3 bản):
 
-| Card code | Số lượng | Vai trò |
-| --- | ---: | --- |
-| `goblin_shaman` | 3 | Character cho combo & trigger Totem |
-| `goblin_saboteur` | 3 | Character chiến đấu |
-| `skeleton` | 3 | Character chiến đấu |
-| `goblin_grunt` | 3 | Character chiến đấu |
-| `totem_pulse` | 3 | Ability phòng thủ Totem |
-| `brute_call` | 3 | Ability triệu hồi Goblin Brute |
-| `goblin_brute` | 3 | Character 4 sao (triệu hồi từ void) |
-| `zombie_male` | 3 | Character chiến đấu |
-| `zombie_female` | 3 | Character chiến đấu |
+| Card code | Số lượng | ATK | DEF | Điểm cơ bản | Vai trò |
+| --- | ---: | ---: | ---: | ---: | --- |
+| [`goblin_shaman`](../../cards/natureborn/goblin/goblin_shaman.md) | 3 | 200 | 310 | 1,530 | Character cho combo & trigger Totem |
+| [`goblin_saboteur`](../../cards/natureborn/goblin/goblin_saboteur.md) | 3 | 230 | 280 | 1,530 | Character chiến đấu |
+| [`skeleton`](../../cards/darkborn/undead/Ria/skeleton.md) | 3 | 50 | 160 | 630 | Character chiến đấu |
+| [`goblin_grunt`](../../cards/natureborn/goblin/goblin_grunt.md) | 3 | 100 | 210 | 930 | Character chiến đấu |
+| [`totem_pulse`](../../cards/natureborn/goblin/abilities/totem_pulse.md) | 3 | 0 | 0 | 0 | Ability phòng thủ; `def_added` được chấm ở chiến thuật |
+| [`brute_call`](../../cards/natureborn/goblin/abilities/brute_call.md) | 3 | 0 | 0 | 0 | Ability triệu hồi; hiệu ứng được chấm ở chiến thuật |
+| [`goblin_brute`](../../cards/natureborn/goblin/goblin_brute.md) | 3 | 310 | 470 | 2,340 | Character được triệu hồi từ Void |
+| [`zombie_male`](../../cards/darkborn/undead/common/zombie_male.md) | 3 | 70 | 240 | 930 | Character chiến đấu |
+| [`zombie_female`](../../cards/darkborn/undead/common/zombie_female.md) | 3 | 50 | 200 | 750 | Character chiến đấu |
+| **Tổng** | **27** | **3,030** | **5,610** | **8,640** | Xem [cách tính lực chiến](../enemy_power_score.md) |
 
 ---
 

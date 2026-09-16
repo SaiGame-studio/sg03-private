@@ -33,6 +33,7 @@ Với card không có `base_stats.atk` hoặc `base_stats.def`, giá trị thi�
 | Nâng cấp hoặc thay thế công trình phòng thủ qua mechanic | 200 |
 | Aura chủ động có điều kiện và có thể tái kích hoạt | 200 |
 | Giữ slot để bảo toàn chuỗi combo | 100 |
+| Phản ứng phòng thủ Ability trước khi đòn đánh giải quyết | 150 |
 
 Chỉ cộng một dòng khi script AI và Ability handler hiện có thật sự thực thi mechanic đó. Không dùng bảng này để suy diễn buff, debuff hoặc synergy không tồn tại trong source.
 
@@ -74,3 +75,38 @@ Hai `bone_spire` đã khai báo trong Void:
 `9,360 + 910 + 250 + 900 = 11,420`
 
 **Điểm lực chiến dự kiến của Bastion Blood: 11,420.** Điểm này dùng để so sánh cấu hình Enemy; kết quả trận thực tế vẫn phụ thuộc lượt rút, trạng thái bàn đấu, mục tiêu của Alpha và điều kiện kích hoạt Ability.
+
+## Ví Dụ: Silas
+
+Nguồn card và metadata: [Silas](normal_enemies/silas.md).
+
+### 1. Điểm Bộ Bài
+
+`3 × ((200 + 310) + (230 + 280) + (50 + 160) + (100 + 210) + (0 + 0) + (0 + 0) + (310 + 470) + (70 + 240) + (50 + 200)) = 8,640`
+
+`totem_pulse` và `brute_call` không có ATK/DEF cơ bản trong định nghĩa hiện có, nên mỗi Ability nhận `0` ở phần lực chiến cơ bản.
+
+### 2. Điểm Choose
+
+`goblin_shaman` + `brute_call` + `goblin_saboteur`:
+
+`(200 + 310) + (0 + 0) + (230 + 280) = 1,020`
+
+### 3. Điểm Void
+
+Metadata Silas được cung cấp không có `void_card_n`, nên điểm Void từ metadata là `0`. Điều kiện Brute Call vẫn yêu cầu một Goblin Brute đã ở `the_void`; đây là điều kiện runtime của Ability, không phải card Void được khai báo trong metadata Silas.
+
+### 4. Điểm Chiến Thuật
+
+| Mechanic Silas | Điểm | Bằng chứng |
+| --- | ---: | --- |
+| Totem Pulse phản ứng trước đòn đánh vào tiền tuyến | 150 | [`enemy_ai_silas.lua`](../../../SaiGame/LuaScript/Scripts/enemy_ai_silas.lua) gọi `defend_with_back_line_ability_when_front_line_takes_damage`. |
+| Brute Call triệu hồi Goblin Brute từ Void | 200 | [Brute Call](../cards/natureborn/goblin/abilities/brute_call.md) và nhánh `can_combo` của AI. |
+| Giữ hai slot tiền tuyến liền kề cho combo | 100 | `reserve_left` được kiểm tra trước deploy trong `enemy_ai_silas.lua`. |
+| **Tổng** | **450** | |
+
+### Kết Quả
+
+`8,640 + 1,020 + 0 + 450 = 10,110`
+
+**Điểm lực chiến dự kiến của Silas: 10,110.** Điểm này dùng để so sánh cấu hình Enemy; trận thực tế vẫn phụ thuộc lượt rút, điều kiện từ turn 4, vị trí trống và Goblin Brute trong Void.
