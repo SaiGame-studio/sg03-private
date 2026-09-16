@@ -47,6 +47,7 @@ Mọi script Enemy AI trong chế độ PvE phía server Lua (phe Omega) phải 
   1. Ưu tiên lá Character ngửa (`face_up == true`) có **DEF còn lại** (`final_def - total_damage_received`) thấp nhất.
   2. Nếu không có bài ngửa, chọn lá Character úp đầu tiên.
 - **Tấn công trực tiếp HP**: AI chỉ thiết lập đòn tấn công trực tiếp `alpha_hp` khi `alpha_front_line` hoàn toàn không còn lá Character nào.
+- **Ngưỡng ATK của Attacker**: Không được đưa Character có sát thương tấn công hiệu lực (`get_attack_damage`, bao gồm `final_atk` sau buff/debuff) bằng **0 hoặc 1** vào kế hoạch tấn công. AI phải tiếp tục tìm Character hợp lệ khác; nếu không có, kết thúc lượt Omega.
 - **Ngoại lệ Override theo Chiến thuật riêng**: Quy tắc chọn mục tiêu mặc định này **có thể bị ghi đè (override)** nếu một Enemy AI cụ thể sở hữu thuật toán chiến thuật dồn sát thương/combo riêng (ví dụ: thuật toán dứt điểm Misthy của `The Bent Spoon #1` hoặc thuật toán phối hợp 2 giai đoạn Sythra & Mireya của `Bastion Blood`). Nếu AI không có chiến thuật riêng, bắt buộc tuân thủ quy tắc mặc định này.
 
 ---

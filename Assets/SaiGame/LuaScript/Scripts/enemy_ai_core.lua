@@ -63,6 +63,25 @@ function get_omega_character_attack_damage(state, card)
     return lib_battle_common.get_attack_damage(state, item_def, "omega_front_line", card)
 end
 
+-- A Character with 0 or 1 effective ATK must not consume Omega's attack plan.
+-- Uses runtime damage so active buffs and ATK floors are respected.
+function is_eligible_omega_attack_planner(state, card)
+    if card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then return false end
+    if card.trigger == true then return false end
+    if not lib_battle_common.check_card_type(state.item_defs, card, "character") then return false end
+    return get_omega_character_attack_damage(state, card) > 1
+end
+
+function find_eligible_omega_attack_planner(state, require_face_up)
+    for _, card in ipairs(state.omega_front_line or {}) do
+        if is_eligible_omega_attack_planner(state, card)
+            and (require_face_up ~= true or card.face_up == true) then
+            return card
+        end
+    end
+    return nil
+end
+
 function find_line_card_by_code_prefer_exposed(line, code_name)
     local unexposed_fallback = nil
     for _, card in ipairs(line or {}) do

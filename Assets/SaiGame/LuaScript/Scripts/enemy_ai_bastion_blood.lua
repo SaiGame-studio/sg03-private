@@ -9,12 +9,9 @@ local function find_safe_setup_attacker(state, main_code_name, remaining_def)
     local selected_card = nil
     local selected_damage = 0
     for _, card in ipairs(state.omega_front_line or {}) do
-        local is_character = lib_battle_common.check_card_type(state.item_defs, card, "character")
         local damage = enemy_ai_core.get_omega_character_attack_damage(state, card)
-        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
-            and card.trigger ~= true
+        if enemy_ai_core.is_eligible_omega_attack_planner(state, card)
             and card.item_definition_code_name ~= main_code_name
-            and is_character
             and damage > selected_damage
             and damage < remaining_def then
             selected_card = card
@@ -163,7 +160,7 @@ function plan_attack(state)
 
     local defender = enemy_ai_core.pick_alpha_front_line_character_target(state)
     if defender == nil then
-        local attacker = lib_battle_ai._find_omega_attacker(state, false)
+        local attacker = enemy_ai_core.find_eligible_omega_attack_planner(state, false)
         if attacker == nil then
             lib_battle_ai.omega_end_turn(state)
             return nil
@@ -178,7 +175,7 @@ function plan_attack(state)
 
     if bone_spire_count < 2 and void_has_bone_spire then
         local sythra = enemy_ai_core.find_untriggered_line_card_by_code(front_line, "sythra")
-        if sythra ~= nil then
+        if enemy_ai_core.is_eligible_omega_attack_planner(state, sythra) then
             local remaining_def = (defender.final_def or 0) - (defender.total_damage_received or 0)
             local sythra_damage = enemy_ai_core.get_omega_character_attack_damage(state, sythra)
             if sythra_damage >= remaining_def then
@@ -196,7 +193,7 @@ function plan_attack(state)
 
     if bone_spire_count >= 2 then
         local mireya = enemy_ai_core.find_untriggered_line_card_by_code(front_line, "mireya")
-        if mireya ~= nil then
+        if enemy_ai_core.is_eligible_omega_attack_planner(state, mireya) then
             local remaining_def = (defender.final_def or 0) - (defender.total_damage_received or 0)
             local mireya_damage = enemy_ai_core.get_omega_character_attack_damage(state, mireya)
             if mireya_damage >= remaining_def then
@@ -212,7 +209,7 @@ function plan_attack(state)
         end
     end
 
-    local attacker = lib_battle_ai._find_omega_attacker(state, false)
+    local attacker = enemy_ai_core.find_eligible_omega_attack_planner(state, false)
     if attacker == nil then
         lib_battle_ai.omega_end_turn(state)
         return nil

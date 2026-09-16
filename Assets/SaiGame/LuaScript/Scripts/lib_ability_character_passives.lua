@@ -272,20 +272,31 @@ function blood_drain_execute(state, source_card, event_data, helpers)
     local battle = helpers.lib_battle_common
     local defender_card = (event_data or {}).defender_card
     local defender_void_key = (event_data or {}).defender_side_void
-    if defender_card == nil or defender_void_key == nil then return {}, nil end
+    if defender_card == nil or defender_void_key == nil then
+        battle.dlog("[ability] blood_drain: skip - missing defeated defender or void key")
+        return {}, nil
+    end
 
     if battle.find_card_in_line_by_id(state[defender_void_key], defender_card.inventory_item_id) == nil then
+        battle.dlog("[ability] blood_drain: skip - defender is not in " .. defender_void_key ..
+            " id=" .. tostring(defender_card.inventory_item_id))
         return {}, nil
     end
 
     local source_side = helpers.find_card_side(state, source_card)
-    if source_side == nil or source_side == "unknown" then return {}, nil end
+    if source_side == nil or source_side == "unknown" then
+        battle.dlog("[ability] blood_drain: skip - Mireya side is unknown")
+        return {}, nil
+    end
 
     local front_line_key = source_side .. "_front_line"
     local front_line = state[front_line_key] or {}
     state[front_line_key] = front_line
     local bone_spires = battle.collect_line_cards_by_code(front_line, "bone_spire")
-    if #bone_spires ~= 2 then return {}, nil end
+    if #bone_spires ~= 2 then
+        battle.dlog("[ability] blood_drain: skip - bone_spire_count=" .. tostring(#bone_spires))
+        return {}, nil
+    end
 
     local own_void_key = source_side .. "_the_void"
     local own_void = state[own_void_key] or {}
@@ -308,10 +319,16 @@ function blood_drain_execute(state, source_card, event_data, helpers)
         ",final_atk=" .. tostring(source_card.final_atk))
 
     local frontline_blood_spire = battle.find_card_in_line_by_code(front_line, "blood_spire")
-    if frontline_blood_spire ~= nil then return actions, nil end
+    if frontline_blood_spire ~= nil then
+        battle.dlog("[ability] blood_drain: completed - Blood Spire already on front line")
+        return actions, nil
+    end
 
     local blood_spire_card, blood_spire_index = battle.find_card_in_line_by_code(own_void, "blood_spire")
-    if blood_spire_card == nil then return actions, nil end
+    if blood_spire_card == nil then
+        battle.dlog("[ability] blood_drain: completed - no Blood Spire in " .. own_void_key)
+        return actions, nil
+    end
 
     table.remove(own_void, blood_spire_index)
     battle.reset_card_turn_state(state.item_defs, blood_spire_card, state)
@@ -323,5 +340,7 @@ function blood_drain_execute(state, source_card, event_data, helpers)
     front_line[blood_spire_slot_index] = blood_spire_card
     table.insert(actions, source_side .. "_void_to_front_line:" .. blood_spire_card.inventory_item_id ..
         "," .. tostring(blood_spire_card.slot_index))
+    battle.dlog("[ability] blood_drain: summoned Blood Spire=" .. blood_spire_card.inventory_item_id ..
+        " from " .. own_void_key .. " to slot=" .. tostring(blood_spire_card.slot_index))
     return actions, nil
 end
