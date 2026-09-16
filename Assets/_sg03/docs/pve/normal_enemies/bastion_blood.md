@@ -10,6 +10,10 @@
 >
 > Script chính: [`enemy_ai_bastion_blood.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_bastion_blood.lua)
 
+> [!NOTE]
+> **Quy tắc cơ bản**: Xem [Quy Tắc Trận Đấu Cơ Bản Cho Enemy AI](../enemy_ai_basic_rules.md).
+
+
 ## Tổng quan
 
 `bastion_blood` ([`enemy_ai_bastion_blood.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_bastion_blood.lua)) triển khai chiến thuật phối hợp đặc trưng của tộc Darkborn Demon giữa [`Sythra`](../../cards/darkborn/demon/luminar-bastion/sythra.md), [`Mireya`](../../cards/darkborn/demon/luminar-bastion/mireya.md) và các công trình trụ xương [`Bone Spire`](../../cards/darkborn/demon/luminar-bastion/bone_spire.md) / [`Blood Spire`](../../cards/darkborn/demon/luminar-bastion/blood_spire.md):
@@ -17,10 +21,10 @@
 1. **Khởi tạo bộ thẻ (`init_cards`)**: Sau khi load `bastion_blood` entity key từ backend, bài trên tay chắc chắn gồm `sythra`, `mireya`, và `bone_spire`. Mặc định 2 lá `bone_spire` và 1 lá `blood_spire` được đưa sẵn vào `omega_the_void`.
 2. **Phòng thủ (`defend`)**: Không có phản ứng kỹ năng phòng thủ riêng (`defend(state)` trả về `nil`), phòng thủ dựa vào việc ẩn bài bằng trạng thái úp (`face_up = false`) và chỉ số DEF cao của `bone_spire` (DEF 250) ở tiền tuyến.
 3. **Triển khai Ưu tiên & Dàn dựng Hậu tuyến (`deploy`)**:
-   - Ưu tiên deploy ngay `bone_spire` từ tay bài lên `omega_front_line` ở trạng thái **úp ẩn bài (`face_up = false`)** để bảo vệ tiền tuyến.
-   - **Triển khai toàn bộ Blood Mist xuống Hậu tuyến**: Khi rút được lá `blood_mist` (dù 1 hay nhiều lá), AI deploy **toàn bộ** xuống hậu tuyến (`omega_back_line`) ở trạng thái **úp (`face_up = false`)**.
+   - Ưu tiên deploy ngay `bone_spire` từ tay bài lên `omega_front_line` ở trạng thái **úp ẩn bài (`face_up = false`)** để bảo vệ tiền tuyến (tối đa 1 Character/lượt).
+   - **Triển khai toàn bộ Blood Mist xuống Hậu tuyến**: Khi rút được lá `blood_mist` (dù 1 hay nhiều lá trên tay), AI deploy **toàn bộ** xuống hậu tuyến (`omega_back_line`) ở trạng thái **úp (`face_up = false`)** ngay trong lượt triển khai đó (bài Ability không bị giới hạn 1 lá/lượt).
    - **Khi Sythra hoặc Mireya bị tiêu diệt**: AI tập trung phòng thủ cầm cự để chờ rút lại `Sythra` hoặc `Mireya` khác. Nếu rút được Character chiến đấu khác (không phải Sythra/Mireya), AI có thể deploy ra tiền tuyến làm mồi dồn sát thương nhưng **bắt buộc giữ lại đủ 2 slot trống ở tiền tuyến** cho `Bone Spire`.
-   - **Khi Sythra & Mireya đều đang sống trên tiền tuyến (chưa có Blood Spire)**: Nếu rút thêm `Sythra` hoặc `Mireya`, AI **chỉ triển khai thêm `Sythra`** lên tiền tuyến để gia tăng khả năng dứt điểm enemy (200 ATK & kích passive triệu hồi `Bone Spire`), giữ Mireya duy nhất làm nhân tố kết liễu Blood Drain.
+   - **Khi Sythra & Mireya đều đang sống trên tiền tuyến (chưa có Blood Spire)**: Nếu rút thêm `Sythra` hoặc `Mireya`, AI **chỉ triển khai thêm `Sythra`** (1 Character/lượt) lên tiền tuyến để gia tăng khả năng dứt điểm enemy (200 ATK & kích passive triệu hồi `Bone Spire`), giữ Mireya duy nhất làm nhân tố kết liễu Blood Drain.
    - **Sau khi triệu hồi thành công Blood Spire**: AI chủ động **triển khai thêm Mireya từ tay bài khi có thể** (khi tiền tuyến còn slot trống) để duy trì hiệu quả màn sương [`Blood Mist`](../../cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md).
 4. **Lập kế hoạch tấn công & Kích hoạt Kỹ năng Dự phòng (`plan_attack`)**:
    - **Giai đoạn 1 (Sythra Kill Setup - Crimson Spire)**: Nếu tiền tuyến **không có lá `bone_spire` nào hoặc chỉ mới có 1 `bone_spire`** (do `bone_spire` ban đầu có thể đã bị phe Alpha tiêu diệt), AI điều phối sát thương để `Sythra` tung đòn kết liễu enemy, kích hoạt nội tại [`crimson_spire`](../../cards/darkborn/demon/luminar-bastion/abilities/crimson_spire.md) nhằm triệu hồi `bone_spire` từ `the_void` ra sân cho đến khi tích lũy đủ 2 `bone_spire` ở tiền tuyến.
@@ -42,7 +46,7 @@ Các thẻ nhân vật và kỹ năng được AI `bastion_blood` sử dụng tr
   - [`Crimson Spire`](../../cards/darkborn/demon/luminar-bastion/abilities/crimson_spire.md) — Passive của Sythra triệu hồi Bone Spire khi dứt điểm.
   - [`Blood Drain`](../../cards/darkborn/demon/luminar-bastion/abilities/blood_drain.md) — Passive của Mireya thu hồi 2 Bone Spire, buff ATK & triệu hồi Blood Spire khi dứt điểm.
   - [`Bloodmight`](../../cards/darkborn/demon/luminar-bastion/abilities/bloodmight.md) — Active ability chủ động liên kết Sythra.
-  - [`Blood Mist`](../../cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md) — Active ability chủ động liên kết Mireya (deploy úp toàn bộ ở hậu tuyến; kích hoạt ngay 1 lá chính & dự phòng các lá còn lại để kích hoạt lại khi bị giải trừ).
+  - [`Blood Mist`](../../cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md) — Active ability chủ động liên kết Mireya (deploy úp toàn bộ ở hậu tuyến cùng lúc; kích hoạt ngay 1 lá chính & dự phòng các lá còn lại để kích hoạt lại khi bị giải trừ).
 
 ---
 
@@ -69,7 +73,7 @@ Danh sách 27 card của Bastion Blood (9 loại, mỗi loại 3 bản):
 | `bone_spire` | 3 | Character công trình phòng thủ (0 ATK / 250 DEF), 1 ở Hand & 2 ở Void ban đầu |
 | `blood_spire` | 3 | Character công trình cao cấp (0 ATK / 500 DEF), nằm sẵn ở Void |
 | `bloodmight` | 3 | Ability kỹ năng chủ động liên kết Sythra |
-| `blood_mist` | 3 | Ability kỹ năng liên kết Mireya (dàn dựng toàn bộ ở hậu tuyến, duy trì 1 chính & các lá dự phòng) |
+| `blood_mist` | 3 | Ability kỹ năng liên kết Mireya (dàn dựng toàn bộ ở hậu tuyến cùng lúc, duy trì 1 chính & các lá dự phòng) |
 | `skeleton` | 3 | Character chiến đấu bổ trợ |
 | `zombie_male` | 3 | Character chiến đấu bổ trợ |
 | `zombie_female` | 3 | Character chiến đấu bổ trợ |
@@ -89,17 +93,17 @@ Khi khởi tạo trận đấu với entity key `bastion_blood`:
 Chi tiết luồng xử lý deploy trong script AI:
 
 1. **Deploy Bone Spire ẩn bài làm trụ phòng thủ**:
-   - Khi phòng thủ, AI ưu tiên deploy `bone_spire` từ `omega_hand` vào slot trống đầu tiên ở `omega_front_line` ở trạng thái **úp ẩn bài (`face_up = false`)**.
+   - Khi phòng thủ, AI ưu tiên deploy `bone_spire` từ `omega_hand` vào slot trống đầu tiên ở `omega_front_line` ở trạng thái **úp ẩn bài (`face_up = false`)** (tối đa 1 Character/lượt).
 2. **Deploy TOÀN BỘ Blood Mist xuống Hậu tuyến (`omega_back_line`)**:
-   - Khi rút được bất kỳ lá Ability `blood_mist` nào trên tay (dù có 1 hay nhiều lá), AI triển khai **tất cả** các lá này vào các slot trống ở hậu tuyến (`omega_back_line`) ở trạng thái **úp (`face_up = false`)**. Tất cả các lá `blood_mist` ở hậu tuyến sẽ ở trạng thái chờ sẵn cho chiến thuật chính và dự phòng.
+   - Khi rút được bất kỳ lá Ability `blood_mist` nào trên tay (dù có 1 hay nhiều lá), AI triển khai **toàn bộ** các lá này cùng lúc vào các slot trống ở hậu tuyến (`omega_back_line`) ở trạng thái **úp (`face_up = false`)**. Tất cả các lá `blood_mist` ở hậu tuyến sẽ ở trạng thái chờ sẵn cho chiến thuật chính và dự phòng.
 3. **Quy tắc triển khai Sythra & Mireya theo tình huống sân đấu**:
    - **Trường hợp Sythra & Mireya đều đang sống trên tiền tuyến (chưa có Blood Spire)**:
-     - Nếu rút thêm `sythra` hoặc `mireya` từ tay bài: **Chỉ triển khai thêm `sythra`** lên tiền tuyến (deploy `sythra` ngửa `face_up = true`) nhằm tối đa hóa tổng sát thương (200 ATK) và tăng cơ hội dứt điểm kích hoạt passive `crimson_spire`. Không deploy thêm Mireya thứ hai trước khi có Blood Spire.
+     - Nếu rút thêm `sythra` hoặc `mireya` từ tay bài: **Chỉ triển khai thêm `sythra`** lên tiền tuyến (deploy `sythra` ngửa `face_up = true`, 1 Character/lượt) nhằm tối đa hóa tổng sát thương (200 ATK) và tăng cơ hội dứt điểm kích hoạt passive `crimson_spire`. Không deploy thêm Mireya thứ hai trước khi có Blood Spire.
    - **Trường hợp sau khi đã triệu hồi thành công Blood Spire lên tiền tuyến**:
-     - Nếu trong tay bài `omega_hand` có lá `mireya` và `omega_front_line` còn slot trống: AI sẽ **ưu tiên triển khai Mireya khi có thể** (deploy ngửa `face_up = true`) nhằm duy trì hiệu ứng màn sương [`Blood Mist`](../../cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md) ổn định và hiệu quả hơn trên chiến trường.
+     - Nếu trong tay bài `omega_hand` có lá `mireya` và `omega_front_line` còn slot trống: AI sẽ **ưu tiên triển khai Mireya khi có thể** (deploy ngửa `face_up = true`, 1 Character/lượt) nhằm duy trì hiệu ứng màn sương [`Blood Mist`](../../cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md) ổn định và hiệu quả hơn trên chiến trường.
    - **Trường hợp Sythra hoặc Mireya bị tiêu diệt (tử trận)**:
      - AI chuyển sang chế độ phòng thủ cầm cự để tích lũy lượt rút bài, chờ rút lại lá `sythra` hoặc `mireya` mới từ bộ bài.
-     - Nếu rút được Character chiến đấu khác (không phải Sythra hay Mireya, ví dụ: `skeleton`, `zombie_male`): AI có thể deploy lên tiền tuyến đóng vai trò làm **Attacker mồi dồn sát thương**.
+     - Nếu rút được Character chiến đấu khác (không phải Sythra hay Mireya, ví dụ: `skeleton`, `zombie_male`): AI có thể deploy (1 Character/lượt) lên tiền tuyến đóng vai trò làm **Attacker mồi dồn sát thương**.
      - **Bắt buộc**: Phải kiểm tra điều kiện `count_empty_front_slots >= 2` trước khi deploy Character ngoài bộ combo. Luôn luôn **dành sẵn ít nhất 2 slot trống trên tiền tuyến** cho 2 lá `Bone Spire` (hoặc slot triệu hồi công trình).
 4. **Đảm bảo dung lượng rút bài**:
    - Sau khi hoàn tất lượt deploy, AI gọi `lib_battle_ai.ensure_omega_hand_draw_capacity(...)` để duy trì dung lượng tay bài cho lượt rút tiếp theo.
@@ -192,17 +196,17 @@ INIT CARDS:
   2. Nghĩa địa omega_the_void mặc định nạp sẵn: 2x bone_spire, 1x blood_spire.
 
 DEPLOY:
-  1. Nếu hand có bone_spire -> Deploy úp (face_up = false) lên omega_front_line để ưu tiên ẩn bài phòng thủ.
-  2. Nếu hand có blood_mist (1 hoặc nhiều lá) -> Deploy TOÀN BỘ các lá blood_mist ở trạng thái úp (face_up = false) xuống omega_back_line.
+  1. Nếu hand có bone_spire -> Deploy úp (face_up = false) lên omega_front_line để ưu tiên ẩn bài phòng thủ (tối đa 1 Character/lượt).
+  2. Nếu hand có blood_mist (1 hoặc nhiều lá) -> Deploy TOÀN BỘ các lá blood_mist ở trạng thái úp (face_up = false) xuống omega_back_line cùng lúc.
   3. Kiểm tra trạng thái sân đấu:
      - Nếu đã triệu hồi thành công BLOOD SPIRE lên tiền tuyến:
-       + Ưu tiên deploy Mireya từ hand khi tiền tuyến còn slot trống để duy trì hiệu quả Blood Mist.
+       + Ưu tiên deploy Mireya từ hand khi tiền tuyến còn slot trống (1 Character/lượt) để duy trì hiệu quả Blood Mist.
      - Nếu chưa có Blood Spire và Sythra & Mireya đều ĐANG SỐNG:
-       + Nếu hand có Sythra -> Deploy thêm Sythra (face_up = true) để tăng sát thương kết liễu (200 ATK).
+       + Nếu hand có Sythra -> Deploy thêm Sythra (face_up = true, 1 Character/lượt) để tăng sát thương kết liễu (200 ATK).
        + Không deploy thêm Mireya thứ 2.
      - Nếu Sythra HOẶC Mireya BỊ CHẾT (tử trận):
        + Vào trạng thái cầm cự phòng thủ, chờ rút lại Sythra/Mireya từ bộ bài.
-       + Nếu hand có Character chiến đấu khác (non-Sythra/Mireya): Deploy làm mồi sát thương (Setup Attacker), nhưng BẮT BUỘC chừa đủ 2 slot trống trên tiền tuyến cho 2 Bone Spire.
+       + Nếu hand có Character chiến đấu khác (non-Sythra/Mireya): Deploy (1 Character/lượt) làm mồi sát thương (Setup Attacker), nhưng BẮT BUỘC chừa đủ 2 slot trống trên tiền tuyến cho 2 Bone Spire.
   4. Gọi ensure_omega_hand_draw_capacity.
 
 DEFEND:

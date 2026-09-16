@@ -59,6 +59,8 @@ sequenceDiagram
 
 ## 4. Tài Liệu PvE Liên Quan
 
+- [Quy Tắc Trận Đấu Cơ Bản Cho Enemy AI](enemy_ai_basic_rules.md) — Tổng hợp các quy tắc chuẩn về ngân sách deploy, rút bài, kích hoạt kỹ năng và chọn mục tiêu cho tất cả AI.
 - [Thuật Toán AI Goblin Shaman (Normal Enemy)](normal_enemies/goblin_shaman.md) — Phân tích kỹ thuật cây quyết định AI Goblin Shaman và thuật toán quét dòng.
 - [AI The Bent Spoon #1 (Normal Enemy)](normal_enemies/the_bent_spoon_1.md) — Cấu hình NPC và bộ bài đang chờ chiến thuật.
+- [AI Bastion Blood (Normal Enemy)](normal_enemies/bastion_blood.md) — Phối hợp Sythra và Mireya kết liễu kẻ địch để triệu hồi và nâng cấp Bone Spire thành Blood Spire.
 - [Cấu Hình Kịch Bản Mẫu PvE](pve_preset_scenarios.md) — Hướng dẫn cấu hình bộ bài preset và metadata kịch bản cho Alpha và Omega.
