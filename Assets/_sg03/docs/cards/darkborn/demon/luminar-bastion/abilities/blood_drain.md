@@ -31,3 +31,7 @@ Khi Mireya kết liễu một Character enemy bằng chính đòn tấn công c�
 - [Bone Spire](../bone_spire.md)
 - [Blood Spire](../blood_spire.md)
 - [Blood Mist](blood_mist.md)
+
+## Used by AI
+
+- [Bastion Blood](../../../../../pve/normal_enemies/bastion_blood.md)

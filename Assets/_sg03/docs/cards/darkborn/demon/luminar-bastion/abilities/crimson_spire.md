@@ -28,3 +28,7 @@ Crimson Spire triệu gọi một Bone Spire từ `the_void` của phe sở hữ
 ## Thẻ Liên Kết
 
 - [Bone Spire](../bone_spire.md)
+
+## Used by AI
+
+- [Bastion Blood](../../../../../pve/normal_enemies/bastion_blood.md)

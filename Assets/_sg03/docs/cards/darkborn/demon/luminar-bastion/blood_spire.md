@@ -19,3 +19,7 @@ Blood Spire được tạo ra từ Bone Spire thông qua phép thuật Blood Mis
 - [Mireya](mireya.md)
 - [Bone Spire](bone_spire.md)
 - [Blood Mist](abilities/blood_mist.md)
+
+## Used by AI
+
+- [Bastion Blood](../../../../pve/normal_enemies/bastion_blood.md)
