@@ -265,7 +265,7 @@ function crimson_spire_execute(state, source_card, event_data, helpers)
 end
 
 -- passive: blood_drain (Mireya)
--- After Mireya defeats her attack target, exactly two Bone Spires in her front
+-- After Mireya defeats her attack target, at least two Bone Spires in her front
 -- line are consumed. Blood Spire enters the first consumed Spire's slot when
 -- it is available in the owner's void; the consumption still happens when it is not.
 function blood_drain_execute(state, source_card, event_data, helpers)
@@ -293,8 +293,9 @@ function blood_drain_execute(state, source_card, event_data, helpers)
     local front_line = state[front_line_key] or {}
     state[front_line_key] = front_line
     local bone_spires = battle.collect_line_cards_by_code(front_line, "bone_spire")
-    if #bone_spires ~= 2 then
-        battle.dlog("[ability] blood_drain: skip - bone_spire_count=" .. tostring(#bone_spires))
+    if #bone_spires < 2 then
+        battle.dlog("[ability] blood_drain: skip - bone_spire_count=" .. tostring(#bone_spires) ..
+            " front_line=" .. battle.describe_line_cards(front_line))
         return {}, nil
     end
 

@@ -8,7 +8,8 @@ end
 local function find_safe_setup_attacker(state, main_code_name, remaining_def)
     local selected_card = nil
     local selected_damage = 0
-    for _, card in ipairs(state.omega_front_line or {}) do
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (state.omega_front_line or {})[index]
         local damage = enemy_ai_core.get_omega_character_attack_damage(state, card)
         if enemy_ai_core.is_eligible_omega_attack_planner(state, card)
             and card.item_definition_code_name ~= main_code_name

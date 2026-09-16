@@ -85,12 +85,27 @@ end
 function collect_line_cards_by_code(line, code_name)
     if type(line) ~= "table" or code_name == nil or code_name == "" then return {} end
     local matches = {}
-    for index, card in ipairs(line) do
-        if card.item_definition_code_name == code_name then
+    for index = 1, get_hand_size() do
+        local card = line[index]
+        if card ~= nil and card.item_definition_code_name == code_name then
             table.insert(matches, { card = card, index = index })
         end
     end
     return matches
+end
+
+-- Produces a compact, stable view of occupied fixed-line slots for diagnostics.
+function describe_line_cards(line)
+    local descriptions = {}
+    for index = 1, get_hand_size() do
+        local card = (line or {})[index]
+        local card_id = card ~= nil and card.inventory_item_id or ""
+        if card_id ~= "" then
+            table.insert(descriptions, "slot=" .. tostring(index - 1) ..
+                ",code=" .. tostring(card.item_definition_code_name) .. ",id=" .. card_id)
+        end
+    end
+    return table.concat(descriptions, ";")
 end
 
 -- Returns the card and its index in line matching inventory_item_id, or nil, nil.

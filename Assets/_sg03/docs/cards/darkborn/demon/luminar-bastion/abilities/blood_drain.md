@@ -15,7 +15,7 @@ Khi Mireya kết liễu một Character enemy bằng chính đòn tấn công c�
 ## Điều Kiện Kích Hoạt
 
 - Mục tiêu phải bị đánh bại trong chính đòn tấn công đó của Mireya.
-- Hàng trước phe sở hữu phải có đúng hai [Bone Spire](../bone_spire.md). Nếu chỉ có một hoặc không có Bone Spire, Blood Drain không kích hoạt.
+- Hàng trước phe sở hữu phải có ít nhất hai [Bone Spire](../bone_spire.md). Nếu chỉ có một hoặc không có Bone Spire, Blood Drain không kích hoạt.
 
 ## Hiệu Quả
 

@@ -48,8 +48,9 @@ end
 
 function count_line_cards_by_code(line, code_name)
     local count = 0
-    for _, card in ipairs(line or {}) do
-        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (line or {})[index]
+        if card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
             and card.item_definition_code_name == code_name then
             count = count + 1
         end
@@ -73,7 +74,8 @@ function is_eligible_omega_attack_planner(state, card)
 end
 
 function find_eligible_omega_attack_planner(state, require_face_up)
-    for _, card in ipairs(state.omega_front_line or {}) do
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (state.omega_front_line or {})[index]
         if is_eligible_omega_attack_planner(state, card)
             and (require_face_up ~= true or card.face_up == true) then
             return card
@@ -84,8 +86,9 @@ end
 
 function find_line_card_by_code_prefer_exposed(line, code_name)
     local unexposed_fallback = nil
-    for _, card in ipairs(line or {}) do
-        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (line or {})[index]
+        if card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
             and card.item_definition_code_name == code_name then
             if card.expose == true then return card end
             if unexposed_fallback == nil then unexposed_fallback = card end
@@ -95,8 +98,9 @@ function find_line_card_by_code_prefer_exposed(line, code_name)
 end
 
 function find_untriggered_line_card_by_code(line, code_name)
-    for _, card in ipairs(line or {}) do
-        if card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
+    for index = 1, lib_battle_common.get_hand_size() do
+        local card = (line or {})[index]
+        if card ~= nil and card.inventory_item_id ~= nil and card.inventory_item_id ~= ""
             and card.item_definition_code_name == code_name
             and card.trigger ~= true then
             return card
