@@ -1,47 +1,40 @@
-# Xếp Hạng Độ Khó Enemy PvE
+# Xếp Hạng Lực Chiến Enemy PvE
 
 > Phạm vi: Các Enemy AI đã có tài liệu và script trong PvE tại thời điểm cập nhật.
 >
-> Tiêu chí: Xếp từ yếu đến mạnh theo độ ổn định của đội hình, phản ứng phòng thủ, khả năng tạo lợi thế từ Ability và mức độ chủ động trong việc chọn đòn kết liễu. Đây không phải bảng xếp hạng ATK/DEF đơn lẻ.
+> Tiêu chí: Xếp từ yếu đến mạnh theo **điểm lực chiến dự kiến**. Điểm này gồm điểm bộ bài, choose card, Void card và mechanic chiến thuật theo [công thức lực chiến](enemy_power_score.md); đây không phải kết quả mô phỏng trận đấu.
 
 ## Thứ Tự Tổng Quan
 
-| Hạng | Enemy | Phân cấp | Lý do chính |
-| ---: | --- | --- | --- |
-| 1 | [Goblin Shaman](normal_enemies/goblin_shaman.md) | Normal | Có một hướng phòng thủ rõ ràng là Totem Pulse, nhưng kế hoạch tấn công và chọn Character deploy không có combo dứt điểm riêng. |
-| 2 | [Silas](normal_enemies/silas.md) | Normal | Giữ được phòng thủ Totem Pulse như Goblin Shaman và có thể triệu hồi Goblin Brute, nhưng combo chỉ bắt đầu từ turn 4 và còn phụ thuộc bài trên tay, hai ô tiền tuyến liền kề, một ô hậu tuyến và Brute ở Void. |
-| 3 | [The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md) | Normal | Ưu tiên Misthy, dùng Eagle Eye để xử lý Character úp của Alpha, đồng thời tính sát thương còn thiếu để sắp xếp đòn mồi cho Misthy kết liễu. |
-| 4 | [Bastion Blood](normal_enemies/bastion_blood.md) | Normal | Có chuỗi hai giai đoạn Sythra/Mireya: xây Bone Spire, chủ động dàn sát thương cho đòn kết liễu, nâng thành Blood Spire và kích hoạt Blood Mist khi đủ điều kiện. |
+| Hạng | Enemy | Phân cấp | Lực chiến | Lý do chính |
+| ---: | --- | --- | ---: | --- |
+| 1 | [The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md) | Normal | 9,280 | Có điểm chiến thuật cao hơn Silas (500 so với 450), nhưng điểm bộ bài thấp hơn 870 và không có điểm Void metadata, nên tổng lực chiến thấp nhất trong ba Enemy đang xếp hạng. |
+| 2 | [Silas](normal_enemies/silas.md) | Normal | 10,110 | Điểm bộ bài 8,640 và choose 1,020 vượt The Bent Spoon #1; Totem Pulse, Brute Call và giữ slot combo đóng góp 450 điểm chiến thuật. |
+| 3 | [Bastion Blood](normal_enemies/bastion_blood.md) | Normal | 11,420 | Có điểm bộ bài cao nhất (9,360), điểm choose 910, hai Bone Spire trong Void cho 250 điểm, và chuỗi Crimson Spire/Blood Drain/Blood Mist cho 900 điểm chiến thuật. |
 
 ## Phân Tích Từng Enemy
 
-### 1. Goblin Shaman
+### Goblin Shaman — Tạm Thời Không Xếp Hạng
 
-Goblin Shaman là mốc độ khó thấp nhất vì sức mạnh chiến thuật tập trung vào một phản ứng phòng thủ: khi tiền tuyến bị sát thương, `totem_pulse` chỉ được kích hoạt nếu có Goblin Shaman chưa trigger trên tiền tuyến. Ngoài phản ứng này, AI chọn mục tiêu theo helper mặc định và chỉ giữ tối đa một Character úp; không có logic tạo combo hoặc điều phối đòn đánh để bảo đảm kết liễu.
+[`Goblin Shaman`](normal_enemies/goblin_shaman.md) được tạm thời loại khỏi bảng xếp hạng theo yêu cầu. Không gán hạng hoặc so sánh lực chiến cho Enemy này cho đến khi có quyết định đưa lại vào bảng.
 
-Nguồn: [thuật toán Goblin Shaman](normal_enemies/goblin_shaman.md), đặc biệt các phần `defend` và `plan_attack`.
+### 1. The Bent Spoon #1
+
+The Bent Spoon #1 có điểm bộ bài **7,770**, thấp nhất trong ba Enemy được xếp hạng. Dù nó có **500** điểm chiến thuật từ điều phối Misthy kết liễu, Abyssal Mist và Eagle Eye, điểm choose **1,010** cùng điểm Void metadata **0** đưa tổng lực chiến về **9,280**.
+
+Nguồn điểm: [bảng card và lực chiến The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md) và [công thức](enemy_power_score.md#ví-dụ-the-bent-spoon-1).
 
 ### 2. Silas
 
-Silas mạnh hơn Goblin Shaman vì vẫn có Totem Pulse nhưng bổ sung đường triệu hồi `goblin_brute` bằng `brute_call`. Tuy vậy, đây là lợi thế có độ trễ và nhiều điều kiện: từ turn 4, phải giữ được Goblin Shaman cùng Brute Call trên tay, có hai ô tiền tuyến liền kề, một ô hậu tuyến, và Goblin Brute trong Void. Khi không đủ điều kiện, Silas quay về deploy Character ngoài bộ dự trữ và tấn công theo luồng chuẩn, nên độ đe dọa chưa ổn định bằng hai AI phía sau.
+Silas đạt **10,110** điểm: bộ bài **8,640** cao hơn The Bent Spoon #1, choose **1,020**, Void metadata **0**, và **450** điểm chiến thuật. Cụm chiến thuật này chỉ gồm phản ứng Totem Pulse, Brute Call triệu hồi từ Void và giữ hai slot cho combo; vì vậy Silas ít điểm chiến thuật hơn The Bent Spoon #1, nhưng vẫn vượt tổng lực chiến nhờ chỉ số bộ bài.
 
-Nguồn: [thuật toán Silas](normal_enemies/silas.md), phần `can_combo`, `defend` và `plan_attack`.
+Nguồn điểm: [bảng card và lực chiến Silas](normal_enemies/silas.md) và [công thức](enemy_power_score.md#ví-dụ-silas).
 
-### 3. The Bent Spoon #1
+### 3. Bastion Blood
 
-The Bent Spoon #1 có áp lực tấn công chủ động hơn: AI ưu tiên đưa Misthy lên sân, dùng Eagle Eye khi Alpha có Character úp và Lyra đã có trên tiền tuyến, rồi tính `remaining_def` của mục tiêu. Nếu Misthy chưa đủ sát thương, AI tìm một Character khác có sát thương an toàn để bào DEF trước, nhằm mở đường cho Misthy kết liễu. Khả năng đọc trạng thái mục tiêu và điều phối đòn mồi này khiến đối thủ khó giữ Character yếu hơn Silas.
+Với tổng **11,420**, Bastion Blood đứng đầu vì đồng thời có điểm bộ bài **9,360** cao nhất, choose **910**, điểm Void **250** từ hai Bone Spire đã khai báo và **900** điểm chiến thuật. Điểm chiến thuật này phản ánh điều phối đòn kết liễu, triệu hồi Bone Spire, chuyển thành Blood Spire, Aura Blood Mist và việc giữ slot cho chuỗi combo.
 
-AI không có phản ứng phòng thủ riêng, vì vậy nó vẫn xếp dưới Bastion Blood, vốn có cả nhiều giai đoạn xây dựng đội hình lẫn Aura.
-
-Nguồn: [thuật toán The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md), phần `stage_eagle_eye` và `plan_attack`.
-
-### 4. Bastion Blood
-
-Bastion Blood là enemy mạnh nhất trong danh sách hiện có vì AI không chỉ chọn một đòn tấn công mà theo đuổi chuỗi điều kiện liên kết. Đầu tiên AI ưu tiên bảo toàn chỗ cho Bone Spire và sắp xếp để Sythra kết liễu nhằm triệu hồi thêm Bone Spire. Khi đã có đủ hai Bone Spire, AI lại điều phối sát thương để Mireya kết liễu, đổi hai Bone Spire lấy Blood Spire và tăng sức tấn công cho Mireya. Sau khi Blood Spire cùng Mireya hiện diện, AI còn kích hoạt hoặc kích hoạt lại Blood Mist từ hậu tuyến để làm suy yếu Character Alpha đủ điều kiện.
-
-Chuỗi này có điều kiện thiết lập, nhưng phần thưởng gồm phòng thủ Blood Spire, tăng cường Mireya và Aura khiến mức đe dọa tăng theo diễn biến trận, vượt các AI Normal còn lại.
-
-Nguồn: [thuật toán Bastion Blood](normal_enemies/bastion_blood.md), các phần `deploy`, `plan_attack`, Crimson Spire, Blood Drain và Blood Mist.
+Nguồn điểm: [bảng card và lực chiến Bastion Blood](normal_enemies/bastion_blood.md) và [công thức](enemy_power_score.md#ví-dụ-bastion-blood).
 
 ## Elite Và Boss
 
