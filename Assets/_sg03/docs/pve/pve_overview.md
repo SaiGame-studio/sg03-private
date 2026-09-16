@@ -59,6 +59,8 @@ sequenceDiagram
 
 ## 4. Tài Liệu PvE Liên Quan
 
+- [Xếp Hạng Độ Khó Enemy PvE](enemy_ranking.md) — Xếp toàn bộ Enemy AI hiện có từ yếu đến mạnh theo cơ chế AI và điều kiện kích hoạt chiến thuật.
+- [Cách Tính Điểm Lực Chiến Enemy PvE](enemy_power_score.md) — Công thức chấm lực chiến từ card list, choose, Void và chiến thuật AI.
 - [Quy Tắc Trận Đấu Cơ Bản Cho Enemy AI](enemy_ai_basic_rules.md) — Tổng hợp các quy tắc chuẩn về ngân sách deploy, rút bài, kích hoạt kỹ năng và chọn mục tiêu cho tất cả AI.
 - [Thuật Toán AI Goblin Shaman (Normal Enemy)](normal_enemies/goblin_shaman.md) — Phân tích kỹ thuật cây quyết định AI Goblin Shaman và thuật toán quét dòng.
 - [AI The Bent Spoon #1 (Normal Enemy)](normal_enemies/the_bent_spoon_1.md) — Cấu hình NPC và bộ bài đang chờ chiến thuật.
