@@ -1,14 +1,14 @@
 # Abyssal Mist
 
 - **Mã Thẻ Bài**: `abyssal_mist`
-- **Số sao**: 4
+- **Số sao**: 3
 - **Loại Thẻ**: [`ability`](../../../../../04_abilities.md)
 - **Chủng Tộc Chính**: **Darkborn** (định danh kỹ thuật: `darkborn`)
 - **Tộc Nhánh**: **Demon**
 - **Thẻ Nhân Vật Yêu Cầu**: [Misthy](../misthy.md)
 - **Điều Kiện Kích Hoạt**: Misthy đang trên sân và chưa kích hoạt (`trigger = false`).
 - **Hiệu Ứng**:
-  - Misthy nhận `atk_added = 100`.
+  - Misthy nhận `atk_added = 70`.
   - Mọi Character Darkborn và Natureborn của cả Alpha lẫn Omega nhận `def_added = 50`.
 - **Trạng Thái Sau Khi Kích Hoạt**: Misthy có `trigger = true`.
 - **Thời Gian Tồn Tại**: Abyssal Mist ở lại trên sân cho đến khi bị một lá bài khác hủy.
