@@ -11,7 +11,7 @@
 | 1 | [The Bent Spoon #1](normal_enemies/the_bent_spoon_1.md) | Normal | 9,280 | Có điểm chiến thuật cao hơn Silas (500 so với 450), nhưng điểm bộ bài thấp hơn 870 và không có điểm Void metadata, nên tổng lực chiến thấp nhất trong các Enemy đang xếp hạng. |
 | 2 | [Goblin Shaman](normal_enemies/goblin_shaman.md) | Normal | 9,700 | Điểm bộ bài 8,730 và choose 820 vượt The Bent Spoon #1; Totem Pulse phản ứng phòng thủ đóng góp 150 điểm chiến thuật. |
 | 3 | [Silas](normal_enemies/silas.md) | Normal | 10,110 | Điểm bộ bài 8,640 và choose 1,020 vượt Goblin Shaman; Totem Pulse, Brute Call và giữ slot combo đóng góp 450 điểm chiến thuật. |
-| 4 | [Bastion Blood](normal_enemies/bastion_blood.md) | Normal | 11,420 | Có điểm bộ bài cao nhất (9,360), điểm choose 910, hai Bone Spire trong Void cho 250 điểm, và chuỗi Crimson Spire/Blood Drain/Blood Mist cho 900 điểm chiến thuật. |
+| 4 | [Bastion Blood](normal_enemies/bastion_blood.md) | Normal | 11,820 | Có điểm bộ bài cao nhất (9,660), điểm choose 910, hai Bone Spire trong Void cho 350 điểm, và chuỗi Crimson Spire/Blood Drain/Blood Mist cho 900 điểm chiến thuật. |
 
 ## Phân Tích Từng Enemy
 
@@ -35,7 +35,7 @@ Nguồn điểm: [bảng card và lực chiến Silas](normal_enemies/silas.md) 
 
 ### 4. Bastion Blood
 
-Với tổng **11,420**, Bastion Blood đứng đầu vì đồng thời có điểm bộ bài **9,360** cao nhất, choose **910**, điểm Void **250** từ hai Bone Spire đã khai báo và **900** điểm chiến thuật. Điểm chiến thuật này phản ánh điều phối đòn kết liễu, triệu hồi Bone Spire, chuyển thành Blood Spire, Aura Blood Mist và việc giữ slot cho chuỗi combo.
+Với tổng **11,820**, Bastion Blood đứng đầu vì đồng thời có điểm bộ bài **9,660** cao nhất, choose **910**, điểm Void **350** từ hai Bone Spire đã khai báo và **900** điểm chiến thuật. Điểm chiến thuật này phản ánh điều phối đòn kết liễu, triệu hồi Bone Spire, chuyển thành Blood Spire, Aura Blood Mist và việc giữ slot cho chuỗi combo.
 
 Nguồn điểm: [bảng card và lực chiến Bastion Blood](normal_enemies/bastion_blood.md) và [công thức](enemy_power_score.md#công-thức).
 
