@@ -15,7 +15,7 @@ Bloodmight trở thành Aura trên chiến trường và cộng `base_stats.atk_
 ## Điều Kiện Kích Hoạt
 
 - Bloodmight phải ở hàng sau của phe sở hữu.
-- Hàng trước phe sở hữu phải có Sythra và ít nhất ba Bone Spire.
+- Hàng trước phe sở hữu phải có Sythra chưa kích hoạt (`untriggered`) và ít nhất ba Bone Spire.
 - Bloodmight phải có `base_stats.atk_added` dương.
 
 ## Hiệu Quả

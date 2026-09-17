@@ -491,9 +491,11 @@ function bloodmight_execute(state, source_card, event_data, helpers)
     end
 
     local front_line = state[source_side .. "_front_line"] or {}
-    local sythra_card = lib_battle_common.find_card_in_line_by_code(front_line, "sythra")
+    local sythra_card = helpers.find_untriggered_card(front_line, function(c)
+        return c.item_definition_code_name == "sythra"
+    end)
     if sythra_card == nil then
-        return {}, "bloodmight requires sythra in own front_line"
+        return {}, "bloodmight requires untriggered sythra in own front_line"
     end
     local bone_spires = {}
     for _, card in ipairs(front_line) do
