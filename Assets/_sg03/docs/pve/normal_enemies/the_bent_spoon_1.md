@@ -14,9 +14,9 @@
 
 > Lực chiến dự kiến:
 >
-> **9,280 điểm**
+> **9,640 điểm**
 >
->   - Điểm bộ bài: 7,770
+>   - Điểm bộ bài: 8,130
 >   - Điểm choose: 1,010
 >   - Điểm Void: 0
 >   - Điểm chiến thuật: 500
@@ -60,11 +60,11 @@ Danh sách 27 card của The Bent Spoon #1 (9 loại, mỗi loại 3 bản):
 | [`zombie_male`](../../cards/darkborn/undead/common/zombie_male.md) | 3 | 70 | 240 | 930 | Character chiến đấu |
 | [`zombie_female`](../../cards/darkborn/undead/common/zombie_female.md) | 3 | 50 | 200 | 750 | Character chiến đấu |
 | [`kira`](../../cards/darkborn/demon/common/kira.md) | 3 | 140 | 160 | 900 | Character chiến đấu |
-| [`abyssal_mist`](../../cards/darkborn/demon/common/abilities/abyssal_mist.md) | 3 | 0 | 0 | 0 | Ability Aura; `atk_added`/`def_added` được chấm ở chiến thuật |
+| [`abyssal_mist`](../../cards/darkborn/demon/common/abilities/abyssal_mist.md) | 3 | 70 | 50 | 360 | Ability Aura khuếch đại ATK cho Misthy và DEF cho Darkborn/Natureborn |
 | [`misthy`](../../cards/darkborn/demon/common/misthy.md) | 3 | 200 | 400 | 1,800 | Character chủ lực dồn sát thương kết liễu |
 | [`skeleton`](../../cards/darkborn/undead/Ria/skeleton.md) | 3 | 50 | 160 | 630 | Character chiến đấu |
 | [`goblin_shaman`](../../cards/natureborn/goblin/goblin_shaman.md) | 3 | 200 | 310 | 1,530 | Character chiến đấu |
-| **Tổng** | **27** | **2,640** | **5,130** | **7,770** | Xem [cách tính lực chiến](../enemy_power_score.md) |
+| **Tổng** | **27** | **2,850** | **5,280** | **8,130** | Xem [cách tính lực chiến](../enemy_power_score.md) |
 
 ---
 
