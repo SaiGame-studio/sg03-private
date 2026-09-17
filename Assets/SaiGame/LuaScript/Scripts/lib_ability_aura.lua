@@ -271,6 +271,10 @@ function has_active_abyssal_mist(state, side)
     return lib_battle_common.has_active_back_line_card_code(state, side, "abyssal_mist", "abyssal_mist_active")
 end
 
+function has_active_bloodmight(state, side)
+    return lib_battle_common.has_active_back_line_card_code(state, side, "bloodmight", "bloodmight_active")
+end
+
 local function clear_persistent_bonus(card, bonus_key, source_ids)
     local bonuses = card[bonus_key]
     local total = 0
