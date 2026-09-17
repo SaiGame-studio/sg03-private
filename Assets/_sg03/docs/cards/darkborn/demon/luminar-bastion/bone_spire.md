@@ -4,7 +4,7 @@
 - **Code Name**: `bone_spire`
 - **Số sao**: 1
 - **Tấn Công (ATK)**: 0
-- **Phòng Thủ (DEF)**: 250
+- **Phòng Thủ (DEF)**: 350
 - **Loại Thẻ**: [`character`](../../../../03_characters.md)
 - **Chủng Tộc Chính**: **Darkborn**
 - **Tộc Nhánh**: **Demon** (định danh kỹ thuật: `darkborn` / `demon`)

@@ -12,11 +12,11 @@
 >
 > Script chính: [`enemy_ai_bastion_blood.lua`](../../../../SaiGame/LuaScript/Scripts/enemy_ai_bastion_blood.lua)
 
-> Lực chiến dự kiến: **11,420 điểm**
+> Lực chiến dự kiến: **11,820 điểm**
 >
->   - Điểm bộ bài: 9,360
+>   - Điểm bộ bài: 9,660
 >   - Điểm choose: 910
->   - Điểm Void: 250
+>   - Điểm Void: 350
 >   - Điểm chiến thuật: 900
 >
 > Xem [công thức dùng chung](../enemy_power_score.md#công-thức).
@@ -83,14 +83,14 @@ Danh sách 27 card của Bastion Blood (9 loại, mỗi loại 3 bản theo `ENE
 | --- | ---: | ---: | ---: | ---: | --- |
 | [`mireya`](../../cards/darkborn/demon/luminar-bastion/mireya.md) | 3 | 150 | 200 | 1,050 | Character liên kết Blood Drain |
 | [`sythra`](../../cards/darkborn/demon/luminar-bastion/sythra.md) | 3 | 200 | 360 | 1,680 | Character liên kết Crimson Spire |
-| [`bone_spire`](../../cards/darkborn/demon/luminar-bastion/bone_spire.md) | 3 | 0 | 250 | 750 | Character công trình phòng thủ |
+| [`bone_spire`](../../cards/darkborn/demon/luminar-bastion/bone_spire.md) | 3 | 0 | 350 | 1,050 | Character công trình phòng thủ |
 | [`blood_spire`](../../cards/darkborn/demon/luminar-bastion/blood_spire.md) | 3 | 0 | 500 | 1,500 | Character công trình trong chuỗi Blood Drain |
 | [`blood_mist`](../../cards/darkborn/demon/luminar-bastion/abilities/blood_mist.md) | 3 | 0 | 0 | 0 | Ability Aura; không có `base_stats.atk` hoặc `base_stats.def`, hiệu ứng được chấm ở chiến thuật |
 | [`kira`](../../cards/darkborn/demon/common/kira.md) | 3 | 140 | 160 | 900 | Character chiến đấu bổ trợ |
 | [`misthy`](../../cards/darkborn/demon/common/misthy.md) | 3 | 200 | 400 | 1,800 | Character chiến đấu bổ trợ |
 | [`zombie_female`](../../cards/darkborn/undead/common/zombie_female.md) | 3 | 50 | 200 | 750 | Character chiến đấu bổ trợ |
 | [`zombie_male`](../../cards/darkborn/undead/common/zombie_male.md) | 3 | 70 | 240 | 930 | Character chiến đấu bổ trợ |
-| **Tổng** | **27** | **2,430** | **6,930** | **9,360** | Xem [cách tính lực chiến](../enemy_power_score.md) |
+| **Tổng** | **27** | **2,430** | **7,230** | **9,660** | Xem [cách tính lực chiến](../enemy_power_score.md) |
 
 ---
 

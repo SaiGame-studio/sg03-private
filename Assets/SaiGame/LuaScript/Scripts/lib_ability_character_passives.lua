@@ -215,8 +215,8 @@ function crimson_spire_execute(state, source_card, event_data, helpers)
         return {}, nil
     end
 
-    if battle.has_back_line_card_code(state, source_side, "bloodmight") then
-        battle.dlog("[ability] crimson_spire: skip - Bloodmight is in own backline")
+    if battle.has_active_back_line_card_code(state, source_side, "bloodmight", "bloodmight_active") then
+        battle.dlog("[ability] crimson_spire: skip - Bloodmight is active in own backline")
         return {}, nil
     end
 

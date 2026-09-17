@@ -60,21 +60,31 @@ end
 
 
 
--- Returns "alpha" or "omega" by scanning state lines for the given card.
+local function _build_named_zones(state)
+    return {
+        { zone = state.alpha_front_line or {},  zone_key = "alpha_front_line" },
+        { zone = state.alpha_back_line or {},   zone_key = "alpha_back_line" },
+        { zone = state.alpha_hand or {},        zone_key = "alpha_hand" },
+        { zone = state.alpha_the_void or {},    zone_key = "alpha_the_void" },
+        { zone = state.alpha_the_source or {},  zone_key = "alpha_the_source" },
+        { zone = state.omega_front_line or {},  zone_key = "omega_front_line" },
+        { zone = state.omega_back_line or {},   zone_key = "omega_back_line" },
+        { zone = state.omega_hand or {},        zone_key = "omega_hand" },
+        { zone = state.omega_the_void or {},    zone_key = "omega_the_void" },
+        { zone = state.omega_the_source or {},  zone_key = "omega_the_source" },
+    }
+end
+
+-- Returns "alpha" or "omega" by scanning all state zones for the given card.
 local function _find_card_side(state, card)
-    local alpha_lines = { state.alpha_front_line, state.alpha_back_line }
-    local omega_lines = { state.omega_front_line, state.omega_back_line }
-    for _, line in ipairs(alpha_lines) do
-        if line ~= nil then
-            for _, slot_card in ipairs(line) do
-                if slot_card.inventory_item_id == card.inventory_item_id then return "alpha" end
-            end
-        end
+    if state == nil or card == nil or card.inventory_item_id == nil or card.inventory_item_id == "" then
+        return "unknown"
     end
-    for _, line in ipairs(omega_lines) do
-        if line ~= nil then
-            for _, slot_card in ipairs(line) do
-                if slot_card.inventory_item_id == card.inventory_item_id then return "omega" end
+    for _, entry in ipairs(_build_named_zones(state)) do
+        for _, zone_card in ipairs(entry.zone) do
+            if zone_card.inventory_item_id == card.inventory_item_id then
+                if string.sub(entry.zone_key, 1, 6) == "alpha_" then return "alpha" end
+                if string.sub(entry.zone_key, 1, 6) == "omega_" then return "omega" end
             end
         end
     end
@@ -93,21 +103,6 @@ local function _get_card_stat(state, card, stat_key)
     local item_def = _find_item_def(state.item_defs, card.item_definition_code_name)
     if item_def == nil or item_def.base_stats == nil then return nil end
     return item_def.base_stats[stat_key]
-end
-
-local function _build_named_zones(state)
-    return {
-        { zone = state.alpha_front_line or {},  zone_key = "alpha_front_line" },
-        { zone = state.alpha_back_line or {},   zone_key = "alpha_back_line" },
-        { zone = state.alpha_hand or {},        zone_key = "alpha_hand" },
-        { zone = state.alpha_the_void or {},    zone_key = "alpha_the_void" },
-        { zone = state.alpha_the_source or {},  zone_key = "alpha_the_source" },
-        { zone = state.omega_front_line or {},  zone_key = "omega_front_line" },
-        { zone = state.omega_back_line or {},   zone_key = "omega_back_line" },
-        { zone = state.omega_hand or {},        zone_key = "omega_hand" },
-        { zone = state.omega_the_void or {},    zone_key = "omega_the_void" },
-        { zone = state.omega_the_source or {},  zone_key = "omega_the_source" },
-    }
 end
 
 local function _find_card_zone_key(state, target_card)
@@ -495,7 +490,10 @@ function trigger_card_ability(state, source_card, trigger_event, event_data)
     source_card.face_up = true
     source_card.expose = true
     local source_side = _find_card_side(state, source_card)
-    table.insert(all_actions, lib_battle_common.build_card_expose_action(source_side, source_card))
+    local source_expose_action = lib_battle_common.build_card_expose_action(source_side, source_card)
+    if source_expose_action ~= "" then
+        table.insert(all_actions, source_expose_action)
+    end
 
     for _, ability_key in ipairs(keys) do
         local ability_actions, err = _dispatch_one_ability(state, source_card, ability_key, trigger_event, event_data)
@@ -519,7 +517,7 @@ function trigger_ability_by_key(state, source_card, ability_key, trigger_event, 
     local source_side = _find_card_side(state, source_card)
     local source_expose_action = lib_battle_common.build_card_expose_action(source_side, source_card)
     local reveal_selected_before_source = ability_key == "lux_maxima"
-    if not reveal_selected_before_source then
+    if not reveal_selected_before_source and source_expose_action ~= "" then
         table.insert(all_actions, source_expose_action)
     end
     local ability_actions, err = _dispatch_one_ability(state, source_card, ability_key, trigger_event, event_data)
@@ -529,7 +527,9 @@ function trigger_ability_by_key(state, source_card, ability_key, trigger_event, 
     -- client action, then reveal Lux before dispatching its ability effect.
     if reveal_selected_before_source and #ability_actions > 0 then
         table.insert(all_actions, ability_actions[1])
-        table.insert(all_actions, source_expose_action)
+        if source_expose_action ~= "" then
+            table.insert(all_actions, source_expose_action)
+        end
         table.remove(ability_actions, 1)
     end
     for _, action in ipairs(ability_actions) do
