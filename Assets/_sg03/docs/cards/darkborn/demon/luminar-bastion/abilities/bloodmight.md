@@ -22,6 +22,8 @@ Bloodmight trở thành Aura trên chiến trường và cộng `base_stats.atk_
 
 Khi kích hoạt, Bloodmight đưa đúng ba Bone Spire ở hàng trước phe sở hữu vào `the_void` của phe đó, sau đó duy trì Aura. Aura chỉ buff `final_atk` cho Character Darkborn cùng phe có `base_stats.atk` lớn hơn `0`; Darkborn của đối thủ và Character có ATK gốc `0` không nhận buff. Khi Bloodmight rời chiến trường, toàn bộ buff ATK do Aura này áp dụng bị gỡ.
 
+Khi Sythra cuối cùng trên chiến trường bị tiêu diệt, mọi Bloodmight đang hoạt động lập tức vào `the_void` của chủ sở hữu và toàn bộ buff ATK do Aura này áp dụng bị gỡ.
+
 ## Thẻ Liên Kết
 
 - [Sythra](../sythra.md)

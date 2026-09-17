@@ -67,6 +67,15 @@ function has_back_line_card_code(state, side, code_name)
     return line_contains_card_code(line, code_name)
 end
 
+-- Returns true when either side has a card matching code_name on a battle line.
+function has_battlefield_card_code(state, code_name)
+    if state == nil or code_name == nil or code_name == "" then return false end
+    return line_contains_card_code(state.alpha_front_line, code_name)
+        or line_contains_card_code(state.alpha_back_line, code_name)
+        or line_contains_card_code(state.omega_front_line, code_name)
+        or line_contains_card_code(state.omega_back_line, code_name)
+end
+
 -- Returns the first card and its index in line matching code_name (and optional exclude_item_id), or nil, nil.
 function find_card_in_line_by_code(line, code_name, exclude_item_id)
     if type(line) ~= "table" or code_name == nil or code_name == "" then return nil, nil end

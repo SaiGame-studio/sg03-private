@@ -172,12 +172,29 @@ function reconcile_blood_mist_frontline_requirement(state, side)
         state, side, { "mireya", "blood_spire" }, "blood_mist", "blood_mist_active")
 end
 
+-- An active Bloodmight persists only while at least one Sythra remains on the
+-- battlefield. Once the final Sythra is defeated, all active Bloodmight cards
+-- enter their owners' Void and their persistent bonuses are reconciled.
+local function reconcile_bloodmight_sythra_requirement(state)
+    if lib_battle_common.has_battlefield_card_code(state, "sythra") then return {} end
+
+    local actions = {}
+    for _, side in ipairs({ "alpha", "omega" }) do
+        local bloodmight_actions = reconcile_aura_frontline_requirements(
+            state, side, { "sythra" }, "bloodmight", "bloodmight_active")
+        for _, action in ipairs(bloodmight_actions) do table.insert(actions, action) end
+    end
+    return actions
+end
+
 -- Reconciles Aura cards whose continued presence depends on a front-line
--- Character after any Character leaves a battle line.
+-- Character or any battlefield Character after a Character leaves a battle line.
 function reconcile_frontline_aura_requirements(state, side)
     local actions = reconcile_abyssal_mist_frontline_requirement(state, side)
     local blood_mist_actions = reconcile_blood_mist_frontline_requirement(state, side)
     for _, action in ipairs(blood_mist_actions) do table.insert(actions, action) end
+    local bloodmight_actions = reconcile_bloodmight_sythra_requirement(state)
+    for _, action in ipairs(bloodmight_actions) do table.insert(actions, action) end
     return actions
 end
 
