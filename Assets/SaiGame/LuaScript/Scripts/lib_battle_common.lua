@@ -350,6 +350,7 @@ end
 -- Appends a client action with an auto-incremented index prefix.
 -- Format: [index]:[action_name] or [index]:[action_name]:[params]
 function append_client_action(state, action)
+    if action == nil or action == "" then return end
     local index = #state.client_actions + 1
     table.insert(state.client_actions, index .. ":" .. action)
 end
@@ -368,6 +369,10 @@ function build_card_expose_action(side, card, override_code)
         inventory_item_id = tostring(card or "")
     end
     if inventory_item_id == "" then return "" end
+    if side == nil or side == "" or side == "unknown" then
+        dlog("[error] build_card_expose_action: cannot identify side for card=" .. tostring(inventory_item_id) .. " (" .. tostring(code) .. ")")
+        return ""
+    end
     if code ~= nil and code ~= "" then
         return side .. "_card_expose:" .. inventory_item_id .. "," .. code
     end
