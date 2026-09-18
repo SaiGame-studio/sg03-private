@@ -92,6 +92,7 @@ namespace SG03
         public void NotifyLocationChanged(Location newLocation)
         {
             if (newLocation == Location.in_void) this.DespawnStatUis();
+            this.RefreshCardNameUiVisibility();
             LocationChanged?.Invoke(this, newLocation);
         }
 
@@ -1047,7 +1048,11 @@ namespace SG03
         public CardDefinitionData Definition => this.definition;
 
         /// <summary>Stores the code name used to look up this card's definition.</summary>
-        public void SetCodeName(string code) => this.codeName = code;
+        public void SetCodeName(string code)
+        {
+            this.codeName = code;
+            this.RefreshCardNameUiVisibility();
+        }
 
         /// <summary>The code name assigned to this card.</summary>
         public string CodeName => this.codeName;

@@ -21,13 +21,43 @@ namespace SG03
                 return this.card.FallbackName;
             }
 
+            if (!string.IsNullOrEmpty(this.codeName))
+            {
+                return this.codeName;
+            }
+
             return this.name;
         }
 
-        /// <summary>Refreshes Card Name UI visibility based on hover state.</summary>
+        /// <summary>Determines whether Card Name UI should be visible for this card.</summary>
+        public bool ShouldShowCardNameUi()
+        {
+            if (this.IsBattleResuming() || !this.isHover) return false;
+            if (this.Location == Location.in_hand || this.Location == Location.in_void || this.Location == Location.in_source) return false;
+            if (!this.HasIdentifiedCodeName()) return false;
+            return true;
+        }
+
+        /// <summary>Checks whether this card has an identified code name.</summary>
+        public bool HasIdentifiedCodeName()
+        {
+            if (!string.IsNullOrWhiteSpace(this.codeName) && !this.codeName.Equals("unknown", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            if (this.definition != null && !string.IsNullOrWhiteSpace(this.definition.item_code) && !this.definition.item_code.Equals("unknown", System.StringComparison.OrdinalIgnoreCase))
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>Refreshes Card Name UI visibility based on hover state, location, and code name.</summary>
         public void RefreshCardNameUiVisibility()
         {
-            if (this.IsBattleResuming() || !this.isHover || this.Location == Location.in_void)
+            if (!this.ShouldShowCardNameUi())
             {
                 this.DespawnCardNameUi();
                 return;
