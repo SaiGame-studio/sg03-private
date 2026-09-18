@@ -13,6 +13,7 @@
             <ui:VisualElement name="TopMenu" class="game-top-menu">
                 <ui:Label name="BattleTitle" text="Omega" class="game-top-menu__title" />
                 <ui:DropdownField name="EnemyCodeNameInput" label="Enemy" choices="bastion_blood,the_bent_spoon_1,silas,goblin_shaman" value="bastion_blood" class="game-bottom-input" />
+                <ui:Button name="BtnToggleMap" text="Map" tooltip="Toggle Map Selection" class="game-bottom-btn game-bottom-btn--secondary game-top-menu__map-btn" />
                 <ui:VisualElement name="PlayerNavigation">
                     <ui:Button name="SoulEnergy" class="soul-energy" tooltip="Soul Collector">
                         <ui:VisualElement tooltip="Soul Energy" class="soul-energy__icon" />
@@ -30,6 +31,22 @@
                 <ui:Label name="OmegaTheVoidCountLabel" text="Void: --" tooltip="Show Omega Void cards" class="battle-source-count-label battle-source-count-label--top-right-2 battle-source-count-label--interactive" />
                 <ui:Label name="AlphaTheVoidCountLabel" text="Void: --" tooltip="Show Alpha Void cards" class="battle-source-count-label battle-source-count-label--bottom-right-2 battle-source-count-label--interactive" />
                 <ui:Label name="AlphaSourceCountLabel" text="Source: --" tooltip="Show Alpha Source cards" class="battle-source-count-label battle-source-count-label--bottom-right battle-source-count-label--interactive" />
+            </ui:VisualElement>
+
+            <ui:VisualElement name="GameMapOverlay" class="game-map-overlay">
+                <ui:VisualElement name="GameMapHeader" class="game-map-header">
+                    <ui:Label name="GameMapTitle" text="BATTLEFIELD MAP" class="game-map-title" />
+                    <ui:Label name="GameMapHint" text="Right-click &amp; drag • Scroll to zoom • Click an enemy node to select" class="game-map-hint" />
+                    <ui:Button name="BtnResetMapView" text="Center" tooltip="Center Map View" class="game-bottom-btn game-bottom-btn--secondary game-map-center-btn" />
+                    <ui:Button name="BtnCloseMap" text="X" tooltip="Close Map" class="void-grid-close-button game-map-close-btn" />
+                </ui:VisualElement>
+                <ui:VisualElement name="GameMapViewport" class="game-map-viewport">
+                    <ui:VisualElement name="GameMapCanvas" class="game-map-canvas">
+                        <ui:VisualElement name="GameMapGridBackground" class="game-map-grid-bg" />
+                        <ui:VisualElement name="GameMapLinesContainer" class="game-map-lines-layer" />
+                        <ui:VisualElement name="GameMapNodesContainer" class="game-map-nodes-layer" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
             </ui:VisualElement>
 
             <ui:VisualElement name="BottomMenu" class="game-bottom-menu">

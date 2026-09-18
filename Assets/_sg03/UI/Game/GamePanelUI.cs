@@ -41,6 +41,7 @@ namespace SG03.UI
         private GameBattleStatusUI battleStatusUI;
         private GameBattleActionsUI battleActionsUI;
         private SoulEnergyUI soulEnergyUI;
+        private GameMapUI mapUI;
 
         public void ShowErrorToast(string error)
         {
@@ -238,6 +239,7 @@ namespace SG03.UI
             this.BindBattleStatus(panelRoot);
             this.BindBattleActions(panelRoot);
             this.BindSoulEnergy(panelRoot);
+            this.BindMap(panelRoot);
             this.WirePresetEventsToBattleActions();
             this.SubscribeToAuthEvents();
             this.SubscribeToBattleStateEvents();
@@ -302,6 +304,12 @@ namespace SG03.UI
             this.soulEnergyUI?.Dispose();
             this.soulEnergyUI = new SoulEnergyUI(this, panelRoot, this.currencyWallet, panelRoot.Q("PlayerNavigation"));
             this.soulEnergyUI.Initialize();
+        }
+
+        private void BindMap(VisualElement panelRoot)
+        {
+            this.mapUI = new GameMapUI();
+            this.mapUI.Bind(panelRoot);
         }
 
         private void WirePresetEventsToBattleActions()
@@ -449,6 +457,7 @@ namespace SG03.UI
             if (this.btnStartBattle != null) this.btnStartBattle.style.display = DisplayStyle.None;
             if (this.btnCancelLastGame != null) this.btnCancelLastGame.style.display = DisplayStyle.None;
             if (this.btnEndBattle != null) this.btnEndBattle.style.display = DisplayStyle.Flex;
+            this.mapUI?.Hide();
         }
 
         private void RefreshPlayerName()

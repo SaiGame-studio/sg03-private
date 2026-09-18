@@ -789,3 +789,232 @@
 .battle-result-popup-btn--stop:hover {
     background-color: rgba(220, 50, 50, 1);
 }
+
+/* =========================================================================
+   Battlefield Map Simulation
+   ========================================================================= */
+
+.game-top-menu__map-btn {
+    flex: 0 0 auto;
+    min-width: 68px;
+    margin-left: 10px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border-width: 1px;
+    border-color: rgba(90, 120, 200, 0.45);
+    background-color: rgba(45, 60, 105, 0.5);
+    color: rgb(190, 210, 255);
+    -unity-font-style: bold;
+    transition-duration: 0.12s;
+}
+
+.game-top-menu__map-btn:hover {
+    background-color: rgba(70, 95, 160, 0.7);
+    border-color: rgba(120, 160, 255, 0.8);
+    color: rgb(255, 255, 255);
+}
+
+.game-top-menu__map-btn--active {
+    background-color: rgba(65, 115, 235, 0.9);
+    border-color: rgb(140, 180, 255);
+    color: rgb(255, 255, 255);
+}
+
+.game-map-overlay {
+    display: none;
+    position: absolute;
+    top: 56px;
+    bottom: 45px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: rgba(10, 14, 24, 0.96);
+    border-top-width: 1px;
+    border-bottom-width: 1px;
+    border-color: rgba(80, 105, 170, 0.35);
+}
+
+.game-map-header {
+    height: 46px;
+    min-height: 46px;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 16px;
+    background-color: rgba(16, 22, 38, 0.96);
+    border-bottom-width: 1px;
+    border-color: rgba(70, 95, 160, 0.4);
+}
+
+.game-map-title {
+    font-size: 15px;
+    color: rgb(220, 232, 255);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.game-map-hint {
+    font-size: 12px;
+    color: rgb(140, 160, 205);
+    margin-left: 20px;
+    flex-grow: 1;
+}
+
+.game-map-center-btn {
+    flex: 0 0 auto;
+    margin-right: 12px;
+    padding: 6px 14px;
+    font-size: 12px;
+}
+
+.game-map-close-btn {
+    width: 32px;
+    height: 28px;
+    font-size: 13px;
+}
+
+.game-map-viewport {
+    flex-grow: 1;
+    position: relative;
+    overflow: hidden;
+    background-color: rgb(9, 13, 23);
+}
+
+.game-map-canvas {
+    position: absolute;
+    width: 2400px;
+    height: 1600px;
+    left: 0;
+    top: 0;
+    background-color: rgb(11, 16, 28);
+}
+
+.game-map-grid-bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.game-map-grid-cell {
+    position: absolute;
+    border-width: 1px;
+    border-color: rgba(45, 60, 95, 0.22);
+}
+
+.game-map-sector-zone {
+    position: absolute;
+    border-width: 1px;
+    border-radius: 16px;
+    border-color: rgba(75, 105, 175, 0.25);
+    background-color: rgba(22, 32, 58, 0.2);
+    padding: 12px 16px;
+}
+
+.game-map-sector-label {
+    font-size: 11px;
+    color: rgba(120, 145, 200, 0.5);
+    -unity-font-style: bold;
+    letter-spacing: 1px;
+}
+
+.game-map-lines-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.game-map-edge {
+    position: absolute;
+    background-color: rgba(75, 110, 195, 0.35);
+    border-radius: 2px;
+}
+
+.game-map-nodes-layer {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.game-map-node {
+    position: absolute;
+    width: 146px;
+    padding: 10px 8px;
+    align-items: center;
+    border-radius: 12px;
+    border-width: 2px;
+    border-color: rgba(85, 115, 185, 0.55);
+    background-color: rgba(20, 26, 45, 0.94);
+    transition-duration: 0.12s;
+}
+
+.game-map-node:hover {
+    border-color: rgb(130, 175, 255);
+    background-color: rgba(32, 42, 72, 0.98);
+}
+
+.game-map-node--selected {
+    border-color: rgb(255, 205, 70);
+    background-color: rgba(42, 39, 30, 0.98);
+}
+
+.game-map-node__pin {
+    width: 28px;
+    height: 28px;
+    border-radius: 14px;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 6px;
+    border-width: 1px;
+    border-color: rgba(120, 160, 255, 0.6);
+    background-color: rgba(45, 65, 120, 0.7);
+}
+
+.game-map-node--selected .game-map-node__pin {
+    border-color: rgb(255, 220, 100);
+    background-color: rgba(160, 115, 20, 0.85);
+}
+
+.game-map-node__pin-icon {
+    font-size: 13px;
+    color: rgb(220, 235, 255);
+    -unity-font-style: bold;
+}
+
+.game-map-node--selected .game-map-node__pin-icon {
+    color: rgb(255, 255, 255);
+}
+
+.game-map-node__title {
+    font-size: 12px;
+    color: rgb(240, 245, 255);
+    -unity-font-style: bold;
+    -unity-text-align: middle-center;
+    margin-bottom: 3px;
+}
+
+.game-map-node--selected .game-map-node__title {
+    color: rgb(255, 230, 130);
+}
+
+.game-map-node__badge {
+    font-size: 10px;
+    color: rgb(150, 175, 225);
+    background-color: rgba(12, 16, 28, 0.85);
+    padding: 2px 6px;
+    border-radius: 4px;
+    -unity-text-align: middle-center;
+}
+
+.game-map-node__status {
+    font-size: 10px;
+    color: rgb(255, 215, 80);
+    -unity-font-style: bold;
+    margin-top: 4px;
+    -unity-text-align: middle-center;
+}
