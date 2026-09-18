@@ -47,7 +47,7 @@ namespace SG03
         public Owner? HpBarHiddenOwner { get; private set; } = Owner.alpha;
 
         public event Action<string> OnBattleCompleted;
-        public event Action<string> OnCardTakeDamageExecuted;
+        public event Action<string, int> OnCardTakeDamageExecuted;
         public event Action OnOmegaNoAvailableAttacker;
 
         /// <summary>Marks the next received action sequence as an explicit battle resume.</summary>

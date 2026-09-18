@@ -242,6 +242,20 @@ namespace SG03
             this.SetHealthPreview(0f);
         }
 
+        /// <summary>Previews an incoming damage delta starting from an explicit base damage amount.</summary>
+        public void SetDamagePreview(float baseDamage, float damageDelta)
+        {
+            int finalDef = this.GetFinalDef();
+            if (finalDef <= 0 && this.cardCtrl?.Definition != null)
+                finalDef = this.cardCtrl.Definition.GetBaseStatInt("def");
+
+            this.maxHealth = Mathf.Max(1f, finalDef);
+            this.currentHealth = Mathf.Clamp(baseDamage, 0f, this.maxHealth);
+            this.healthPreviewDelta = Mathf.Max(0f, damageDelta);
+            this.previewColorAnimationTime = 0f;
+            this.RefreshUi();
+        }
+
         private void SetMaxHealth(float maximum)
         {
             this.maxHealth = Mathf.Max(1f, maximum);
@@ -352,19 +366,24 @@ namespace SG03
             this.subscribedClientActions = null;
         }
 
-        private void OnCardTakeDamageExecuted(string targetCardId)
+        private void OnCardTakeDamageExecuted(string targetCardId, int totalDamage)
         {
             if (this.cardCtrl == null) return;
 
             string cardId = this.cardCtrl.InventoryItemId;
             if (string.IsNullOrEmpty(cardId) || cardId != targetCardId) return;
-            this.RefreshHealthFromDamageAction();
+            this.RefreshHealthFromDamageAction(totalDamage);
         }
 
-        private void RefreshHealthFromDamageAction()
+        private void RefreshHealthFromDamageAction(int totalDamage = -1)
         {
-            // The client action selects when to refresh; the battle state is the source of truth.
-            this.SetHealth(this.GetTotalDamageReceived(), this.GetFinalDef());
+            // The client action selects when to refresh; totalDamage provides action authority.
+            int currentDamage = totalDamage >= 0 ? totalDamage : this.GetTotalDamageReceived();
+            int finalDef = this.GetFinalDef();
+            if (finalDef <= 0 && this.cardCtrl?.Definition != null)
+                finalDef = this.cardCtrl.Definition.GetBaseStatInt("def");
+
+            this.SetHealth(currentDamage, finalDef);
             // The damage animation starts in the same action. Re-anchor now rather than waiting
             // for the next LateUpdate, so the bar remains above the card for this frame as well.
             this.RefreshWorldSpacePresentation();
@@ -575,7 +594,8 @@ namespace SG03
                 || this.maxHealthLabel == null) return;
 
             // Keep the label in the UI layout when hidden so the HP bar never changes position.
-            this.healthLabelRow.style.visibility = this.miniMode ? Visibility.Hidden : Visibility.Visible;
+            bool hideLabel = this.miniMode && Mathf.Approximately(this.healthPreviewDelta, 0f);
+            this.healthLabelRow.style.visibility = hideLabel ? Visibility.Hidden : Visibility.Visible;
             if (this.ShouldShowFinalDefOnly())
             {
                 this.currentHealthLabel.text = $"{Mathf.CeilToInt(this.maxHealth)}";
