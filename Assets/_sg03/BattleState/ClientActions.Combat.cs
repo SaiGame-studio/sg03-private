@@ -58,6 +58,11 @@ namespace SG03
 
             card.ClearHealthPreview();
             this.OnCardTakeDamageExecuted?.Invoke(targetId, totalDamage);
+
+            if (card.IsDefeated(totalDamage) && !this.isResuming)
+            {
+                yield return new WaitForSeconds(1f);
+            }
         }
 
         private Coroutine ExecuteCardGuarded(string[] parameters)

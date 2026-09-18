@@ -436,6 +436,22 @@ namespace SG03
             this.RefreshHpBarDisplayMode();
         }
 
+        /// <summary>Returns the current active DEF value for this card.</summary>
+        public int GetFinalDef()
+        {
+            BattleCardSlot slot = this.GetBattleSlot();
+            if (slot != null && slot.final_def > 0) return slot.final_def;
+            return this.definition?.GetBaseStatInt("def") ?? 0;
+        }
+
+        /// <summary>Returns true if the card is a character and cumulative damage has reached or exceeded its DEF.</summary>
+        public bool IsDefeated(int totalDamage)
+        {
+            if (!this.IsCharacter()) return false;
+            int finalDef = this.GetFinalDef();
+            return finalDef > 0 && totalDamage >= finalDef;
+        }
+
         /// <summary>
         /// Refreshes a planned damage preview after an effect changes this
         /// card's battle stats. The value is always recalculated from Attacker.
