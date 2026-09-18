@@ -49,7 +49,6 @@ namespace SG03
 
         [Header("Targeting")]
         [SerializeField] private ArrowIndicatorCtrl arrowIndicator;
-        [SerializeField] private Card3DCtrl targeted;
         private Card3DCtrl targetingSource;
         private Card3DCtrl healthPreviewTarget;
 
@@ -695,7 +694,6 @@ namespace SG03
             this.fullDetail = false;
             Card3DCtrl prevSource = this.targetingSource;
             this.selected = null;
-            this.targeted = null;
             this.targetingSource = null;
             this.holderSelected = null;
             this.arrowIndicator?.Hide();
