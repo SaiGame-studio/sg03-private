@@ -81,15 +81,14 @@ function titan_fall_execute(state, source_card, event_data, helpers)
         return {}, "titan_fall attacking card was not found"
     end
 
-    local attacker_atk = attacker_def.base_stats ~= nil and attacker_def.base_stats.atk or 0
+    local attacker_atk = (attacker_card ~= nil and tonumber(attacker_card.final_atk) ~= nil)
+        and tonumber(attacker_card.final_atk)
+        or (attacker_def.base_stats ~= nil and attacker_def.base_stats.atk or 0)
     local accumulated_damage = target_card.total_damage_received or 0
     local total_attack_damage = attacker_atk + accumulated_damage
     if total_attack_damage < final_def then
         local remaining_def = final_def - total_attack_damage
         return {}, "titan_fall cannot trigger: target Human would survive with " .. remaining_def .. " DEF remaining"
-    end
-    if total_attack_damage == final_def then
-        return {}, "titan_fall cannot trigger: attack equals target DEF; Titan Fall requires damage to exceed DEF"
     end
 
     local ren_card = helpers.find_line_card_by_code(state[source_side .. "_front_line"], "azure_blade")
