@@ -42,16 +42,18 @@ function eagle_eye_execute(state, source_card, event_data, helpers)
         return {}, "eagle_eye requires Lyra on the caster's front_line"
     end
 
+    source_card.face_up = true
+    source_card.expose = true
     lyra_card.face_up = true
     lyra_card.expose = true
     target_card.face_up = true
     target_card.expose = true
     local target_side = helpers.find_card_side(state, target_card)
     local ability_actions = {
-        source_side .. "_attack:" .. lyra_card.inventory_item_id .. "," .. target_card.inventory_item_id,
+        helpers.lib_battle_common.build_card_expose_action(source_side, source_card),
         helpers.lib_battle_common.build_card_expose_action(source_side, lyra_card),
-        helpers.lib_battle_common.build_card_expose_action(target_side, target_card),
-        source_side .. "_card_ability:source=" .. source_card.inventory_item_id .. ",ability=eagle_eye,target=" .. target_card.inventory_item_id .. ",required=" .. lyra_card.inventory_item_id
+        source_side .. "_card_ability:source=" .. source_card.inventory_item_id .. ",ability=eagle_eye,target=" .. target_card.inventory_item_id .. ",required=" .. lyra_card.inventory_item_id,
+        helpers.lib_battle_common.build_card_expose_action(target_side, target_card)
     }
 
     -- Ability cards are consumed after resolving an ability-only action.
