@@ -187,7 +187,8 @@ namespace SG03
             this.hpBarInstance.SetPosition(holder.transform.position);
             this.hpBarInstance.SetCard(this);
             this.hpBarInstance.gameObject.SetActive(true);
-            this.UpdateDamagePreviewFromAttacker();
+            if (this.attacker != null)
+                this.UpdateDamagePreviewFromAttacker();
             this.RefreshHpBarDisplayMode();
         }
 
@@ -420,6 +421,35 @@ namespace SG03
         {
             this.hpBarInstance?.ClearHealthPreview();
             this.RefreshHpBarDisplayMode();
+        }
+
+        /// <summary>
+        /// Displays a damage preview on this card's HP bar based on incoming damage and post-damage total.
+        /// </summary>
+        public void SetDamagePreview(int damage, int totalDamage)
+        {
+            if (this.hpBarInstance == null) this.RefreshHpBarVisibility();
+            if (this.hpBarInstance == null) return;
+
+            int baseDamage = Mathf.Max(0, totalDamage - damage);
+            this.hpBarInstance.SetDamagePreview(baseDamage, damage);
+            this.RefreshHpBarDisplayMode();
+        }
+
+        /// <summary>Returns the current active DEF value for this card.</summary>
+        public int GetFinalDef()
+        {
+            BattleCardSlot slot = this.GetBattleSlot();
+            if (slot != null && slot.final_def > 0) return slot.final_def;
+            return this.definition?.GetBaseStatInt("def") ?? 0;
+        }
+
+        /// <summary>Returns true if the card is a character and cumulative damage has reached or exceeded its DEF.</summary>
+        public bool IsDefeated(int totalDamage)
+        {
+            if (!this.IsCharacter()) return false;
+            int finalDef = this.GetFinalDef();
+            return finalDef > 0 && totalDamage >= finalDef;
         }
 
         /// <summary>

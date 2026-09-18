@@ -70,7 +70,7 @@ function deploy(state)
         and enemy_ai_core.find_card_in_zone_by_code(state, "omega_the_void", "goblin_brute") ~= nil
 
     if can_combo then
-        enemy_ai_core.deploy_card(front_line, reserve_left, shaman_card, true, front_deployed)
+        enemy_ai_core.deploy_card(front_line, reserve_left, shaman_card, false, front_deployed)
         table.insert(deployed_ids, shaman_card.id)
 
         local brute_call_slot = enemy_ai_core.find_empty_slot(back_line, slot_count)
@@ -107,7 +107,7 @@ function deploy(state)
             if not is_reserved then
                 local slot_i = find_unreserved_empty_slot(front_line, slot_count, reserve_left, 2)
                 if slot_i ~= nil then
-                    enemy_ai_core.deploy_card(front_line, slot_i, card, true, front_deployed)
+                    enemy_ai_core.deploy_card(front_line, slot_i, card, false, front_deployed)
                     table.insert(deployed_ids, card.id)
                 end
                 break

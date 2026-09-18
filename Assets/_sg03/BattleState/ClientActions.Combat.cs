@@ -40,13 +40,29 @@ namespace SG03
             Card3DCtrl card = this.cardSpawning?.FindCardById(targetId);
             if (card != null)
             {
-                card.ClearHealthPreview();
-                card.Damaged();
-                this.OnCardTakeDamageExecuted?.Invoke(targetId);
-                return this.StartCoroutine(this.WaitForCard(card));
+                return this.StartCoroutine(this.CardTakeDamageRoutine(card, targetId, damage, totalDamage));
             }
 
             return null;
+        }
+
+        private IEnumerator CardTakeDamageRoutine(Card3DCtrl card, string targetId, int damage, int totalDamage)
+        {
+            if (damage > 0)
+            {
+                card.SetDamagePreview(damage, totalDamage);
+            }
+
+            card.Damaged();
+            yield return this.StartCoroutine(this.WaitForCard(card));
+
+            card.ClearHealthPreview();
+            this.OnCardTakeDamageExecuted?.Invoke(targetId, totalDamage);
+
+            if (card.IsDefeated(totalDamage) && !this.isResuming)
+            {
+                yield return new WaitForSeconds(1f);
+            }
         }
 
         private Coroutine ExecuteCardGuarded(string[] parameters)

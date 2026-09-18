@@ -91,7 +91,7 @@ local function deploy_character_strategy(state, front_line, remaining_cards, slo
         local mireya_card = enemy_ai_core.find_card_by_code(remaining_cards, "mireya", nil)
         local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
         if can_deploy_character and mireya_card ~= nil and slot_i ~= nil then
-            enemy_ai_core.deploy_card(front_line, slot_i, mireya_card, true, front_deployed)
+            enemy_ai_core.deploy_card(front_line, slot_i, mireya_card, false, front_deployed)
             table.insert(deployed_ids, mireya_card.id)
             return
         end
@@ -99,8 +99,7 @@ local function deploy_character_strategy(state, front_line, remaining_cards, slo
         local character_cards = lib_battle_ai._split_cards_by_type(remaining_cards, state.item_defs)
         for _, card in ipairs(character_cards) do
             if can_deploy_character and slot_i ~= nil then
-                local face_up = card.item_definition_code_name == "sythra" or card.item_definition_code_name == "mireya"
-                enemy_ai_core.deploy_card(front_line, slot_i, card, face_up, front_deployed)
+                enemy_ai_core.deploy_card(front_line, slot_i, card, false, front_deployed)
                 table.insert(deployed_ids, card.id)
                 break
             end
@@ -112,7 +111,7 @@ local function deploy_character_strategy(state, front_line, remaining_cards, slo
         local extra_sythra = enemy_ai_core.find_card_by_code(remaining_cards, "sythra", nil)
         local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
         if can_deploy_character and extra_sythra ~= nil and slot_i ~= nil then
-            enemy_ai_core.deploy_card(front_line, slot_i, extra_sythra, true, front_deployed)
+            enemy_ai_core.deploy_card(front_line, slot_i, extra_sythra, false, front_deployed)
             table.insert(deployed_ids, extra_sythra.id)
         end
         return
@@ -120,13 +119,10 @@ local function deploy_character_strategy(state, front_line, remaining_cards, slo
 
     local character_cards = lib_battle_ai._split_cards_by_type(remaining_cards, state.item_defs)
     for _, card in ipairs(character_cards) do
-        local code = card.item_definition_code_name
-        local is_key_combo = code == "sythra" or code == "mireya"
         if can_deploy_character then
             local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
             if slot_i ~= nil then
-                local face_up = is_key_combo
-                enemy_ai_core.deploy_card(front_line, slot_i, card, face_up, front_deployed)
+                enemy_ai_core.deploy_card(front_line, slot_i, card, false, front_deployed)
                 table.insert(deployed_ids, card.id)
                 break
             end
@@ -185,7 +181,7 @@ function deploy(state)
     local bone_spire_card = enemy_ai_core.find_card_by_code(remaining_cards, "bone_spire", nil)
     local slot_i = enemy_ai_core.find_empty_slot(front_line, slot_count)
     if priority_character ~= nil and slot_i ~= nil then
-        enemy_ai_core.deploy_card(front_line, slot_i, priority_character, true, front_deployed)
+        enemy_ai_core.deploy_card(front_line, slot_i, priority_character, false, front_deployed)
         table.insert(deployed_ids, priority_character.id)
     elseif bone_spire_card ~= nil then
         if slot_i ~= nil then

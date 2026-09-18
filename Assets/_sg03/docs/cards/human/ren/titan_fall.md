@@ -14,7 +14,7 @@ Khi chiến tuyến Humans đứng trước hiểm nguy, Ren gọi Titan xuất 
 - Trên sân phe bạn phải có ít nhất một [Ren](azure_blade.md), bất kể trạng thái `trigger`.
 - Mục tiêu của Titan Fall phải là một thẻ Character thuộc **Humans** (định danh `human`) đang bị tấn công.
 - Thẻ mục tiêu thuộc Humans phải đã nhận tổng cộng DEF buff không thấp hơn `base_stats.def_buff_required` của Titan Fall (hiện tại là **+100**).
-- Sát thương gây ra bởi đòn tấn công phải vượt qua toàn bộ phòng thủ của mục tiêu, theo công thức: **`atk + accumulated_damage > def + def_added`**.
+- Đòn tấn công khiến thẻ mục tiêu bị tiêu diệt (bị hạ gục), theo công thức: **`atk + accumulated_damage >= def + def_added`**.
 
 Titan Fall chỉ được kích hoạt khi tất cả các điều kiện trên đều được thỏa mãn.
 

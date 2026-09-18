@@ -491,7 +491,6 @@ namespace SG03
             }
             card.SetExpose(slot.expose);
             card.SetIsTrigger(slot.trigger);
-            if ((slot.face_up || slot.expose) && card.FaceState != FaceState.FaceUp) card.FaceUp();
         }
 
         private void RemoveCardFromNonLineRegistries(Card3DCtrl card, string inventoryItemId)

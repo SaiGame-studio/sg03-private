@@ -43,7 +43,6 @@ namespace SG03
         {
             this.ClearHealthPreviewTarget();
             this.targetingSource = this.selected;
-            this.targeted = null;
             this.targetingSource?.SpawnAtkUi();
             if (this.IsBeginningAlphaAttack())
             {
@@ -65,7 +64,6 @@ namespace SG03
             this.ClearHealthPreviewTarget();
             Card3DCtrl prevSource = this.targetingSource;
             this.targetingSource = null;
-            this.targeted = null;
             this.arrowIndicator?.Hide();
             prevSource?.RefreshAtkUiVisibility();
         }
