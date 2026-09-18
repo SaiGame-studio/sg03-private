@@ -141,12 +141,11 @@ function cross_guard_execute(state, source_card, event_data, helpers)
 
     local source_side = helpers.find_card_side(state, source_card)
     local source_front_line_key = source_side .. "_front_line"
-    local azure_blade_card = helpers.find_untriggered_card(state[source_front_line_key], function(c) return c.item_definition_code_name == "azure_blade" end)
+    local azure_blade_card = helpers.find_line_card_by_code(state[source_front_line_key], "azure_blade")
     if azure_blade_card == nil then
-        battle.dlog("[ability] cross_guard: error - no untriggered azure_blade in " .. source_front_line_key)
-        return {}, "cross_guard requires untriggered azure_blade in front_line"
+        battle.dlog("[ability] cross_guard: error - no azure_blade in " .. source_front_line_key)
+        return {}, "cross_guard requires azure_blade in front_line"
     end
-    azure_blade_card.trigger = true
 
     local source_item_def = helpers.find_item_def(state.item_defs, source_card.item_definition_code_name)
     local guard_bonus = 0
