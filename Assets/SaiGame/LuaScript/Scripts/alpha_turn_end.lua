@@ -97,15 +97,15 @@ local function run_omega_deploy(state)
     return lib_battle_entity_ai.deploy_enemy(state)
 end
 
-local function advance_turn_to_omega(state)
+local function begin_omega_turn(state)
     if state.metadata == nil then state.metadata = {} end
+    state.turn = (state.turn or 0) + 1
+    state.omega_defending = false
+    lib_battle_common.dlog("[alpha_turn_end] turn advanced to " .. tostring(state.turn) .. ", next_move = omega_turn, omega_defending=false")
+    lib_battle_common.append_client_action(state, "alpha_turn_end:" .. tostring(state.turn))
     state.metadata.next_move = "omega_turn"
     lib_battle_common.append_client_action(state, "next_move:omega_turn")
-    state.omega_defending = false
-    state.turn = (state.turn or 0) + 1
-    lib_battle_common.dlog("[alpha_turn_end] turn advanced to " .. tostring(state.turn) .. ", next_move = omega_turn, omega_defending=false")
-    lib_battle_common.append_client_action(state, "alpha_take_lamp")
-    lib_battle_common.append_client_action(state, "alpha_turn_end:" .. tostring(state.turn))
+    handoff_lamp_to_omega(state)
 end
 
 local function persist_battle_state(session_id, state)
@@ -129,7 +129,7 @@ local function main()
     lib_battle_common.dlog("[alpha_turn_end] session loaded: " .. session_id)
 
     lib_battle_common.reset_turn_cards(state, "omega")
-    handoff_lamp_to_omega(state)
+    begin_omega_turn(state)
 
     local draw_err = run_omega_draw(state)
     if draw_err ~= nil then
@@ -160,7 +160,7 @@ local function main()
             lib_battle_common.append_client_action(state, action)
         end
     else
-        advance_turn_to_omega(state)
+        lib_battle_common.append_client_action(state, "alpha_take_lamp")
     end
 
     local save_err = persist_battle_state(session_id, state)

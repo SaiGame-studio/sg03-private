@@ -188,7 +188,7 @@
         <div style="text-align:center;font-weight:700;margin-bottom:8px;">alpha_turn_end</div>
         <div class="sub">
           ① reset_turn_cards: trigger=false trên tất cả cards của cả 2 field<br>
-          ② client action: <code>omega_take_lamp</code><br>
+          ② client action: <code>alpha_turn_end:turn</code> · <code>next_move:omega_turn</code> · <code>omega_take_lamp</code><br>
           ③ omega rút N bài ngẫu nhiên từ omega_the_source → state.omega_hand<br>
           &nbsp;&nbsp;&nbsp;• client: omega_source_to_hand:id,slot × N<br>
           ④ deploy_enemy (lib_battle_entity_ai · dispatch theo enemy_entity_key)<br>
@@ -200,8 +200,7 @@
           &nbsp;&nbsp;&nbsp;• target: alpha_hp nếu alpha front line không có character, ngược lại chọn alpha front line card có final_def thấp nhất (fallback: back_line)<br>
           &nbsp;&nbsp;&nbsp;• client: <code>omega_planing_character_attack:attacker_card_id=...,defender_card_id=.../alpha_hp,atk=...</code><br>
           &nbsp;&nbsp;&nbsp;• alpha_defending = true<br>
-          ⑥ client: <code>alpha_take_lamp</code> · <code>alpha_turn_end:turn</code><br>
-          ⑦ next_move = "omega_turn"
+          ⑥ client: <code>alpha_take_lamp</code> (nếu Omega có mục tiêu tấn công)<br>
         </div>
       </div>
 
