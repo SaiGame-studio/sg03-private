@@ -64,7 +64,7 @@ function deploy(state)
     -- Alpha still has a Character in its front line.
     if #character_cards >= 1 then
         local deploy_card = enemy_ai_core.find_card_by_code(character_cards, "goblin_shaman", nil) or character_cards[1]
-        local face_up = not (has_face_up_character and alpha_front_line_character_count > 0)
+        local face_up = false
         for slot_i = 1, slot_count do
             local existing = omega_front_line[slot_i]
             if existing == nil or existing.item_definition_code_name == nil or existing.item_definition_code_name == "" then
