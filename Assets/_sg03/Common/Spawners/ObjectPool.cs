@@ -37,6 +37,6 @@ public class ObjectPool : Spawner<PoolObj>
     /// <summary>Spawns a pooled object at a world position while preserving its concrete component type.</summary>
     public T Spawn<T>(T prefab, Vector3 position) where T : PoolObj
     {
-        return this.Spawn((PoolObj)prefab, position) as T;
+        return base.Spawn(prefab, position) as T;
     }
 }

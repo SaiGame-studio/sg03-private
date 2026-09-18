@@ -74,6 +74,7 @@ namespace SG03
             this.isHover = true;
             this.RefreshHpBarVisibility();
             this.RefreshHpBarDisplayMode();
+            this.RefreshCardNameUiVisibility();
             HoverEntered?.Invoke(this);
         }
 
@@ -83,6 +84,7 @@ namespace SG03
             this.showFinalDefOnlyOnHover = false;
             this.RefreshHpBarVisibility();
             this.RefreshHpBarDisplayMode();
+            this.RefreshCardNameUiVisibility();
             HoverExited?.Invoke(this);
         }
         public void NotifySelected()     => CardSelected?.Invoke(this);
@@ -482,11 +484,12 @@ namespace SG03
             this.atkUiInstance = null;
         }
 
-        /// <summary>Returns this card's world-space HP and ATK UI to their pools.</summary>
+        /// <summary>Returns this card's world-space HP, ATK, and Card Name UI to their pools.</summary>
         public void DespawnStatUis()
         {
             this.DespawnHpBar();
             this.DespawnAtkUi();
+            this.DespawnCardNameUi();
         }
 
         private void RefreshHpBarDisplayMode()

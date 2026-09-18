@@ -13,4 +13,23 @@ public class WorldSpaceStatUiDespawn : Despawn<PoolObj>
     {
         this.isDespawnByTime = false;
     }
+
+    public override void DoDespawn()
+    {
+        if (this.spawner == null)
+        {
+            this.LoadSpawner();
+        }
+
+        if (this.spawner != null)
+        {
+            this.spawner.Despawn(this.parent);
+            return;
+        }
+
+        if (this.parent != null)
+        {
+            this.parent.gameObject.SetActive(false);
+        }
+    }
 }

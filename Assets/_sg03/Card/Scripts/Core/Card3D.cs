@@ -258,6 +258,7 @@ namespace SG03
         /// <summary>
         /// Sets the display name sourced from the card definition.
         /// </summary>
+        public string FallbackName => this.fallbackName;
         public void SetFallbackName(string name) => this.fallbackName = name;
 
         /// <summary>

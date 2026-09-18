@@ -1,0 +1,8 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <Style src="WorldSpaceCardName.uss" />
+    <ui:VisualElement name="CardNameUI" class="card-name-root" picking-mode="Ignore">
+        <ui:VisualElement name="CardNameContainer" class="card-name-container" picking-mode="Ignore">
+            <ui:Label name="CardNameLabel" text="Card Name" class="card-name-label" picking-mode="Ignore" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

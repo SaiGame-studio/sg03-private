@@ -2316,6 +2316,55 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SG03.RotatingObject3D
   rotationAxis: {x: 0, y: 1, z: 0}
   rotationSpeed: 30
+--- !u!1 &694668068
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 694668070}
+  - component: {fileID: 694668069}
+  m_Layer: 0
+  m_Name: Despawn
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &694668069
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 694668068}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2f6a7e97b6a4452f91c518b66f3cde10, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::WorldSpaceStatUiDespawn
+  parent: {fileID: 824699407}
+  spawner: {fileID: 0}
+  isDespawnByTime: 0
+  timeLife: 7
+  currentTime: 7
+--- !u!4 &694668070
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 694668068}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 824699410}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &694843605
 GameObject:
   m_ObjectHideFlags: 0
@@ -2348,6 +2397,7 @@ Transform:
   m_Children:
   - {fileID: 2104000012}
   - {fileID: 192681716}
+  - {fileID: 1509573955}
   m_Father: {fileID: 2127346364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &694843607
@@ -2365,6 +2415,7 @@ MonoBehaviour:
   prefabs:
   - {fileID: 2104000014}
   - {fileID: 192681715}
+  - {fileID: 1509573954}
 --- !u!1001 &706587908
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2630,6 +2681,22 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[29].fileName
+      value: cheat_seppuku.lua
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[29].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[30].fileName
+      value: enemy_ai_bastion_blood.lua
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[30].isActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[0].scriptName
       value: alpha_card_active
       objectReference: {fileID: 0}
@@ -2744,6 +2811,14 @@ PrefabInstance:
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[28].scriptName
       value: lib_battle_entity_ai
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[29].scriptName
+      value: cheat_seppuku
+      objectReference: {fileID: 0}
+    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
+      propertyPath: scriptFiles.Array.data[30].scriptName
+      value: enemy_ai_bastion_blood
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[0].hasLocalFile
@@ -2862,32 +2937,8 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
-      propertyPath: scriptFiles.Array.data[29].fileName
-      value: cheat_seppuku.lua
-      objectReference: {fileID: 0}
-    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
-      propertyPath: scriptFiles.Array.data[29].isActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
-      propertyPath: scriptFiles.Array.data[29].scriptName
-      value: cheat_seppuku
-      objectReference: {fileID: 0}
-    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[29].hasLocalFile
       value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
-      propertyPath: scriptFiles.Array.data[30].fileName
-      value: enemy_ai_bastion_blood.lua
-      objectReference: {fileID: 0}
-    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
-      propertyPath: scriptFiles.Array.data[30].isActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
-      propertyPath: scriptFiles.Array.data[30].scriptName
-      value: enemy_ai_bastion_blood
       objectReference: {fileID: 0}
     - target: {fileID: 3731728121393147189, guid: 3cd71439f244afb48a8cc771f5246221, type: 3}
       propertyPath: scriptFiles.Array.data[30].hasLocalFile
@@ -3437,6 +3488,95 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::CardPoolPrefabs
   prefabs:
   - {fileID: 1789002520}
+--- !u!1 &824699406
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 824699410}
+  - component: {fileID: 824699409}
+  - component: {fileID: 824699408}
+  - component: {fileID: 824699407}
+  m_Layer: 0
+  m_Name: CardNameUI_1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &824699407
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824699406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f26bae4885d8f44a9c912ca90434f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SG03.WorldSpaceCardNameCtrl
+  despawn: {fileID: 694668069}
+  uiDocument: {fileID: 824699409}
+  faceMainCamera: 1
+  aboveCardYOffset: 0.35
+  cardZOffset: -0.5
+  cardCtrl: {fileID: 0}
+--- !u!210 &824699408
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824699406}
+  m_Enabled: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 3
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
+--- !u!114 &824699409
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824699406}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 19102, guid: 0000000000000000e000000000000000, type: 0}
+  m_Name: 
+  m_EditorClassIdentifier: UnityEngine.dll::UnityEngine.UIElements.UIDocument
+  m_PanelSettings: {fileID: 11400000, guid: 97714cabb5264b439327e81bd0de272d, type: 2}
+  m_ParentUI: {fileID: 0}
+  sourceAsset: {fileID: 9197481963319205126, guid: e87a9af14418d284781a02e139dcf04e, type: 3}
+  m_SortingOrder: 100
+  m_Position: 0
+  m_WorldSpaceSizeMode: 1
+  m_WorldSpaceWidth: 640
+  m_WorldSpaceHeight: 100
+  m_PivotReferenceSize: 0
+  m_Pivot: 0
+  m_WorldSpaceCollider: {fileID: 0}
+--- !u!4 &824699410
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 824699406}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -75.99574, y: 8.8675, z: -9.521501}
+  m_LocalScale: {x: 2, y: 2, z: 2}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 694668070}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &828455033
 GameObject:
   m_ObjectHideFlags: 0
@@ -5564,6 +5704,83 @@ Transform:
   - {fileID: 1742238188}
   m_Father: {fileID: 948749803}
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 90}
+--- !u!1001 &1509573953
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 694843606}
+    m_Modifications:
+    - target: {fileID: 934567890123456789, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: spawner
+      value: 
+      objectReference: {fileID: 2127346365}
+    - target: {fileID: 3193441457980298630, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_Name
+      value: CardNameUI
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+--- !u!114 &1509573954 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6757499816961511690, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+  m_PrefabInstance: {fileID: 1509573953}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61f26bae4885d8f44a9c912ca90434f5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SG03.WorldSpaceCardNameCtrl
+--- !u!4 &1509573955 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
+  m_PrefabInstance: {fileID: 1509573953}
+  m_PrefabAsset: {fileID: 0}
 --- !u!21 &1524242641
 Material:
   serializedVersion: 8
@@ -7932,7 +8149,6 @@ MonoBehaviour:
   markFollowSpeed: 10
   markIdlePosition: {fileID: 533533499}
   arrowIndicator: {fileID: 632999079}
-  targeted: {fileID: 0}
   alphaFrontLineHolders:
   - {fileID: 1980872446}
   - {fileID: 909222237}
@@ -8661,7 +8877,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f290d7cbba54e77b456e3879b52ac91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPool
-  spawnCount: 0
+  spawnCount: 1
   poolHolder: {fileID: 694843606}
   poolPrefabs: {fileID: 694843607}
   inPoolObjs: []
@@ -9468,3 +9684,4 @@ SceneRoots:
   - {fileID: 1534591526}
   - {fileID: 2015755437}
   - {fileID: 2127346364}
+  - {fileID: 824699410}
