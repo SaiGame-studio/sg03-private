@@ -256,7 +256,7 @@ namespace SG03
             }
             card.SetMoveDuration(this.ActionMoveDuration);
             card.SetRotateDuration(this.ActionRotateDuration);
-            card.MoveToUnknow(holder, slot != null ? () => this.ApplyAlphaFaceState(card, slot) : null);
+            card.MoveToUnknow(holder, () => this.ApplyAlphaFaceState(card));
         }
 
         public Card3DCtrl MoveOmegaHandToFrontLine(string inventoryItemId, int slotIndex)
@@ -318,7 +318,7 @@ namespace SG03
             }
             card.SetMoveDuration(this.ActionMoveDuration);
             card.SetRotateDuration(this.ActionRotateDuration);
-            card.MoveToUnknow(holder, slot != null ? () => this.ApplyFaceState(card, slot) : null);
+            card.MoveToUnknow(holder, null);
         }
 
         private BattleCardSlot FindSlotById(BattleCardSlot[] slots, string inventoryItemId)
@@ -882,30 +882,15 @@ namespace SG03
             card.AssignCardHolder(null);
         }
 
-        private void ApplyFaceState(Card3DCtrl card, BattleCardSlot slot)
+        private void ApplyAlphaFaceState(Card3DCtrl card)
         {
-            if (!slot.face_up && !slot.expose) return;
-            this.StartCoroutine(this.WaitForFlipThenFaceUp(card));
+            this.StartCoroutine(this.RotateY180FaceDown(card));
         }
 
-        private IEnumerator WaitForFlipThenFaceUp(Card3DCtrl card)
-        {
-            yield return new UnityEngine.WaitUntil(() => !card.IsFlipping);
-            card.FaceUp();
-        }
-
-        private void ApplyAlphaFaceState(Card3DCtrl card, BattleCardSlot slot)
-        {
-            this.StartCoroutine(this.RotateY180ThenFaceState(card, slot));
-        }
-
-        private IEnumerator RotateY180ThenFaceState(Card3DCtrl card, BattleCardSlot slot)
+        private IEnumerator RotateY180FaceDown(Card3DCtrl card)
         {
             yield return new UnityEngine.WaitUntil(() => !card.IsFlipping);
             card.RotateZ180(null);
-            yield return new UnityEngine.WaitUntil(() => !card.IsFlipping);
-            if (!slot.face_up && !slot.expose) yield break;
-            card.FaceUp();
         }
 
         private Card3DCtrl ResolvePrefab()
