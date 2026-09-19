@@ -110,17 +110,23 @@ namespace SG03
                     if (ps == null) continue;
                     var shape = ps.shape;
                     shape.shapeType = ParticleSystemShapeType.Box;
-                    shape.scale = this.cardSurfaceBoxScale;
+                    shape.scale = new Vector3(this.cardSurfaceBoxScale.x, this.cardSurfaceBoxScale.z, this.cardSurfaceBoxScale.y);
+                    shape.rotation = new Vector3(-90f, 0f, 0f);
 
                     var main = ps.main;
                     main.startColor = skullColor;
-                    main.startLifetime = new ParticleSystem.MinMaxCurve(0.4f, Mathf.Min(0.55f, customDuration));
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, Mathf.Min(0.65f, customDuration));
                     main.startSize = new ParticleSystem.MinMaxCurve(1.8f, 2.4f);
-                    main.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.45f);
+                    main.startSpeed = new ParticleSystem.MinMaxCurve(3.0f, 4.0f);
+                    main.gravityModifier = 0.95f;
+                    main.simulationSpace = ParticleSystemSimulationSpace.World;
 
                     var vol = ps.velocityOverLifetime;
                     vol.enabled = true;
-                    vol.y = new ParticleSystem.MinMaxCurve(0.5f, 0.9f);
+                    vol.space = ParticleSystemSimulationSpace.World;
+                    vol.x = new ParticleSystem.MinMaxCurve(-0.5f, 0.5f);
+                    vol.y = 0f;
+                    vol.z = new ParticleSystem.MinMaxCurve(-0.5f, 0.5f);
 
                     var col = ps.colorOverLifetime;
                     col.enabled = true;
@@ -134,18 +140,32 @@ namespace SG03
                 }
             }
 
-
-
             if (this.soulWisps != null)
             {
                 var wispsShape = this.soulWisps.shape;
                 wispsShape.shapeType = ParticleSystemShapeType.Box;
-                wispsShape.scale = this.cardSurfaceBoxScale;
+                wispsShape.scale = new Vector3(this.cardSurfaceBoxScale.x, this.cardSurfaceBoxScale.z, this.cardSurfaceBoxScale.y);
+                wispsShape.rotation = new Vector3(-90f, 0f, 0f);
 
                 var wispsMain = this.soulWisps.main;
                 Color wispColor = bloodRed ? new Color(1f, 0.08f, 0.08f, 0.9f) : new Color(0.4f, 0.95f, 1f, 0.9f);
                 wispsMain.startColor = wispColor;
+                wispsMain.startLifetime = new ParticleSystem.MinMaxCurve(0.4f, Mathf.Min(0.6f, customDuration));
                 wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.35f);
+                wispsMain.startSpeed = new ParticleSystem.MinMaxCurve(2.5f, 3.8f);
+                wispsMain.gravityModifier = 0.85f;
+                wispsMain.simulationSpace = ParticleSystemSimulationSpace.World;
+
+                var wispsVol = this.soulWisps.velocityOverLifetime;
+                wispsVol.enabled = true;
+                wispsVol.space = ParticleSystemSimulationSpace.World;
+                wispsVol.x = new ParticleSystem.MinMaxCurve(-0.4f, 0.4f);
+                wispsVol.y = 0f;
+                wispsVol.z = new ParticleSystem.MinMaxCurve(-0.4f, 0.4f);
+
+                var wispsCol = this.soulWisps.colorOverLifetime;
+                wispsCol.enabled = true;
+                wispsCol.color = this.BuildFadeGradient(wispColor);
 
                 var wispsEmission = this.soulWisps.emission;
                 wispsEmission.rateOverTime = 0f;
@@ -161,9 +181,9 @@ namespace SG03
                 new GradientColorKey[] { new GradientColorKey(baseColor, 0f), new GradientColorKey(baseColor, 1f) },
                 new GradientAlphaKey[]
                 {
-                    new GradientAlphaKey(0.0f, 0.0f),
-                    new GradientAlphaKey(1.0f, 0.15f),
-                    new GradientAlphaKey(1.0f, 0.5f),
+                    new GradientAlphaKey(1.0f, 0.0f),
+                    new GradientAlphaKey(1.0f, 0.65f),
+                    new GradientAlphaKey(0.4f, 0.85f),
                     new GradientAlphaKey(0.0f, 1.0f)
                 }
             );

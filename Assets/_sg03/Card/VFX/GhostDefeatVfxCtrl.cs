@@ -121,17 +121,23 @@ namespace SG03
                     if (ps == null) continue;
                     var shape = ps.shape;
                     shape.shapeType = ParticleSystemShapeType.Box;
-                    shape.scale = this.cardSurfaceBoxScale;
+                    shape.scale = new Vector3(this.cardSurfaceBoxScale.x, this.cardSurfaceBoxScale.z, this.cardSurfaceBoxScale.y);
+                    shape.rotation = new Vector3(-90f, 0f, 0f);
 
                     var main = ps.main;
                     main.startColor = skullColor;
-                    main.startLifetime = new ParticleSystem.MinMaxCurve(1.4f, 1.7f);
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(1.3f, 1.6f);
                     main.startSize = new ParticleSystem.MinMaxCurve(2.8f, 3.8f);
-                    main.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.45f);
+                    main.startSpeed = new ParticleSystem.MinMaxCurve(0.4f, 0.8f);
+                    main.gravityModifier = 0f;
+                    main.simulationSpace = ParticleSystemSimulationSpace.World;
 
                     var vol = ps.velocityOverLifetime;
                     vol.enabled = true;
-                    vol.y = new ParticleSystem.MinMaxCurve(0.8f, 1.25f);
+                    vol.space = ParticleSystemSimulationSpace.World;
+                    vol.x = new ParticleSystem.MinMaxCurve(-0.25f, 0.25f);
+                    vol.y = new ParticleSystem.MinMaxCurve(1.6f, 2.3f);
+                    vol.z = new ParticleSystem.MinMaxCurve(-0.25f, 0.25f);
 
                     var col = ps.colorOverLifetime;
                     col.enabled = true;
@@ -140,35 +146,20 @@ namespace SG03
                     var emission = ps.emission;
                     emission.enabled = true;
                     emission.rateOverTime = 0f;
-
-                    int initialSkulls = Mathf.Max(1, Mathf.CeilToInt(this.skullsPerVariant * 0.65f));
-                    int secondarySkulls = this.skullsPerVariant - initialSkulls;
-                    if (secondarySkulls > 0)
+                    emission.SetBursts(new ParticleSystem.Burst[]
                     {
-                        emission.SetBursts(new ParticleSystem.Burst[]
-                        {
-                            new ParticleSystem.Burst(0.0f, (short)initialSkulls),
-                            new ParticleSystem.Burst(0.18f, (short)secondarySkulls)
-                        });
-                    }
-                    else
-                    {
-                        emission.SetBursts(new ParticleSystem.Burst[]
-                        {
-                            new ParticleSystem.Burst(0.0f, (short)initialSkulls)
-                        });
-                    }
+                        new ParticleSystem.Burst(0.0f, (short)this.skullsPerVariant)
+                    });
                     ps.gameObject.SetActive(true);
                 }
             }
-
-
 
             if (this.soulBurst != null)
             {
                 var burstShape = this.soulBurst.shape;
                 burstShape.shapeType = ParticleSystemShapeType.Box;
-                burstShape.scale = this.cardSurfaceBoxScale;
+                burstShape.scale = new Vector3(this.cardSurfaceBoxScale.x, this.cardSurfaceBoxScale.z, this.cardSurfaceBoxScale.y);
+                burstShape.rotation = new Vector3(-90f, 0f, 0f);
 
                 var burstMain = this.soulBurst.main;
                 burstMain.startColor = bloodRed ? new Color(0.9f, 0.05f, 0.05f, 0.85f) : new Color(0.6f, 0.9f, 1f, 0.8f);
@@ -180,13 +171,24 @@ namespace SG03
             {
                 var wispsShape = this.soulWisps.shape;
                 wispsShape.shapeType = ParticleSystemShapeType.Box;
-                wispsShape.scale = this.cardSurfaceBoxScale;
+                wispsShape.scale = new Vector3(this.cardSurfaceBoxScale.x, this.cardSurfaceBoxScale.z, this.cardSurfaceBoxScale.y);
+                wispsShape.rotation = new Vector3(-90f, 0f, 0f);
 
                 var wispsMain = this.soulWisps.main;
                 Color wispColor = bloodRed ? new Color(1f, 0.05f, 0.05f, 0.95f) : new Color(0.4f, 0.95f, 1f, 0.9f);
                 wispsMain.startColor = wispColor;
                 wispsMain.startLifetime = new ParticleSystem.MinMaxCurve(1.1f, 1.5f);
                 wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
+                wispsMain.startSpeed = new ParticleSystem.MinMaxCurve(0.5f, 1.0f);
+                wispsMain.gravityModifier = 0f;
+                wispsMain.simulationSpace = ParticleSystemSimulationSpace.World;
+
+                var wispsVol = this.soulWisps.velocityOverLifetime;
+                wispsVol.enabled = true;
+                wispsVol.space = ParticleSystemSimulationSpace.World;
+                wispsVol.x = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
+                wispsVol.y = new ParticleSystem.MinMaxCurve(1.6f, 2.4f);
+                wispsVol.z = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
 
                 var wispsCol = this.soulWisps.colorOverLifetime;
                 wispsCol.enabled = true;
@@ -206,10 +208,9 @@ namespace SG03
                 new GradientColorKey[] { new GradientColorKey(baseColor, 0f), new GradientColorKey(baseColor, 1f) },
                 new GradientAlphaKey[]
                 {
-                    new GradientAlphaKey(0.0f, 0.0f),
-                    new GradientAlphaKey(1.0f, 0.12f),
+                    new GradientAlphaKey(1.0f, 0.0f),
                     new GradientAlphaKey(1.0f, 0.55f),
-                    new GradientAlphaKey(0.25f, 0.85f),
+                    new GradientAlphaKey(0.35f, 0.85f),
                     new GradientAlphaKey(0.0f, 1.0f)
                 }
             );
