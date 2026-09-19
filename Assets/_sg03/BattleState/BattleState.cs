@@ -33,6 +33,8 @@ namespace SG03.UI
         [SerializeField] private bool alphaDefending;
         [SerializeField] private bool omegaDefending;
         [SerializeField] private bool isDevelopment;
+        [SerializeField] private long startedAt;
+        [SerializeField] private int durationSeconds = 1500;
         [SerializeField] private NextMoveType nextMove;
         [SerializeField] private BattleCardSlot[] alphaTheVoid;
         [SerializeField] private BattleCardSlot[] omegaTheVoid;
@@ -80,6 +82,8 @@ namespace SG03.UI
         public bool AlphaDefending => this.alphaDefending;
         public bool OmegaDefending => this.omegaDefending;
         public bool IsDevelopment => this.isDevelopment;
+        public long StartedAt => this.startedAt;
+        public int DurationSeconds => this.durationSeconds;
         public string[] ClientActions => this.clientActions;
         public string[] DebugLog => this.debugLog;
 
@@ -185,6 +189,8 @@ namespace SG03.UI
             this.alphaDefending = false;
             this.omegaDefending = false;
             this.isDevelopment = false;
+            this.startedAt = 0;
+            this.durationSeconds = 1500;
             this.debugLog = null;
             this.SetNextMove(string.Empty);
             this.gameStartFired = false;
@@ -304,6 +310,8 @@ namespace SG03.UI
             this.alphaDefending = output.alpha_defending;
             this.omegaDefending = output.omega_defending;
             this.isDevelopment = output.is_development;
+            this.startedAt = output.started_at > 0 ? output.started_at : (output.metadata != null ? output.metadata.started_at : 0);
+            this.durationSeconds = output.duration_seconds > 0 ? output.duration_seconds : (output.metadata != null && output.metadata.duration_seconds > 0 ? output.metadata.duration_seconds : 1500);
             this.SetNextMove(output.metadata?.next_move ?? output.next_move);
             this.metadataJson = BeautifyJson(JsonUtility.ToJson(output.metadata));
             this.TryFireGameStart();

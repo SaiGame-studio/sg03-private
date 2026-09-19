@@ -616,11 +616,13 @@ local function build_card_action_list(state)
 end
 
 local function write_battle_meta_output(state)
-    output.turn            = state.turn
-    output.action          = state.action
-    output.status          = state.status
-    output.metadata        = state.metadata
-    output.omega_planning  = state.omega_planning
+    output.turn             = state.turn
+    output.action           = state.action
+    output.status           = state.status
+    output.metadata         = state.metadata
+    output.started_at       = state.started_at or (state.metadata and state.metadata.started_at)
+    output.duration_seconds = state.duration_seconds or (state.metadata and state.metadata.duration_seconds) or 1500
+    output.omega_planning   = state.omega_planning
     output.alpha_defending = state.alpha_defending
     output.omega_defending = state.omega_defending
     output.client_actions  = state.client_actions

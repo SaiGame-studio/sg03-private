@@ -58,6 +58,7 @@
                     <ui:VisualElement name="DeskTabs" class="game-top-menu__tabs">
                     </ui:VisualElement>
                     <ui:Label name="CardCountLabel" text="Card Count: 0" class="game-top-menu__card-count" />
+                    <ui:Label name="BattleCountdownLabel" text="25:00" class="game-bottom-menu__countdown" />
                 </ui:VisualElement>
 
                 <ui:VisualElement name="BattleTurnInfo" class="game-bottom-menu__turn-info">

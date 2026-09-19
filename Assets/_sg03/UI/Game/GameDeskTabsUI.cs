@@ -30,6 +30,13 @@ namespace SG03.UI
             this.cardCountLabel = root.Q<Label>("CardCountLabel");
         }
 
+        public void SetVisible(bool visible)
+        {
+            DisplayStyle display = visible ? DisplayStyle.Flex : DisplayStyle.None;
+            if (this.deskTabs != null) this.deskTabs.style.display = display;
+            if (this.cardCountLabel != null) this.cardCountLabel.style.display = display;
+        }
+
         public void LoadPresets()
         {
             ItemPreset current = this.getItemPreset();

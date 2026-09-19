@@ -11,6 +11,8 @@ namespace SG03.UI
         public string enemy_entity_key;
         public string next_move;
         public string session_id;
+        public long started_at;
+        public int duration_seconds;
         public BattleStatusMetadataOmega omega;
     }
 }

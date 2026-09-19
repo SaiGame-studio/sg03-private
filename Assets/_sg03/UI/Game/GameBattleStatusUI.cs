@@ -7,6 +7,8 @@ namespace SG03.UI
     // (HP, Source count, Void count, NextMove, Turn) in the Game panel.
     public class GameBattleStatusUI
     {
+        private const int DefaultBattleDurationSeconds = 1500;
+
         private readonly Func<BattleStateCtrl> getBattleStateCtrl;
 
         private Label alphaHpLabel;
@@ -17,6 +19,8 @@ namespace SG03.UI
         private Label omegaTheVoidCountLabel;
         private Label nextMoveLabel;
         private Label turnLabel;
+        private Label countdownLabel;
+        private IVisualElementScheduledItem countdownSchedule;
 
         private bool eventsSubscribed;
 
@@ -41,6 +45,8 @@ namespace SG03.UI
             this.omegaTheVoidCountLabel = root.Q<Label>("OmegaTheVoidCountLabel");
             this.nextMoveLabel = root.Q<Label>("NextMoveLabel");
             this.turnLabel = root.Q<Label>("TurnLabel");
+            this.countdownLabel = root.Q<Label>("BattleCountdownLabel");
+            this.StartCountdownTimer();
         }
 
         private void SubscribeToStateEvents()
@@ -61,6 +67,7 @@ namespace SG03.UI
             this.SetBattleVoidCounts(state.AlphaTheVoidCount, state.OmegaTheVoidCount);
             this.SetNextMoveLabel(state.NextMove);
             this.SetTurnLabel(state.Turn);
+            this.UpdateCountdown();
         }
 
         private void SetBattleHp(int alphaHp, int omegaHp)
@@ -93,8 +100,51 @@ namespace SG03.UI
             this.turnLabel.text = $"Turn: {turn}";
         }
 
+        private void StartCountdownTimer()
+        {
+            if (this.countdownLabel == null) return;
+            this.countdownSchedule?.Pause();
+            this.countdownSchedule = this.countdownLabel.schedule.Execute(this.UpdateCountdown).Every(1000);
+            this.UpdateCountdown();
+        }
+
+        private void UpdateCountdown()
+        {
+            if (this.countdownLabel == null) return;
+            BattleState state = this.getBattleStateCtrl()?.BattleState;
+            long startedAt = state != null ? state.StartedAt : 0;
+            int duration = state != null && state.DurationSeconds > 0 ? state.DurationSeconds : DefaultBattleDurationSeconds;
+
+            if (startedAt <= 0)
+            {
+                int initialMin = duration / 60;
+                int initialSec = duration % 60;
+                this.countdownLabel.text = $"{initialMin:D2}:{initialSec:D2}";
+                return;
+            }
+
+            long currentUnix = this.GetCurrentUnixTimestamp();
+            long elapsed = currentUnix - startedAt;
+            long remaining = Math.Max(0, duration - elapsed);
+            long minutes = remaining / 60;
+            long seconds = remaining % 60;
+            this.countdownLabel.text = $"{minutes:D2}:{seconds:D2}";
+        }
+
+        private long GetCurrentUnixTimestamp()
+        {
+            SaiGame.Services.SaiServer server = SaiGame.Services.SaiServer.Instance;
+            if (server != null && server.HasServerTime)
+            {
+                DateTime serverTimeUtc = server.CurrentServerTime.ToUniversalTime();
+                return (long)(serverTimeUtc - new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc)).TotalSeconds;
+            }
+            return DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+        }
+
         public void Dispose()
         {
+            this.countdownSchedule?.Pause();
             if (!this.eventsSubscribed) return;
             BattleStateCtrl ctrl = this.getBattleStateCtrl();
             if (ctrl?.BattleState == null) return;

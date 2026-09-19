@@ -441,23 +441,26 @@ namespace SG03.UI
             if (this.btnStartBattle != null) this.btnStartBattle.style.display = DisplayStyle.Flex;
             if (this.btnCancelLastGame != null) this.btnCancelLastGame.style.display = DisplayStyle.None;
             if (this.btnEndBattle != null) this.btnEndBattle.style.display = DisplayStyle.None;
+            this.deskTabsUI?.SetVisible(true);
         }
 
         private void ShowResumeControl()
         {
-            if (this.battleDeskInfo != null) this.battleDeskInfo.style.display = DisplayStyle.None;
+            if (this.battleDeskInfo != null) this.battleDeskInfo.style.display = DisplayStyle.Flex;
             if (this.btnStartBattle != null) this.btnStartBattle.style.display = DisplayStyle.Flex;
             if (this.btnCancelLastGame != null) this.btnCancelLastGame.style.display = DisplayStyle.Flex;
             if (this.btnEndBattle != null) this.btnEndBattle.style.display = DisplayStyle.None;
+            this.deskTabsUI?.SetVisible(false);
         }
 
         private void HideBattleSetupControls()
         {
-            if (this.battleDeskInfo != null) this.battleDeskInfo.style.display = DisplayStyle.None;
+            if (this.battleDeskInfo != null) this.battleDeskInfo.style.display = DisplayStyle.Flex;
             if (this.btnStartBattle != null) this.btnStartBattle.style.display = DisplayStyle.None;
             if (this.btnCancelLastGame != null) this.btnCancelLastGame.style.display = DisplayStyle.None;
             if (this.btnEndBattle != null) this.btnEndBattle.style.display = DisplayStyle.Flex;
             this.mapUI?.Hide();
+            this.deskTabsUI?.SetVisible(false);
         }
 
         private void RefreshPlayerName()

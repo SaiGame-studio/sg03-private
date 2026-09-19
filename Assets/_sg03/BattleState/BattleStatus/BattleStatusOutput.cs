@@ -42,6 +42,8 @@ namespace SG03.UI
         public bool                alpha_defending;
         public bool                omega_defending;
         public bool                is_development;
+        public long                started_at;
+        public int                 duration_seconds;
         public BattleStatusMetadata metadata;
     }
 }
