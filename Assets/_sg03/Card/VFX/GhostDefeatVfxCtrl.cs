@@ -41,11 +41,11 @@ namespace SG03
         [Header("Blood Mist Settings")]
         [SerializeField] private bool enableBloodMist = true;
         [Tooltip("Total count of blood mist particles")]
-        [SerializeField, Min(0)] private int bloodMistCount = 18;
+        [SerializeField, Min(0)] private int bloodMistCount = 9;
         [Tooltip("Min and Max lifetime of blood mist (seconds)")]
         [SerializeField] private Vector2 mistLifetime = new Vector2(1.6f, 2.2f);
         [Tooltip("Min and Max start size of blood mist particles (broad, wide puffs)")]
-        [SerializeField] private Vector2 mistStartSize = new Vector2(5.5f, 8.0f);
+        [SerializeField] private Vector2 mistStartSize = new Vector2(1f, 2.5f);
         [Tooltip("Gentle upward ascent velocity of blood mist (bay len 1 chut)")]
         [SerializeField] private Vector2 mistRiseSpeed = new Vector2(0.6f, 1.2f);
         [Tooltip("Horizontal outward diffusion speed along X axis (phat trien rong ra o truc x)")]

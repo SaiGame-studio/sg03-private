@@ -98,17 +98,24 @@ namespace SG03
 
         private GhostDamageVfxCtrl SpawnGhostDamageVfx(Vector3 position, Quaternion rotation = default)
         {
-            if (this.ghostDamageVfxPrefab == null) return null;
-
-            if (this.objectPool != null)
+            if (this.objectPool == null)
             {
-                GhostDamageVfxCtrl instance = this.objectPool.Spawn(this.ghostDamageVfxPrefab, position);
-                if (instance != null) instance.transform.rotation = rotation;
-                return instance;
+                Debug.LogError("[ClientActions] ObjectPool reference is null when spawning GhostDamageVfx!");
+                return null;
             }
 
-            Debug.LogError("[ClientActions] ObjectPool reference is null when spawning GhostDamageVfx!");
-            return null;
+            GhostDamageVfxCtrl prefab = this.ghostDamageVfxPrefab;
+            if (prefab == null && this.objectPool.PoolPrefabs != null)
+            {
+                prefab = this.objectPool.PoolPrefabs.GetByName("GhostDamageVfx") as GhostDamageVfxCtrl;
+                this.ghostDamageVfxPrefab = prefab;
+            }
+
+            if (prefab == null) return null;
+
+            GhostDamageVfxCtrl instance = this.objectPool.Spawn(prefab, position);
+            if (instance != null) instance.transform.rotation = rotation;
+            return instance;
         }
 
         private IEnumerator PlayGhostDefeatRoutine(Card3DCtrl card)
@@ -133,17 +140,24 @@ namespace SG03
 
         private GhostDefeatVfxCtrl SpawnGhostDefeatVfx(Vector3 position, Quaternion rotation = default)
         {
-            if (this.ghostDefeatVfxPrefab == null) return null;
-
-            if (this.objectPool != null)
+            if (this.objectPool == null)
             {
-                GhostDefeatVfxCtrl instance = this.objectPool.Spawn(this.ghostDefeatVfxPrefab, position);
-                if (instance != null) instance.transform.rotation = rotation;
-                return instance;
+                Debug.LogError("[ClientActions] ObjectPool reference is null when spawning GhostDefeatVfx!");
+                return null;
             }
 
-            Debug.LogError("[ClientActions] ObjectPool reference is null when spawning GhostDefeatVfx!");
-            return null;
+            GhostDefeatVfxCtrl prefab = this.ghostDefeatVfxPrefab;
+            if (prefab == null && this.objectPool.PoolPrefabs != null)
+            {
+                prefab = this.objectPool.PoolPrefabs.GetByName("GhostDefeatVfx") as GhostDefeatVfxCtrl;
+                this.ghostDefeatVfxPrefab = prefab;
+            }
+
+            if (prefab == null) return null;
+
+            GhostDefeatVfxCtrl instance = this.objectPool.Spawn(prefab, position);
+            if (instance != null) instance.transform.rotation = rotation;
+            return instance;
         }
 
         private IEnumerator PlayPositionGhostDefeatRoutine(Vector3 spawnPosition, Quaternion rotation = default, bool bloodRed = true)

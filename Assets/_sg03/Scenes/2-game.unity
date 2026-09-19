@@ -2369,8 +2369,8 @@ MonoBehaviour:
   - {fileID: 2104000014}
   - {fileID: 192681715}
   - {fileID: 1509573954}
-  - {fileID: 8825830958166201126, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-  - {fileID: 2744189064399042877, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+  - {fileID: 2095310251}
+  - {fileID: 1791843559}
 --- !u!1001 &706587908
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8209,8 +8209,8 @@ MonoBehaviour:
   cardSelection: {fileID: 2015755440}
   deskPosition: {fileID: 948749802}
   battleStateCtrl: {fileID: 2015755444}
-  ghostDefeatVfxPrefab: {fileID: 8825830958166201126, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-  ghostDamageVfxPrefab: {fileID: 2744189064399042877, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+  ghostDefeatVfxPrefab: {fileID: 2095310251}
+  ghostDamageVfxPrefab: {fileID: 1791843559}
   objectPool: {fileID: 2127346365}
   omegaFrontLinePostDelay: 0.1
   resumeMoveSpeedMultiplier: 2
@@ -8672,6 +8672,10 @@ PrefabInstance:
     - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8825830958166201126, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: bloodMistCount
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

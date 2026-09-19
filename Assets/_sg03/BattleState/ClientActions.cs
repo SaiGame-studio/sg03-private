@@ -106,7 +106,6 @@ namespace SG03
 
         protected virtual void LoadGhostDefeatVfxPrefab()
         {
-            if (this.ghostDefeatVfxPrefab != null) return;
             if (this.objectPool != null && this.objectPool.PoolPrefabs != null)
             {
                 this.ghostDefeatVfxPrefab = this.objectPool.PoolPrefabs.GetByName("GhostDefeatVfx") as GhostDefeatVfxCtrl;
@@ -115,7 +114,6 @@ namespace SG03
 
         protected virtual void LoadGhostDamageVfxPrefab()
         {
-            if (this.ghostDamageVfxPrefab != null) return;
             if (this.objectPool != null && this.objectPool.PoolPrefabs != null)
             {
                 this.ghostDamageVfxPrefab = this.objectPool.PoolPrefabs.GetByName("GhostDamageVfx") as GhostDamageVfxCtrl;

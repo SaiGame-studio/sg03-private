@@ -69,12 +69,12 @@ MonoBehaviour:
   wispSize: {x: 0.2, y: 0.7}
   wispEmergenceWindow: 0.1
   enableBloodMist: 1
-  bloodMistCount: 14
-  mistLifetime: {x: 1.3, y: 1.7}
-  mistStartSize: {x: 4.5, y: 6.5}
+  bloodMistCount: 18
+  mistLifetime: {x: 1.6, y: 2.2}
+  mistStartSize: {x: 1, y: 2.5}
   mistRiseSpeed: {x: 0.6, y: 1.2}
-  mistSpreadSpeed: 3.2
-  mistMaxAlpha: 0.52
+  mistSpreadSpeed: 4.8
+  mistMaxAlpha: 0.78
   mistEmergenceWindow: 0.35
   mainParticleSystem: {fileID: 945159262379126449}
   childParticleSystems:

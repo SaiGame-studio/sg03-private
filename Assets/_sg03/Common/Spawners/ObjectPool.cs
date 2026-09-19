@@ -41,17 +41,53 @@ public class ObjectPool : Spawner<PoolObj>
     {
         if (prefab == null) return null;
 
-        PoolObj instance = this.GetObjFromPool(prefab);
+        PoolObj targetPrefab = this.ResolvePrefab(prefab);
+        PoolObj instance = this.GetObjFromPool(targetPrefab);
         if (instance == null)
         {
-            instance = Instantiate(prefab);
+            instance = Instantiate(targetPrefab);
             this.spawnCount++;
-            this.UpdateName(prefab.transform, instance.transform);
+            this.UpdateName(targetPrefab.transform, instance.transform);
         }
 
         if (this.poolHolder != null) instance.transform.parent = this.poolHolder.transform;
         instance.gameObject.SetActive(activate);
         return instance;
+    }
+
+    protected virtual PoolObj ResolvePrefab(PoolObj prefab)
+    {
+        if (prefab == null) return null;
+        if (this.poolPrefabs != null)
+        {
+            PoolObj registered = this.poolPrefabs.GetByName(prefab.GetName());
+            if (registered != null) return registered;
+        }
+        return prefab;
+    }
+
+    public virtual PoolObj Spawn(string prefabName)
+    {
+        if (this.poolPrefabs == null) return null;
+        PoolObj prefab = this.poolPrefabs.GetByName(prefabName);
+        return this.SpawnObject(prefab, true);
+    }
+
+    public virtual PoolObj Spawn(string prefabName, Vector3 position)
+    {
+        PoolObj instance = this.Spawn(prefabName);
+        if (instance != null) instance.transform.position = position;
+        return instance;
+    }
+
+    public T Spawn<T>(string prefabName) where T : PoolObj
+    {
+        return this.Spawn(prefabName) as T;
+    }
+
+    public T Spawn<T>(string prefabName, Vector3 position) where T : PoolObj
+    {
+        return this.Spawn(prefabName, position) as T;
     }
 
     protected override void AddObjectToPool(PoolObj obj)
