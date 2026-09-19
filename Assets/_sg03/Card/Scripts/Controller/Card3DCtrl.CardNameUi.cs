@@ -8,6 +8,15 @@ namespace SG03
         [SerializeField] private WorldSpaceCardNameCtrl cardNameUiPrefab;
         [SerializeField] private WorldSpaceCardNameCtrl cardNameUiInstance;
 
+        public bool TryGetCardNameAnchor(out Vector3 position)
+        {
+            position = this.transform.position;
+            if (this.card == null || !this.card.TryGetTopEdgeWorldPosition(out Vector3 topEdge)
+                || !this.card.TryGetStatsCenterWorldPosition(out Vector3 statsCenter)) return false;
+            position = (topEdge + statsCenter) * 0.5f;
+            return true;
+        }
+
         /// <summary>Resolves the display name of this card from definition, card, or object name.</summary>
         public string GetCardDisplayName()
         {

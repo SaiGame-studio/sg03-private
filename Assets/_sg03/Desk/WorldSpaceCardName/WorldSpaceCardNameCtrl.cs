@@ -6,10 +6,11 @@ namespace SG03
 {
     /// <summary>Drives the world-space Card Name value displayed at the center of a card.</summary>
     [AddComponentMenu("SG03/BattleState/World Space Card Name UI")]
-    public sealed class WorldSpaceCardNameCtrl : PoolObj
+    public sealed partial class WorldSpaceCardNameCtrl : PoolObj
     {
         [Header("Required runtime references")]
         [SerializeField] private UIDocument uiDocument;
+        [SerializeField] private Camera viewCamera;
 
         [Header("Display")]
         [SerializeField] private bool faceMainCamera = true;
@@ -17,6 +18,9 @@ namespace SG03
         [SerializeField, Min(0f)] private float aboveCardYOffset = 0.35f;
         [Tooltip("Global Z-axis offset relative to the card's center.")]
         [SerializeField] private float cardZOffset = -0.5f;
+        [Tooltip("Font size of the Card Name text in pixels.")]
+        [SerializeField, Range(16f, 72f)] private float fontSize = 60f;
+
 
         [Header("Parenting")]
         [SerializeField] private Card3DCtrl cardCtrl;
@@ -53,13 +57,17 @@ namespace SG03
 
         private void HandleEnabled()
         {
+            this.RestartNameCast();
             this.RefreshUi();
             this.RefreshUiWhenDocumentIsReady();
         }
 
         private void HandleDisabled()
         {
+            this.StopNameCast();
+            if (this.deferredUiRefreshRoutine != null) this.StopCoroutine(this.deferredUiRefreshRoutine);
             this.deferredUiRefreshRoutine = null;
+            this.cardNameLabel = null;
         }
 
         private void RefreshUiWhenDocumentIsReady()
@@ -103,12 +111,19 @@ namespace SG03
         public void ClearCard()
         {
             this.cardCtrl = null;
+            this.SetCardName(string.Empty);
         }
 
         /// <summary>Sets the card name currently shown by this UI.</summary>
         public void SetCardName(string displayName)
         {
-            this.cardDisplayName = displayName ?? string.Empty;
+            string nextName = displayName ?? string.Empty;
+            if (this.cardDisplayName != nextName)
+            {
+                this.cardDisplayName = nextName;
+                this.CacheNameGlyphs();
+                this.RestartNameCast();
+            }
             this.RefreshUi();
         }
 
@@ -116,6 +131,7 @@ namespace SG03
         {
             this.UpdateWorldPositionFromCard();
             this.FaceMainCamera();
+            this.UpdateNameCast();
         }
 
         private void UpdateWorldPositionFromCard()
@@ -129,10 +145,8 @@ namespace SG03
             }
             Vector3 offset = new Vector3(0f, this.aboveCardYOffset, zOffset);
 
-            Card3D card = this.cardCtrl.GetComponent<Card3D>();
-            if (card != null && card.TryGetTopEdgeWorldPosition(out Vector3 topEdge) && card.TryGetStatsCenterWorldPosition(out Vector3 statsCenter))
+            if (this.cardCtrl.TryGetCardNameAnchor(out Vector3 middle))
             {
-                Vector3 middle = (topEdge + statsCenter) * 0.5f;
                 this.transform.position = middle + offset;
                 return;
             }
@@ -142,9 +156,9 @@ namespace SG03
 
         private void FaceMainCamera()
         {
-            if (!this.faceMainCamera || Camera.main == null) return;
+            if (!this.faceMainCamera || this.viewCamera == null) return;
 
-            Vector3 directionFromCamera = this.transform.position - Camera.main.transform.position;
+            Vector3 directionFromCamera = this.transform.position - this.viewCamera.transform.position;
             if (directionFromCamera.sqrMagnitude < Mathf.Epsilon) return;
 
             float horizontalDistance = new Vector2(directionFromCamera.x, directionFromCamera.z).magnitude;
@@ -155,11 +169,40 @@ namespace SG03
             this.transform.rotation = Quaternion.Euler(worldRotation);
         }
 
+        public float FontSize
+        {
+            get => this.fontSize;
+            set
+            {
+                this.fontSize = value;
+                this.ApplyFontSize();
+            }
+        }
+
+        private void ApplyFontSize()
+        {
+            if (this.cardNameLabel != null)
+            {
+                this.cardNameLabel.style.fontSize = this.fontSize;
+            }
+        }
+
         protected override void LoadComponents()
         {
             base.LoadComponents();
             this.LoadUiDocument();
+            this.LoadViewCamera();
+            this.LoadCastParticles();
+            this.LoadEnergyRibbon();
+            this.LoadEnergyMaterial();
+            this.CacheNameGlyphs();
             this.BindUi();
+        }
+
+        private void LoadViewCamera()
+        {
+            if (this.viewCamera != null) return;
+            this.viewCamera = Camera.main;
         }
 
         private void LoadUiDocument()
@@ -170,11 +213,6 @@ namespace SG03
 
         private void BindUi()
         {
-            if (this.uiDocument == null)
-            {
-                this.LoadUiDocument();
-            }
-
             if (this.uiDocument == null)
             {
                 Debug.LogWarning($"{this.name}: UIDocument is missing.", this.gameObject);
@@ -189,6 +227,10 @@ namespace SG03
             {
                 Debug.LogWarning($"{this.name}: UI element 'CardNameLabel' is missing.", this.gameObject);
             }
+            else
+            {
+                this.ApplyFontSize();
+            }
         }
 
         public void RefreshUi()
@@ -196,7 +238,8 @@ namespace SG03
             this.BindUi();
             if (this.cardNameLabel != null)
             {
-                this.cardNameLabel.text = this.cardDisplayName;
+                this.ApplyFontSize();
+                this.RefreshNameCastText();
             }
         }
 
