@@ -114,16 +114,81 @@ namespace SG03
             }
         }
 
-        private GhostDefeatVfxCtrl SpawnGhostDefeatVfx(Vector3 position)
+        private GhostDefeatVfxCtrl SpawnGhostDefeatVfx(Vector3 position, Quaternion rotation = default)
         {
             if (this.ghostDefeatVfxPrefab == null) return null;
 
             if (this.objectPool != null)
             {
-                return this.objectPool.Spawn(this.ghostDefeatVfxPrefab, position);
+                GhostDefeatVfxCtrl instance = this.objectPool.Spawn(this.ghostDefeatVfxPrefab, position);
+                if (instance != null) instance.transform.rotation = rotation;
+                return instance;
             }
 
-            return Object.Instantiate(this.ghostDefeatVfxPrefab, position, Quaternion.identity);
+            return Object.Instantiate(this.ghostDefeatVfxPrefab, position, rotation);
+        }
+
+        private IEnumerator PlayPositionGhostDefeatRoutine(Vector3 spawnPosition, Quaternion rotation = default)
+        {
+            GhostDefeatVfxCtrl ghostVfx = this.SpawnGhostDefeatVfx(spawnPosition, rotation);
+
+            if (ghostVfx != null)
+            {
+                ghostVfx.Play();
+                yield return new WaitForSeconds(ghostVfx.Duration);
+                ghostVfx.ReturnToPool();
+            }
+            else
+            {
+                yield return new WaitForSeconds(1f);
+            }
+        }
+
+        private IEnumerator PlayHpDamageGhostEffectsRoutine(Owner targetOwner)
+        {
+            if (this.cardSpawning == null || this.deskPosition == null) yield break;
+
+            bool hasSource = targetOwner == Owner.omega
+                ? this.cardSpawning.HasOmegaSourceCards
+                : this.cardSpawning.HasAlphaSourceCards;
+
+            bool hasVoid = targetOwner == Owner.omega
+                ? this.cardSpawning.HasOmegaVoidCards
+                : this.cardSpawning.HasAlphaVoidCards;
+
+            if (!hasSource && !hasVoid) yield break;
+
+            Coroutine sourceRoutine = null;
+            Coroutine voidRoutine = null;
+
+            if (hasSource)
+            {
+                Card3DCtrl top = targetOwner == Owner.omega
+                    ? this.cardSpawning.GetOmegaSourceTopCard()
+                    : this.cardSpawning.GetAlphaSourceTopCard();
+                Transform stackAnchor = targetOwner == Owner.omega
+                    ? this.deskPosition.OmegaTheSource
+                    : this.deskPosition.AlphaTheSource;
+                Vector3 pos = (top != null ? top.transform.position : stackAnchor.position) + Vector3.up * 0.15f;
+                Quaternion rot = Quaternion.Euler(0f, stackAnchor.rotation.eulerAngles.y, 0f);
+                sourceRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot));
+            }
+
+            if (hasVoid)
+            {
+                Card3DCtrl top = targetOwner == Owner.omega
+                    ? this.cardSpawning.GetOmegaVoidTopCard()
+                    : this.cardSpawning.GetAlphaVoidTopCard();
+                Transform stackAnchor = targetOwner == Owner.omega
+                    ? this.deskPosition.OmegaTheVoid
+                    : this.deskPosition.AlphaTheVoid;
+                Vector3 pos = (top != null ? top.transform.position : stackAnchor.position) + Vector3.up * 0.15f;
+                Quaternion rot = Quaternion.Euler(0f, stackAnchor.rotation.eulerAngles.y, 0f);
+                voidRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot));
+            }
+
+            if (sourceRoutine != null) yield return sourceRoutine;
+            if (voidRoutine != null) yield return voidRoutine;
         }
 
         private Coroutine ExecuteCardGuarded(string[] parameters)
@@ -206,20 +271,24 @@ namespace SG03
 
         private IEnumerator AlphaAttackOmegaHpRoutine(Card3DCtrl attacker)
         {
+            Coroutine ghostRoutine = null;
             if (attacker.IsCharacter())
             {
                 attacker.AttackLunge(this.deskPosition.OmegaTheSource.position);
                 yield return new WaitForSeconds(0.15f);
                 this.cardSpawning?.ShakeOmegaSourceAndVoidCards();
+                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.omega));
             }
             else
             {
                 attacker.AbilityActive();
                 yield return new WaitForSeconds(0.15f);
                 this.cardSpawning?.ShakeOmegaSourceAndVoidCards();
+                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.omega));
             }
 
             yield return this.StartCoroutine(this.WaitForCard(attacker));
+            if (ghostRoutine != null) yield return ghostRoutine;
         }
 
         private Coroutine ExecuteOmegaAttackAlphaHp(string[] parameters)
@@ -250,20 +319,24 @@ namespace SG03
 
         private IEnumerator OmegaAttackAlphaHpRoutine(Card3DCtrl attacker)
         {
+            Coroutine ghostRoutine = null;
             if (attacker.IsCharacter())
             {
                 attacker.AttackBackstepLunge(this.deskPosition.AlphaTheSource.position);
                 yield return new WaitForSeconds(0.27f);
                 this.cardSpawning?.ShakeAlphaSourceAndVoidCards();
+                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.alpha));
             }
             else
             {
                 attacker.AbilityActive();
                 yield return new WaitForSeconds(0.15f);
                 this.cardSpawning?.ShakeAlphaSourceAndVoidCards();
+                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.alpha));
             }
 
             yield return this.StartCoroutine(this.WaitForCard(attacker));
+            if (ghostRoutine != null) yield return ghostRoutine;
         }
 
         private Coroutine ExecuteOmegaAttack(string[] parameters)

@@ -106,5 +106,30 @@ namespace SG03
 
         public void SettleAlphaVoidInFrontLine(Card3DCtrl card, string inventoryItemId, int slotIndex) { }
         public void SettleOmegaVoidInFrontLine(Card3DCtrl card, string inventoryItemId, int slotIndex) { }
+
+        public bool HasAlphaSourceCards => this.alphaSourceCardQueue.Count > 0;
+        public bool HasAlphaVoidCards => this.alphaVoidCardList.Count > 0;
+        public bool HasOmegaSourceCards => this.omegaSourceCardQueue.Count > 0;
+        public bool HasOmegaVoidCards => this.omegaVoidCardList.Count > 0;
+
+        public Card3DCtrl GetAlphaSourceTopCard()
+        {
+            return this.alphaSourceCardQueue.Count > 0 ? this.alphaSourceCardQueue.Last.Value : null;
+        }
+
+        public Card3DCtrl GetAlphaVoidTopCard()
+        {
+            return this.alphaVoidCardList.Count > 0 ? this.alphaVoidCardList[this.alphaVoidCardList.Count - 1] : null;
+        }
+
+        public Card3DCtrl GetOmegaSourceTopCard()
+        {
+            return this.omegaSourceCardQueue.Count > 0 ? this.omegaSourceCardQueue.Last.Value : null;
+        }
+
+        public Card3DCtrl GetOmegaVoidTopCard()
+        {
+            return this.omegaVoidCardList.Count > 0 ? this.omegaVoidCardList[this.omegaVoidCardList.Count - 1] : null;
+        }
     }
 }

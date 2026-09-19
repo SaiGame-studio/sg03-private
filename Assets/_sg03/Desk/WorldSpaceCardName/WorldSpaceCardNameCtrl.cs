@@ -93,7 +93,6 @@ namespace SG03
             if (newCard == null) return;
 
             this.cardCtrl = newCard;
-            this.transform.SetParent(null, true);
             this.UpdateWorldPositionFromCard();
             this.baseWorldRotation = this.transform.eulerAngles;
             this.hasBaseWorldRotation = true;

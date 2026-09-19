@@ -98,7 +98,7 @@ namespace SG03.UI
             this.BuildMapNodes();
             this.RegisterEvents();
             this.SynchronizeInitialSelection();
-            this.Hide();
+            this.Show();
         }
 
         private void ConfigurePickingModes()
@@ -186,6 +186,16 @@ namespace SG03.UI
             this.overlay.style.display = DisplayStyle.Flex;
             this.btnToggleMap?.AddToClassList("game-top-menu__map-btn--active");
             this.CenterOnSelectedNode();
+            this.viewport?.RegisterCallback<GeometryChangedEvent>(this.OnViewportInitialGeometryChanged);
+        }
+
+        private void OnViewportInitialGeometryChanged(GeometryChangedEvent evt)
+        {
+            this.viewport?.UnregisterCallback<GeometryChangedEvent>(this.OnViewportInitialGeometryChanged);
+            if (this.isVisible)
+            {
+                this.CenterOnSelectedNode();
+            }
         }
 
         public void Hide()

@@ -284,7 +284,6 @@ namespace SG03
             bool isNewCard = this.cardCtrl != newCard;
             this.cardCtrl = newCard;
             if (isNewCard) this.ResetCurrentHealthForNewCard();
-            this.transform.SetParent(null, true);
             this.UpdateWorldPositionFromCard();
             this.baseWorldRotation = this.transform.eulerAngles;
             this.hasBaseWorldRotation = true;
@@ -328,7 +327,6 @@ namespace SG03
                 return;
             }
 
-            this.transform.SetParent(null, true);
             this.UpdateWorldPositionFromCard();
         }
 

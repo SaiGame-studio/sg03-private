@@ -70,6 +70,10 @@ public abstract class Spawner<T> : SaiBehaviour where T : PoolObj
         if (obj is MonoBehaviour monoBehaviour)
         {
             monoBehaviour.gameObject.SetActive(false);
+            if (this.poolHolder != null && monoBehaviour.transform.parent != this.poolHolder)
+            {
+                monoBehaviour.transform.SetParent(this.poolHolder, false);
+            }
             this.AddObjectToPool(obj);
         }
     }
