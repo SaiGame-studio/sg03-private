@@ -18,6 +18,8 @@ namespace SG03
         [SerializeField] private CardSelection cardSelection;
         [SerializeField] private DeskPositionCtrl deskPosition;
         [SerializeField] private BattleStateCtrl battleStateCtrl;
+        [SerializeField] private GhostDefeatVfxCtrl ghostDefeatVfxPrefab;
+        [SerializeField] private ObjectPool objectPool;
         [SerializeField] private float omegaFrontLinePostDelay = 0.1f;
         [SerializeField, Min(1f)] private float resumeMoveSpeedMultiplier = 2f;
 
@@ -89,6 +91,24 @@ namespace SG03
             this.LoadCardSelection();
             this.LoadDeskPosition();
             this.LoadBattleStateCtrl();
+            this.LoadObjectPool();
+            this.LoadGhostDefeatVfxPrefab();
+        }
+
+        protected virtual void LoadObjectPool()
+        {
+            if (this.objectPool != null) return;
+            this.objectPool = UnityEngine.Object.FindFirstObjectByType<ObjectPool>(FindObjectsInactive.Include);
+            Debug.LogWarning(this.transform.name + ": LoadObjectPool", this.gameObject);
+        }
+
+        protected virtual void LoadGhostDefeatVfxPrefab()
+        {
+            if (this.ghostDefeatVfxPrefab != null) return;
+            if (this.objectPool != null && this.objectPool.PoolPrefabs != null)
+            {
+                this.ghostDefeatVfxPrefab = this.objectPool.PoolPrefabs.GetByName("GhostDefeatVfx") as GhostDefeatVfxCtrl;
+            }
         }
 
         protected virtual void LoadBattleStateCtrl()
@@ -436,8 +456,8 @@ namespace SG03
                 case "omega_void_to_front_line": result = this.ExecuteOmegaVoidToFrontLine(parameters); break;
                 case "alpha_void_to_back_line": result = this.ExecuteAlphaVoidToBackLine(parameters); break;
                 case "omega_void_to_back_line": result = this.ExecuteOmegaVoidToBackLine(parameters); break;
-                case "alpha_card_take_damage": result = this.ExecuteCardTakeDamage(parameters); break;
-                case "omega_card_take_damage": result = this.ExecuteCardTakeDamage(parameters); break;
+                case "alpha_card_take_damage": result = this.ExecuteCardTakeDamage(parameters, false); break;
+                case "omega_card_take_damage": result = this.ExecuteCardTakeDamage(parameters, true); break;
                 case "alpha_card_expose": result = this.ExecuteCardExpose(parameters); break;
                 case "omega_card_expose": result = this.ExecuteOmegaCardExpose(parameters); break;
                 case "alpha_card_sent_to_void": result = this.ExecuteAlphaCardSentToVoid(parameters); break;

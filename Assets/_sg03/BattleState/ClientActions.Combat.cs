@@ -12,7 +12,7 @@ namespace SG03
             "for_bao",
         };
 
-        private Coroutine ExecuteCardTakeDamage(string[] parameters)
+        private Coroutine ExecuteCardTakeDamage(string[] parameters, bool isOmega = false)
         {
             if (parameters == null || parameters.Length == 0) return null;
             
@@ -40,13 +40,13 @@ namespace SG03
             Card3DCtrl card = this.cardSpawning?.FindCardById(targetId);
             if (card != null)
             {
-                return this.StartCoroutine(this.CardTakeDamageRoutine(card, targetId, damage, totalDamage));
+                return this.StartCoroutine(this.CardTakeDamageRoutine(card, targetId, damage, totalDamage, isOmega));
             }
 
             return null;
         }
 
-        private IEnumerator CardTakeDamageRoutine(Card3DCtrl card, string targetId, int damage, int totalDamage)
+        private IEnumerator CardTakeDamageRoutine(Card3DCtrl card, string targetId, int damage, int totalDamage, bool isOmega = false)
         {
             if (damage > 0)
             {
@@ -54,6 +54,13 @@ namespace SG03
             }
 
             card.Damaged();
+
+            Coroutine damageGhostRoutine = null;
+            if (damage > 0 && card.IsCharacter() && !card.IsDefeated(totalDamage) && !this.isResuming)
+            {
+                damageGhostRoutine = this.StartCoroutine(this.PlayGhostDamageRoutine(card, 0.7f));
+            }
+
             yield return this.StartCoroutine(this.WaitForCard(card));
 
             card.ClearHealthPreview();
@@ -61,8 +68,62 @@ namespace SG03
 
             if (card.IsDefeated(totalDamage) && !this.isResuming)
             {
+                yield return this.StartCoroutine(this.PlayGhostDefeatRoutine(card));
+            }
+            else if (damageGhostRoutine != null)
+            {
+                yield return damageGhostRoutine;
+            }
+        }
+
+        private IEnumerator PlayGhostDamageRoutine(Card3DCtrl card, float duration = 0.7f)
+        {
+            if (card == null) yield break;
+
+            Vector3 spawnPosition = card.transform.position + Vector3.up * 0.15f;
+            GhostDefeatVfxCtrl ghostVfx = this.SpawnGhostDefeatVfx(spawnPosition);
+
+            if (ghostVfx != null)
+            {
+                ghostVfx.PlayDamage(duration);
+                yield return new WaitForSeconds(duration);
+                ghostVfx.ReturnToPool();
+            }
+            else
+            {
+                yield return new WaitForSeconds(duration);
+            }
+        }
+
+        private IEnumerator PlayGhostDefeatRoutine(Card3DCtrl card)
+        {
+            if (card == null) yield break;
+
+            Vector3 spawnPosition = card.transform.position + Vector3.up * 0.15f;
+            GhostDefeatVfxCtrl ghostVfx = this.SpawnGhostDefeatVfx(spawnPosition);
+
+            if (ghostVfx != null)
+            {
+                ghostVfx.Play();
+                yield return new WaitForSeconds(ghostVfx.Duration);
+                ghostVfx.ReturnToPool();
+            }
+            else
+            {
                 yield return new WaitForSeconds(1f);
             }
+        }
+
+        private GhostDefeatVfxCtrl SpawnGhostDefeatVfx(Vector3 position)
+        {
+            if (this.ghostDefeatVfxPrefab == null) return null;
+
+            if (this.objectPool != null)
+            {
+                return this.objectPool.Spawn(this.ghostDefeatVfxPrefab, position);
+            }
+
+            return Object.Instantiate(this.ghostDefeatVfxPrefab, position, Quaternion.identity);
         }
 
         private Coroutine ExecuteCardGuarded(string[] parameters)
