@@ -128,13 +128,13 @@ namespace SG03
             return Object.Instantiate(this.ghostDefeatVfxPrefab, position, rotation);
         }
 
-        private IEnumerator PlayPositionGhostDefeatRoutine(Vector3 spawnPosition, Quaternion rotation = default)
+        private IEnumerator PlayPositionGhostDefeatRoutine(Vector3 spawnPosition, Quaternion rotation = default, bool bloodRed = true)
         {
             GhostDefeatVfxCtrl ghostVfx = this.SpawnGhostDefeatVfx(spawnPosition, rotation);
 
             if (ghostVfx != null)
             {
-                ghostVfx.Play();
+                ghostVfx.Play(bloodRed);
                 yield return new WaitForSeconds(ghostVfx.Duration);
                 ghostVfx.ReturnToPool();
             }
@@ -148,43 +148,37 @@ namespace SG03
         {
             if (this.cardSpawning == null || this.deskPosition == null) yield break;
 
-            bool hasSource = targetOwner == Owner.omega
-                ? this.cardSpawning.HasOmegaSourceCards
-                : this.cardSpawning.HasAlphaSourceCards;
+            Transform sourceAnchor = targetOwner == Owner.omega
+                ? this.deskPosition.OmegaTheSource
+                : this.deskPosition.AlphaTheSource;
 
-            bool hasVoid = targetOwner == Owner.omega
-                ? this.cardSpawning.HasOmegaVoidCards
-                : this.cardSpawning.HasAlphaVoidCards;
+            Transform voidAnchor = targetOwner == Owner.omega
+                ? this.deskPosition.OmegaTheVoid
+                : this.deskPosition.AlphaTheVoid;
 
-            if (!hasSource && !hasVoid) yield break;
+            Card3DCtrl sourceTop = targetOwner == Owner.omega
+                ? this.cardSpawning.GetOmegaSourceTopCard()
+                : this.cardSpawning.GetAlphaSourceTopCard();
+
+            Card3DCtrl voidTop = targetOwner == Owner.omega
+                ? this.cardSpawning.GetOmegaVoidTopCard()
+                : this.cardSpawning.GetAlphaVoidTopCard();
 
             Coroutine sourceRoutine = null;
             Coroutine voidRoutine = null;
 
-            if (hasSource)
+            if (sourceAnchor != null && sourceTop != null)
             {
-                Card3DCtrl top = targetOwner == Owner.omega
-                    ? this.cardSpawning.GetOmegaSourceTopCard()
-                    : this.cardSpawning.GetAlphaSourceTopCard();
-                Transform stackAnchor = targetOwner == Owner.omega
-                    ? this.deskPosition.OmegaTheSource
-                    : this.deskPosition.AlphaTheSource;
-                Vector3 pos = (top != null ? top.transform.position : stackAnchor.position) + Vector3.up * 0.15f;
-                Quaternion rot = Quaternion.Euler(0f, stackAnchor.rotation.eulerAngles.y, 0f);
-                sourceRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot));
+                Vector3 pos = sourceTop.transform.position + Vector3.up * 0.15f;
+                Quaternion rot = Quaternion.Euler(0f, sourceAnchor.rotation.eulerAngles.y, 0f);
+                sourceRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
             }
 
-            if (hasVoid)
+            if (voidAnchor != null && voidTop != null)
             {
-                Card3DCtrl top = targetOwner == Owner.omega
-                    ? this.cardSpawning.GetOmegaVoidTopCard()
-                    : this.cardSpawning.GetAlphaVoidTopCard();
-                Transform stackAnchor = targetOwner == Owner.omega
-                    ? this.deskPosition.OmegaTheVoid
-                    : this.deskPosition.AlphaTheVoid;
-                Vector3 pos = (top != null ? top.transform.position : stackAnchor.position) + Vector3.up * 0.15f;
-                Quaternion rot = Quaternion.Euler(0f, stackAnchor.rotation.eulerAngles.y, 0f);
-                voidRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot));
+                Vector3 pos = voidTop.transform.position + Vector3.up * 0.15f;
+                Quaternion rot = Quaternion.Euler(0f, voidAnchor.rotation.eulerAngles.y, 0f);
+                voidRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
             }
 
             if (sourceRoutine != null) yield return sourceRoutine;

@@ -12,17 +12,18 @@ namespace SG03
         [Header("VFX Settings")]
         [SerializeField] private float duration = 1.8f;
         [SerializeField] private float damageDuration = 1f;
+        [SerializeField] private bool useBloodRed = true;
         [SerializeField] private Vector3 cardSurfaceBoxScale = new Vector3(7.0f, 0.2f, 10.0f);
         [SerializeField] private ParticleSystem mainParticleSystem;
         [SerializeField] private ParticleSystem[] childParticleSystems;
         [SerializeField] private ParticleSystem[] ghostVariantEmitters;
         [SerializeField] private ParticleSystem soulEmbers;
         [SerializeField] private ParticleSystem soulBurst;
-        [SerializeField] private ParticleSystem soulMist;
         [SerializeField] private ParticleSystem soulWisps;
 
         public float Duration => this.duration;
         public float DamageDuration => this.damageDuration;
+        public bool UseBloodRed { get => this.useBloodRed; set => this.useBloodRed = value; }
 
         public override string GetName() => "GhostDefeatVfx";
 
@@ -67,7 +68,6 @@ namespace SG03
         {
             this.LoadSoulEmbers();
             this.LoadSoulBurst();
-            this.LoadSoulMist();
             this.LoadSoulWisps();
         }
 
@@ -85,13 +85,6 @@ namespace SG03
             if (burst != null) this.soulBurst = burst.GetComponent<ParticleSystem>();
         }
 
-        private void LoadSoulMist()
-        {
-            if (this.soulMist != null) return;
-            Transform mist = this.transform.Find("SoulMist");
-            if (mist != null) this.soulMist = mist.GetComponent<ParticleSystem>();
-        }
-
         private void LoadSoulWisps()
         {
             if (this.soulWisps != null) return;
@@ -102,22 +95,26 @@ namespace SG03
         /// <summary>
         /// Activates a dense, full ghostly departure effect spread across the card surface on defeat.
         /// </summary>
-        public void Play()
+        public void Play() => this.Play(this.useBloodRed);
+
+        public void Play(bool bloodRed)
         {
             this.gameObject.SetActive(true);
             this.EnsureComponentsLoaded();
-            this.ConfigureDefeatEmitters();
+            this.ConfigureDefeatEmitters(bloodRed);
             this.RestartEmitters();
         }
 
         /// <summary>
         /// Activates a lighter, lower density ghost wisp effect spread across the card surface on damage hit.
         /// </summary>
-        public void PlayDamage(float customDuration = 0.7f)
+        public void PlayDamage(float customDuration = 0.7f) => this.PlayDamage(customDuration, this.useBloodRed);
+
+        public void PlayDamage(float customDuration, bool bloodRed)
         {
             this.gameObject.SetActive(true);
             this.EnsureComponentsLoaded();
-            this.ConfigureDamageEmitters(customDuration);
+            this.ConfigureDamageEmitters(customDuration, bloodRed);
             this.RestartEmitters();
         }
 
@@ -127,17 +124,24 @@ namespace SG03
             {
                 this.LoadComponents();
             }
+
+            if (this.ghostVariantEmitters == null || this.ghostVariantEmitters.Length == 0)
+            {
+                this.LoadGhostVariantEmitters();
+            }
         }
 
-        private void ConfigureDefeatEmitters()
+        private void ConfigureDefeatEmitters(bool bloodRed)
         {
+            bool hasVariants = this.ghostVariantEmitters != null && this.ghostVariantEmitters.Length > 0;
             if (this.mainParticleSystem != null)
             {
                 var mainEmission = this.mainParticleSystem.emission;
-                mainEmission.enabled = false;
+                mainEmission.enabled = !hasVariants;
             }
 
-            if (this.ghostVariantEmitters != null)
+            Color skullColor = bloodRed ? new Color(1f, 0.95f, 0.95f, 1f) : Color.white;
+            if (hasVariants)
             {
                 foreach (var ps in this.ghostVariantEmitters)
                 {
@@ -147,7 +151,7 @@ namespace SG03
                     shape.scale = this.cardSurfaceBoxScale;
 
                     var main = ps.main;
-                    main.startColor = Color.white;
+                    main.startColor = skullColor;
                     main.startLifetime = new ParticleSystem.MinMaxCurve(1.5f, 2.0f);
                     main.startSize = new ParticleSystem.MinMaxCurve(2.8f, 3.8f);
                     main.startSpeed = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
@@ -171,6 +175,7 @@ namespace SG03
                 embersShape.scale = this.cardSurfaceBoxScale;
 
                 var embersMain = this.soulEmbers.main;
+                embersMain.startColor = bloodRed ? new Color(1f, 0.08f, 0.08f, 1f) : new Color(0.4f, 0.95f, 1f, 0.9f);
                 embersMain.startLifetime = new ParticleSystem.MinMaxCurve(1.0f, 1.7f);
                 embersMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.4f);
 
@@ -185,22 +190,10 @@ namespace SG03
                 burstShape.shapeType = ParticleSystemShapeType.Box;
                 burstShape.scale = this.cardSurfaceBoxScale;
 
+                var burstMain = this.soulBurst.main;
+                burstMain.startColor = bloodRed ? new Color(0.9f, 0.05f, 0.05f, 0.85f) : new Color(0.6f, 0.9f, 1f, 0.8f);
+
                 this.soulBurst.gameObject.SetActive(true);
-            }
-
-            if (this.soulMist != null)
-            {
-                var mistShape = this.soulMist.shape;
-                mistShape.shapeType = ParticleSystemShapeType.Box;
-                mistShape.scale = this.cardSurfaceBoxScale;
-
-                var mistMain = this.soulMist.main;
-                mistMain.startSize = new ParticleSystem.MinMaxCurve(2.5f, 4.5f);
-
-                var mistEmission = this.soulMist.emission;
-                mistEmission.rateOverTime = 25f;
-                mistEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 18) });
-                this.soulMist.gameObject.SetActive(true);
             }
 
             if (this.soulWisps != null)
@@ -210,6 +203,7 @@ namespace SG03
                 wispsShape.scale = this.cardSurfaceBoxScale;
 
                 var wispsMain = this.soulWisps.main;
+                wispsMain.startColor = bloodRed ? new Color(1f, 0.05f, 0.05f, 0.95f) : new Color(0.4f, 0.95f, 1f, 0.9f);
                 wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
 
                 var wispsEmission = this.soulWisps.emission;
@@ -219,15 +213,17 @@ namespace SG03
             }
         }
 
-        private void ConfigureDamageEmitters(float customDuration)
+        private void ConfigureDamageEmitters(float customDuration, bool bloodRed)
         {
+            bool hasVariants = this.ghostVariantEmitters != null && this.ghostVariantEmitters.Length > 0;
             if (this.mainParticleSystem != null)
             {
                 var mainEmission = this.mainParticleSystem.emission;
-                mainEmission.enabled = false;
+                mainEmission.enabled = !hasVariants;
             }
 
-            if (this.ghostVariantEmitters != null)
+            Color skullColor = bloodRed ? new Color(1f, 0.95f, 0.95f, 0.95f) : new Color(1f, 1f, 1f, 0.95f);
+            if (hasVariants)
             {
                 foreach (var ps in this.ghostVariantEmitters)
                 {
@@ -237,7 +233,7 @@ namespace SG03
                     shape.scale = this.cardSurfaceBoxScale;
 
                     var main = ps.main;
-                    main.startColor = new Color(1f, 1f, 1f, 0.95f);
+                    main.startColor = skullColor;
                     main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, Mathf.Min(0.7f, customDuration));
                     main.startSize = new ParticleSystem.MinMaxCurve(2.0f, 2.8f);
                     main.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.45f);
@@ -261,6 +257,7 @@ namespace SG03
                 embersShape.scale = this.cardSurfaceBoxScale;
 
                 var embersMain = this.soulEmbers.main;
+                embersMain.startColor = bloodRed ? new Color(1f, 0.1f, 0.1f, 1f) : new Color(0.4f, 0.95f, 1f, 0.9f);
                 embersMain.startLifetime = new ParticleSystem.MinMaxCurve(0.3f, Mathf.Min(0.5f, customDuration));
                 embersMain.startSize = new ParticleSystem.MinMaxCurve(0.12f, 0.25f);
 
@@ -274,21 +271,6 @@ namespace SG03
                 this.soulBurst.gameObject.SetActive(false);
             }
 
-            if (this.soulMist != null)
-            {
-                var mistShape = this.soulMist.shape;
-                mistShape.shapeType = ParticleSystemShapeType.Box;
-                mistShape.scale = this.cardSurfaceBoxScale;
-
-                var mistMain = this.soulMist.main;
-                mistMain.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3.0f);
-
-                var mistEmission = this.soulMist.emission;
-                mistEmission.rateOverTime = 10f;
-                mistEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 8) });
-                this.soulMist.gameObject.SetActive(true);
-            }
-
             if (this.soulWisps != null)
             {
                 var wispsShape = this.soulWisps.shape;
@@ -296,6 +278,7 @@ namespace SG03
                 wispsShape.scale = this.cardSurfaceBoxScale;
 
                 var wispsMain = this.soulWisps.main;
+                wispsMain.startColor = bloodRed ? new Color(1f, 0.08f, 0.08f, 0.9f) : new Color(0.4f, 0.95f, 1f, 0.9f);
                 wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.35f);
 
                 var wispsEmission = this.soulWisps.emission;

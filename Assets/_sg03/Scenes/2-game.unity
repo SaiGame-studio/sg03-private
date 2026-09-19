@@ -2349,7 +2349,6 @@ Transform:
   - {fileID: 2104000012}
   - {fileID: 192681716}
   - {fileID: 1509573955}
-  - {fileID: 1353236920}
   m_Father: {fileID: 2127346364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &694843607
@@ -2368,7 +2367,7 @@ MonoBehaviour:
   - {fileID: 2104000014}
   - {fileID: 192681715}
   - {fileID: 1509573954}
-  - {fileID: 1353236921}
+  - {fileID: 0}
 --- !u!1001 &706587908
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5277,79 +5276,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 5416226888589389978, guid: fe627048bf5461a45a67a91a04f06a07, type: 3}
   m_PrefabInstance: {fileID: 1342712910}
   m_PrefabAsset: {fileID: 0}
---- !u!1001 &1353236919
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    serializedVersion: 3
-    m_TransformParent: {fileID: 694843606}
-    m_Modifications:
-    - target: {fileID: 706801474468868621, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_Name
-      value: GhostDefeatVfx
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-    m_RemovedGameObjects: []
-    m_AddedGameObjects: []
-    m_AddedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
---- !u!4 &1353236920 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-  m_PrefabInstance: {fileID: 1353236919}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1353236921 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 8825830958166201126, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
-  m_PrefabInstance: {fileID: 1353236919}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 71879f620e36b954f952c125c4d94f5e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SG03.GhostDefeatVfxCtrl
 --- !u!65 &1393557431 stripped
 BoxCollider:
   m_CorrespondingSourceObject: {fileID: 3890381777051524021, guid: fe627048bf5461a45a67a91a04f06a07, type: 3}
@@ -8044,6 +7970,8 @@ MonoBehaviour:
   alphaDefending: 0
   omegaDefending: 0
   isDevelopment: 0
+  startedAt: 0
+  durationSeconds: 1500
   nextMove: 0
   alphaTheVoid: []
   omegaTheVoid: []
@@ -8816,7 +8744,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f290d7cbba54e77b456e3879b52ac91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPool
-  spawnCount: 0
+  spawnCount: 1
   poolHolder: {fileID: 694843606}
   poolPrefabs: {fileID: 694843607}
   inPoolObjs: []
