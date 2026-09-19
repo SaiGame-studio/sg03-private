@@ -1,211 +1,236 @@
 using SaiGame.Services;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 namespace SG03
 {
-    /// <summary>
-    /// Renders a targeting arrow from a source position to a destination position.
-    /// Requires two child GameObjects named "LineBody" and "LineHead",
-    /// each carrying a <see cref="LineRenderer"/> component.
-    /// Use <see cref="Show"/> to start drawing, <see cref="UpdateTarget"/> to
-    /// track the cursor or a hovered card, and <see cref="Hide"/> to dismiss.
-    /// </summary>
+    /// <summary>A living blood-magic tether flowing from the selected card into its target.</summary>
     [AddComponentMenu("SG03/Battle/Arrow Indicator Ctrl")]
     public class ArrowIndicatorCtrl : SaiBehaviour
     {
-        [Header("Line Renderers")]
+        [Header("Serialized scene dependencies")]
         [SerializeField] private LineRenderer lineBody;
-        [SerializeField] private LineRenderer lineHead;
-
-        [Header("Arrow Head Settings")]
-        [SerializeField] private float headLength = 2f;
-        [SerializeField] private float headAngle  = 40f;
-
-        [Header("Material")]
+        [SerializeField] private LineRenderer targetRing;
         [SerializeField] private Material arrowMaterial;
 
-        // ─── SaiBehaviour overrides ───────────────────────────────────────────────
+        [Header("Spear head")]
+        [SerializeField, Min(0.1f)] private float headLength = 4.2f;
+        [SerializeField, Range(10f, 50f)] private float headAngle = 32f;
+
+        [Header("Living tether")]
+        [SerializeField, Min(0.1f)] private float ribbonWidth = 1.25f;
+        [SerializeField, Min(0f)] private float arcHeight = 2.4f;
+        [SerializeField, Min(0f)] private float swayAmount = 0.16f;
+        [SerializeField, Min(0.01f)] private float revealDuration = 0.16f;
+
+        private const int SegmentCount = 48;
+        private const int HeadSegments = 12;
+        private static readonly int EffectTimeId = Shader.PropertyToID("_EffectTime");
+        private static readonly int PathLengthId = Shader.PropertyToID("_PathLength");
+        private static readonly int HeadModeId = Shader.PropertyToID("_HeadMode");
+        private static readonly int OpacityId = Shader.PropertyToID("_Opacity");
+        private static readonly int HeadLengthId = Shader.PropertyToID("_HeadLength");
+        private static readonly int RibbonScaleId = Shader.PropertyToID("_RibbonScale");
+        private readonly Vector3[] bodyPoints = new Vector3[SegmentCount + HeadSegments];
+        private readonly Vector3[] ringPoints = new Vector3[65];
+        private MaterialPropertyBlock properties;
+        private Vector3 source;
+        private Vector3 destination;
+        private float shownAt;
+        private bool visible;
+        private bool ready;
 
         protected override void LoadComponents()
         {
             base.LoadComponents();
             this.LoadArrowMaterial();
             this.LoadLineBody();
-            this.LoadLineHead();
+            this.LoadTargetRing();
+            this.PrepareRenderers();
         }
 
-        protected virtual void LoadArrowMaterial()
+        private void LoadArrowMaterial()
         {
             if (this.arrowMaterial != null) return;
 #if UNITY_EDITOR
-            string[] guids = UnityEditor.AssetDatabase.FindAssets("ArrowIndicatorMat t:Material");
-            if (guids.Length == 0) return;
-            string path = UnityEditor.AssetDatabase.GUIDToAssetPath(guids[0]);
-            this.arrowMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(path);
-            if (this.arrowMaterial == null) return;
-            Debug.LogWarning(this.transform.name + ": LoadArrowMaterial", this.gameObject);
+            this.arrowMaterial = UnityEditor.AssetDatabase.LoadAssetAtPath<Material>(
+                "Assets/_sg03/Desk/ArrowIndicator/ArrowIndicatorMat.mat");
 #endif
         }
 
-        protected override void ResetValue()
-        {
-            base.ResetValue();
-            this.CreateLineBody();
-            this.CreateLineHead();
-        }
-
-        protected virtual void LoadLineBody()
+        private void LoadLineBody()
         {
             if (this.lineBody != null) return;
             Transform child = this.transform.Find("LineBody");
-            if (child == null) return;
-            this.lineBody = child.GetComponent<LineRenderer>();
-            this.ApplyMaterial(this.lineBody);
-            Debug.LogWarning(this.transform.name + ": LoadLineBody", this.gameObject);
+            if (child != null) this.lineBody = child.GetComponent<LineRenderer>();
         }
 
-        protected virtual void LoadLineHead()
+        private void LoadTargetRing()
         {
-            if (this.lineHead != null) return;
-            Transform child = this.transform.Find("LineHead");
-            if (child == null) return;
-            this.lineHead = child.GetComponent<LineRenderer>();
-            this.ApplyMaterial(this.lineHead);
-            Debug.LogWarning(this.transform.name + ": LoadLineHead", this.gameObject);
+            if (this.targetRing != null) return;
+            Transform child = this.transform.Find("TargetRing");
+            if (child != null) this.targetRing = child.GetComponent<LineRenderer>();
         }
 
-        private void CreateLineBody()
+        private void PrepareRenderers()
         {
-            if (this.lineBody != null) return;
-            GameObject child = this.GetOrCreateChildObject("LineBody");
-            this.lineBody = this.GetOrAddLineRenderer(child);
-            this.ApplyMaterial(this.lineBody);
-        }
-
-        private void CreateLineHead()
-        {
-            if (this.lineHead != null) return;
-            GameObject child = this.GetOrCreateChildObject("LineHead");
-            this.lineHead = this.GetOrAddLineRenderer(child);
-            this.ApplyMaterial(this.lineHead);
-        }
-
-        private GameObject GetOrCreateChildObject(string childName)
-        {
-            Transform existing = this.transform.Find(childName);
-            if (existing != null) return existing.gameObject;
-            GameObject go = new GameObject(childName);
-            go.transform.SetParent(this.transform, false);
-            return go;
-        }
-
-        private LineRenderer GetOrAddLineRenderer(GameObject go)
-        {
-            LineRenderer lr = go.GetComponent<LineRenderer>();
-            if (lr != null) return lr;
-            return go.AddComponent<LineRenderer>();
-        }
-
-        private void ApplyMaterial(LineRenderer lr)
-        {
-            if (lr == null) return;
-            this.ClearPositions(lr);
-            if (this.arrowMaterial != null)
+            this.ready = this.lineBody != null && this.targetRing != null && this.arrowMaterial != null;
+            if (!this.ready)
             {
-                lr.material = this.arrowMaterial;
+                Debug.LogError("Arrow indicator requires serialized LineBody, TargetRing and material references.", this);
                 return;
             }
-            Shader shader = Shader.Find("SG03/ArrowIndicator");
-            if (shader == null) return;
-            lr.material = new Material(shader);
+
+            this.properties = new MaterialPropertyBlock();
+            this.ConfigureRenderer(this.lineBody, 10);
+            this.ConfigureRenderer(this.targetRing, 9);
+            this.targetRing.widthCurve = AnimationCurve.Constant(0f, 1f, 1f);
+            // One constant-width ribbon gives the shader uninterrupted world-distance UVs.
+            // The shader shapes both the narrow tether and the swept-back spear wings.
+            this.lineBody.widthCurve = AnimationCurve.Constant(0f, 1f, 1f);
         }
 
-        private void ClearPositions(LineRenderer lr)
+        private void ConfigureRenderer(LineRenderer line, int order)
         {
-            if (lr == null) return;
-            lr.positionCount = 0;
+            line.sharedMaterial = this.arrowMaterial;
+            line.useWorldSpace = true;
+            line.alignment = LineAlignment.View;
+            line.textureMode = LineTextureMode.Stretch;
+            line.shadowCastingMode = ShadowCastingMode.Off;
+            line.receiveShadows = false;
+            line.lightProbeUsage = LightProbeUsage.Off;
+            line.reflectionProbeUsage = ReflectionProbeUsage.Off;
+            line.startColor = Color.white;
+            line.endColor = Color.white;
+            line.numCapVertices = 0;
+            line.numCornerVertices = 2;
+            line.sortingOrder = order;
+            line.positionCount = 0;
         }
 
-        // ─── Public API ───────────────────────────────────────────────────────────
+        private void LateUpdate()
+        {
+            this.AnimateArrow();
+        }
 
-        /// <summary>
-        /// Activates the arrow and draws it from <paramref name="from"/> to <paramref name="to"/>.
-        /// Call once when the player begins selecting a target.
-        /// </summary>
+        private void OnDisable()
+        {
+            this.ClearArrow();
+        }
+
+        /// <summary>Safe to call every frame: only a newly visible arrow restarts its reveal.</summary>
         public void Show(Vector3 from, Vector3 to)
         {
             this.gameObject.SetActive(true);
-            this.Redraw(from, to);
+            if (!this.ready) return;
+            if (!this.visible) this.shownAt = Time.unscaledTime;
+            this.source = from;
+            this.destination = to;
+            this.visible = true;
         }
 
-        /// <summary>
-        /// Redraws the arrow to a new destination while keeping the source fixed.
-        /// Call every frame while the player is hovering over targets.
-        /// </summary>
         public void UpdateTarget(Vector3 from, Vector3 to)
         {
-            this.Redraw(from, to);
+            this.source = from;
+            this.destination = to;
         }
 
-        /// <summary>Deactivates the arrow.</summary>
         public void Hide()
         {
-            this.ClearPositions(this.lineBody);
-            this.ClearPositions(this.lineHead);
+            this.ClearArrow();
             this.gameObject.SetActive(false);
         }
 
-        // ─── Drawing ──────────────────────────────────────────────────────────────
-
-        private void Redraw(Vector3 from, Vector3 to)
+        private void ClearArrow()
         {
-            this.DrawBody(from, to);
-            this.DrawHead(from, to);
+            this.visible = false;
+            if (this.lineBody != null) this.lineBody.positionCount = 0;
+            if (this.targetRing != null) this.targetRing.positionCount = 0;
         }
 
-        private void DrawBody(Vector3 from, Vector3 to)
+        private void AnimateArrow()
         {
-            if (this.lineBody == null) return;
-            this.lineBody.positionCount = 2;
-            this.lineBody.SetPosition(0, from);
-            this.lineBody.SetPosition(1, to);
+            if (!this.ready || !this.visible) return;
+            Vector3 delta = this.destination - this.source;
+            float distance = delta.magnitude;
+            if (distance < 0.1f)
+            {
+                this.lineBody.positionCount = 0;
+                this.targetRing.positionCount = 0;
+                return;
+            }
+
+            float time = Time.unscaledTime;
+            Vector3 direction = delta / distance;
+            Vector3 side = ComputePerpendicular(direction);
+            float length = Mathf.Min(this.headLength, distance * 0.3f);
+            Vector3 headStart = this.destination - direction * length;
+            float pathLength = this.DrawBody(headStart, side, distance, time) + length;
+            this.DrawHead(headStart);
+            float width = this.ribbonWidth * Mathf.Min(1f, distance / 4f);
+            float canvasWidth = Mathf.Max(width, length * Mathf.Tan(this.headAngle * Mathf.Deg2Rad));
+            this.lineBody.widthMultiplier = canvasWidth;
+            float circumference = this.DrawTargetRing(distance, time);
+            float opacity = Mathf.SmoothStep(0f, 1f, (time - this.shownAt) / Mathf.Max(0.01f, this.revealDuration));
+            this.SetShaderProperties(this.lineBody, time, pathLength, 0f, opacity, length, canvasWidth / Mathf.Max(0.01f, width));
+            this.SetShaderProperties(this.targetRing, time, circumference, 2f, opacity * 0.8f);
         }
 
-        private void DrawHead(Vector3 from, Vector3 to)
+        private float DrawBody(Vector3 end, Vector3 side, float distance, float time)
         {
-            if (this.lineHead == null) return;
-            Vector3 dir       = this.ComputeDirection(from, to);
-            Vector3 leftWing  = this.ComputeWing(to, dir,  1f);
-            Vector3 rightWing = this.ComputeWing(to, dir, -1f);
-            this.lineHead.positionCount = 3;
-            this.lineHead.SetPosition(0, leftWing);
-            this.lineHead.SetPosition(1, to);
-            this.lineHead.SetPosition(2, rightWing);
+            float height = Mathf.Min(this.arcHeight, distance * 0.12f);
+            float sway = Mathf.Min(this.swayAmount, distance * 0.015f);
+            float pathLength = 0f;
+            for (int index = 0; index < SegmentCount; index++)
+            {
+                float t = index / (float)(SegmentCount - 1);
+                // Zero displacement and derivative at both ends keeps the spear aligned.
+                float envelope = Mathf.Pow(Mathf.Sin(t * Mathf.PI), 2f);
+                Vector3 offset = Vector3.up * height + side * (Mathf.Sin(t * 12f - time * 2.8f) * sway);
+                this.bodyPoints[index] = Vector3.Lerp(this.source, end, t) + offset * envelope;
+                if (index > 0) pathLength += Vector3.Distance(this.bodyPoints[index - 1], this.bodyPoints[index]);
+            }
+            return pathLength;
         }
 
-        // ─── Math helpers ─────────────────────────────────────────────────────────
-
-        private Vector3 ComputeDirection(Vector3 from, Vector3 to)
+        private void DrawHead(Vector3 start)
         {
-            Vector3 raw = to - from;
-            if (raw.sqrMagnitude < 0.0001f) return Vector3.forward;
-            return raw.normalized;
+            for (int index = 1; index <= HeadSegments; index++)
+                this.bodyPoints[SegmentCount - 1 + index] = Vector3.Lerp(start, this.destination, index / (float)HeadSegments);
+            this.lineBody.positionCount = this.bodyPoints.Length;
+            this.lineBody.SetPositions(this.bodyPoints);
         }
 
-        private Vector3 ComputeWing(Vector3 tip, Vector3 dir, float side)
+        private float DrawTargetRing(float distance, float time)
         {
-            Vector3 perp      = this.ComputePerpendicular(dir);
-            float   halfSpan  = this.headLength * Mathf.Tan(this.headAngle * Mathf.Deg2Rad);
-            Vector3 basePoint = tip - dir * this.headLength;
-            return basePoint + perp * (halfSpan * side);
+            float radius = Mathf.Min(1.5f, distance * 0.2f) * (1f + Mathf.Sin(time * 3f) * 0.045f);
+            for (int index = 0; index < this.ringPoints.Length; index++)
+            {
+                float angle = index * Mathf.PI * 2f / (this.ringPoints.Length - 1);
+                this.ringPoints[index] = this.destination + new Vector3(Mathf.Cos(angle), 0f, Mathf.Sin(angle)) * radius;
+            }
+            this.targetRing.widthMultiplier = Mathf.Min(0.38f, radius * 0.3f);
+            this.targetRing.positionCount = this.ringPoints.Length;
+            this.targetRing.SetPositions(this.ringPoints);
+            return radius * Mathf.PI * 2f;
         }
 
-        private Vector3 ComputePerpendicular(Vector3 dir)
+        private void SetShaderProperties(LineRenderer line, float time, float length, float head, float opacity,
+            float spearLength = 0f, float ribbonScale = 1f)
         {
-            Vector3 reference = Mathf.Abs(Vector3.Dot(dir, Vector3.up)) < 0.99f
-                ? Vector3.up
-                : Vector3.right;
-            return Vector3.Cross(dir, reference).normalized;
+            this.properties.SetFloat(EffectTimeId, time);
+            this.properties.SetFloat(PathLengthId, length);
+            this.properties.SetFloat(HeadModeId, head);
+            this.properties.SetFloat(OpacityId, opacity);
+            this.properties.SetFloat(HeadLengthId, spearLength);
+            this.properties.SetFloat(RibbonScaleId, ribbonScale);
+            line.SetPropertyBlock(this.properties);
+        }
+
+        private static Vector3 ComputePerpendicular(Vector3 direction)
+        {
+            Vector3 reference = Mathf.Abs(Vector3.Dot(direction, Vector3.up)) < 0.99f ? Vector3.up : Vector3.right;
+            return Vector3.Cross(direction, reference).normalized;
         }
     }
 }
