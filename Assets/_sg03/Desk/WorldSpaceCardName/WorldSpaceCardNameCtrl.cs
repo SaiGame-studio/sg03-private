@@ -20,6 +20,8 @@ namespace SG03
         [SerializeField] private float cardZOffset = -0.5f;
         [Tooltip("Font size of the Card Name text in pixels.")]
         [SerializeField, Range(16f, 72f)] private float fontSize = 60f;
+        [Tooltip("Idle vertical float distance in pixels.")]
+        [SerializeField, Range(0f, 7f)] private float idleFloatPixels = 2.5f;
 
 
         [Header("Parenting")]
@@ -179,6 +181,12 @@ namespace SG03
             }
         }
 
+        public float IdleFloatPixels
+        {
+            get => this.idleFloatPixels;
+            set => this.idleFloatPixels = value;
+        }
+
         private void ApplyFontSize()
         {
             if (this.cardNameLabel != null)
@@ -192,9 +200,6 @@ namespace SG03
             base.LoadComponents();
             this.LoadUiDocument();
             this.LoadViewCamera();
-            this.LoadCastParticles();
-            this.LoadEnergyRibbon();
-            this.LoadEnergyMaterial();
             this.CacheNameGlyphs();
             this.BindUi();
         }
