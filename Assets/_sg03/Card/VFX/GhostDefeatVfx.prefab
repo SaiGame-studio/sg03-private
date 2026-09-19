@@ -19,7 +19,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3782577100775778724
 Transform:
   m_ObjectHideFlags: 0
@@ -49,10 +49,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71879f620e36b954f952c125c4d94f5e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SG03.GhostDefeatVfxCtrl
-  despawn: {fileID: 0}
+  despawn: {fileID: 203711562290231841}
   duration: 1.8
-  mainParticleSystem: {fileID: 0}
-  childParticleSystems: []
+  damageDuration: 1
+  cardSurfaceBoxScale: {x: 7, y: 0.2, z: 10}
+  mainParticleSystem: {fileID: 945159262379126449}
+  childParticleSystems:
+  - {fileID: 945159262379126449}
+  - {fileID: 4427214920040300432}
+  - {fileID: 67887786384925671}
+  soulEmbers: {fileID: 4427214920040300432}
+  soulBurst: {fileID: 67887786384925671}
 --- !u!114 &203711562290231841
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -376,7 +383,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeY:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -429,7 +436,7 @@ ParticleSystem:
         m_RotationOrder: 4
     startSizeZ:
       serializedVersion: 2
-      minMaxState: 0
+      minMaxState: 3
       scalar: 1
       minScalar: 1
       maxCurve:
@@ -709,7 +716,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 1.2, y: 0.1, z: 1.6}
+    m_Scale: {x: 7, y: 0.2, z: 10}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -907,7 +914,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 12
+      scalar: 35
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -1017,7 +1024,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 6
+        scalar: 20
         minScalar: 30
         maxCurve:
           serializedVersion: 2
@@ -5622,7 +5629,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 1, y: 0.1, z: 1.4}
+    m_Scale: {x: 6.8, y: 0.2, z: 9.8}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -5820,7 +5827,7 @@ ParticleSystem:
     rateOverTime:
       serializedVersion: 2
       minMaxState: 0
-      scalar: 18
+      scalar: 50
       minScalar: 10
       maxCurve:
         serializedVersion: 2
@@ -5930,7 +5937,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 15
+        scalar: 30
         minScalar: 30
         maxCurve:
           serializedVersion: 2
@@ -10508,7 +10515,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
+    type: 5
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -10516,7 +10523,7 @@ ParticleSystem:
     donutRadius: 0.2
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
-    m_Scale: {x: 1, y: 1, z: 1}
+    m_Scale: {x: 6.5, y: 0.2, z: 9.5}
     placementMode: 0
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
@@ -10824,7 +10831,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 1
+        scalar: 3
         minScalar: 30
         maxCurve:
           serializedVersion: 2
