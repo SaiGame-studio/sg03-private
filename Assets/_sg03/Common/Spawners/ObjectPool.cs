@@ -44,12 +44,6 @@ public class ObjectPool : Spawner<PoolObj>
         PoolObj instance = this.GetObjFromPool(prefab);
         if (instance == null)
         {
-            if (this.IsRuntimeCreationDisallowed(prefab))
-            {
-                Debug.LogError($"[ObjectPool] No available '{prefab.GetName()}' instance in pool! Runtime instantiation is disabled. Pre-instantiate it under PoolHolder.", this.gameObject);
-                return null;
-            }
-
             instance = Instantiate(prefab);
             this.spawnCount++;
             this.UpdateName(prefab.transform, instance.transform);
@@ -60,11 +54,10 @@ public class ObjectPool : Spawner<PoolObj>
         return instance;
     }
 
-    protected virtual bool IsRuntimeCreationDisallowed(PoolObj prefab)
+    protected override void AddObjectToPool(PoolObj obj)
     {
-        if (prefab == null) return false;
-        string name = prefab.GetName();
-        return name == "GhostDefeatVfx" || name == "GhostDamageVfx";
+        if (obj == null || this.inPoolObjs.Contains(obj)) return;
+        base.AddObjectToPool(obj);
     }
 
     public override PoolObj Spawn(PoolObj prefab)

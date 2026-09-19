@@ -262,6 +262,15 @@ namespace SG03
                 return;
             }
 
+            var mistRend = this.bloodMist.GetComponent<ParticleSystemRenderer>();
+            if (mistRend != null)
+            {
+                mistRend.sortingOrder = 2;
+                mistRend.maxParticleSize = 3.0f;
+            }
+
+            this.bloodMist.transform.localPosition = new Vector3(0f, 0.35f, 0f);
+
             var mistShape = this.bloodMist.shape;
             mistShape.shapeType = ParticleSystemShapeType.Box;
             mistShape.scale = new Vector3(this.cardSurfaceBoxScale.x * 0.8f, this.cardSurfaceBoxScale.z * 0.8f, this.cardSurfaceBoxScale.y);
@@ -298,6 +307,7 @@ namespace SG03
 
             float mistWindow = Mathf.Min(this.mistEmergenceWindow, customDuration * 0.25f);
             var mistEmission = this.bloodMist.emission;
+            mistEmission.enabled = true;
             mistEmission.rateOverTime = 0f;
             mistEmission.SetBursts(this.BuildRandomBursts(this.bloodMistCount, mistWindow));
             this.bloodMist.gameObject.SetActive(true);

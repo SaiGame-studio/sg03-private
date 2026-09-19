@@ -88,6 +88,7 @@ namespace SG03
                 ghostVfx.Play(duration);
                 yield return new WaitForSeconds(duration);
                 ghostVfx.ReturnToPool();
+                if (this.objectPool != null) this.objectPool.Despawn(ghostVfx);
             }
             else
             {
@@ -122,6 +123,7 @@ namespace SG03
                 ghostVfx.Play();
                 yield return new WaitForSeconds(ghostVfx.Duration);
                 ghostVfx.ReturnToPool();
+                if (this.objectPool != null) this.objectPool.Despawn(ghostVfx);
             }
             else
             {
@@ -153,6 +155,7 @@ namespace SG03
                 ghostVfx.Play(bloodRed);
                 yield return new WaitForSeconds(ghostVfx.Duration);
                 ghostVfx.ReturnToPool();
+                if (this.objectPool != null) this.objectPool.Despawn(ghostVfx);
             }
             else
             {

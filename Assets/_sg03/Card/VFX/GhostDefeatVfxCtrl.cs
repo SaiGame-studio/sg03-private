@@ -41,17 +41,17 @@ namespace SG03
         [Header("Blood Mist Settings")]
         [SerializeField] private bool enableBloodMist = true;
         [Tooltip("Total count of blood mist particles")]
-        [SerializeField, Min(0)] private int bloodMistCount = 14;
+        [SerializeField, Min(0)] private int bloodMistCount = 18;
         [Tooltip("Min and Max lifetime of blood mist (seconds)")]
-        [SerializeField] private Vector2 mistLifetime = new Vector2(1.3f, 1.7f);
+        [SerializeField] private Vector2 mistLifetime = new Vector2(1.6f, 2.2f);
         [Tooltip("Min and Max start size of blood mist particles (broad, wide puffs)")]
-        [SerializeField] private Vector2 mistStartSize = new Vector2(4.5f, 6.5f);
+        [SerializeField] private Vector2 mistStartSize = new Vector2(5.5f, 8.0f);
         [Tooltip("Gentle upward ascent velocity of blood mist (bay len 1 chut)")]
         [SerializeField] private Vector2 mistRiseSpeed = new Vector2(0.6f, 1.2f);
         [Tooltip("Horizontal outward diffusion speed along X axis (phat trien rong ra o truc x)")]
-        [SerializeField, Min(0f)] private float mistSpreadSpeed = 3.2f;
+        [SerializeField, Min(0f)] private float mistSpreadSpeed = 4.8f;
         [Tooltip("Peak opacity of mist (ro rang va mo ao)")]
-        [SerializeField, Range(0.05f, 1f)] private float mistMaxAlpha = 0.52f;
+        [SerializeField, Range(0.05f, 1f)] private float mistMaxAlpha = 0.78f;
         [Tooltip("Time window over which mist particles randomly emerge (seconds)")]
         [SerializeField, Min(0f)] private float mistEmergenceWindow = 0.35f;
 
@@ -278,17 +278,26 @@ namespace SG03
                 return;
             }
 
+            var mistRend = this.bloodMist.GetComponent<ParticleSystemRenderer>();
+            if (mistRend != null)
+            {
+                mistRend.sortingOrder = 2;
+                mistRend.maxParticleSize = 3.0f;
+            }
+
+            this.bloodMist.transform.localPosition = new Vector3(0f, 0.35f, 0f);
+
             var mistShape = this.bloodMist.shape;
             mistShape.shapeType = ParticleSystemShapeType.Box;
             mistShape.scale = new Vector3(this.cardSurfaceBoxScale.x * 0.8f, this.cardSurfaceBoxScale.z * 0.8f, this.cardSurfaceBoxScale.y);
             mistShape.rotation = new Vector3(-90f, 0f, 0f);
 
             var mistMain = this.bloodMist.main;
-            Color mistColor = bloodRed ? new Color(0.85f, 0.08f, 0.08f, 1f) : new Color(0.45f, 0.85f, 1f, 1f);
+            Color mistColor = bloodRed ? new Color(0.92f, 0.05f, 0.05f, 1f) : new Color(0.45f, 0.85f, 1f, 1f);
             mistMain.startColor = mistColor;
             mistMain.startLifetime = new ParticleSystem.MinMaxCurve(this.mistLifetime.x, this.mistLifetime.y);
             mistMain.startSize = new ParticleSystem.MinMaxCurve(this.mistStartSize.x, this.mistStartSize.y);
-            mistMain.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.5f);
+            mistMain.startSpeed = new ParticleSystem.MinMaxCurve(0.3f, 0.7f);
             mistMain.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
             mistMain.gravityModifier = 0f;
             mistMain.simulationSpace = ParticleSystemSimulationSpace.World;
@@ -305,15 +314,17 @@ namespace SG03
             mistSol.separateAxes = true;
 
             AnimationCurve sizeXCurve = new AnimationCurve();
-            sizeXCurve.AddKey(0f, 0.8f);
-            sizeXCurve.AddKey(0.4f, 2.0f);
-            sizeXCurve.AddKey(1f, 3.5f);
+            sizeXCurve.AddKey(0f, 1.0f);
+            sizeXCurve.AddKey(0.35f, 3.2f);
+            sizeXCurve.AddKey(0.75f, 5.0f);
+            sizeXCurve.AddKey(1f, 6.0f);
             mistSol.x = new ParticleSystem.MinMaxCurve(1f, sizeXCurve);
 
             AnimationCurve sizeYCurve = new AnimationCurve();
-            sizeYCurve.AddKey(0f, 0.7f);
-            sizeYCurve.AddKey(0.4f, 1.3f);
-            sizeYCurve.AddKey(1f, 1.8f);
+            sizeYCurve.AddKey(0f, 1.0f);
+            sizeYCurve.AddKey(0.35f, 2.2f);
+            sizeYCurve.AddKey(0.75f, 3.4f);
+            sizeYCurve.AddKey(1f, 4.0f);
             mistSol.y = new ParticleSystem.MinMaxCurve(1f, sizeYCurve);
             mistSol.z = new ParticleSystem.MinMaxCurve(1f, sizeYCurve);
 
@@ -322,6 +333,7 @@ namespace SG03
             mistCol.color = this.BuildMistFadeGradient(mistColor, this.mistMaxAlpha);
 
             var mistEmission = this.bloodMist.emission;
+            mistEmission.enabled = true;
             mistEmission.rateOverTime = 0f;
             mistEmission.SetBursts(this.BuildRandomBursts(this.bloodMistCount, this.mistEmergenceWindow));
             this.bloodMist.gameObject.SetActive(true);
@@ -335,8 +347,8 @@ namespace SG03
                 new GradientAlphaKey[]
                 {
                     new GradientAlphaKey(0.0f, 0.0f),
-                    new GradientAlphaKey(peakAlpha, 0.18f),
-                    new GradientAlphaKey(peakAlpha * 0.85f, 0.65f),
+                    new GradientAlphaKey(peakAlpha, 0.12f),
+                    new GradientAlphaKey(peakAlpha * 0.80f, 0.65f),
                     new GradientAlphaKey(0.0f, 1.0f)
                 }
             );
