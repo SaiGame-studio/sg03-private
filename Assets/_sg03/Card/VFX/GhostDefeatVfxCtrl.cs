@@ -14,15 +14,24 @@ namespace SG03
         [SerializeField] private float duration = 2.0f;
         [SerializeField] private bool useBloodRed = true;
         [SerializeField] private Vector3 cardSurfaceBoxScale = new Vector3(7.0f, 0.2f, 10.0f);
+
+        [Header("Particle Counts")]
+        [Tooltip("Number of skulls emitted per skull variant (there are 4 variants, so total skulls = count * 4)")]
+        [SerializeField, Min(1)] private int skullsPerVariant = 4;
+        [Tooltip("Total count of blood wisp particles")]
+        [SerializeField, Min(0)] private int bloodWispsCount = 70;
+
+        [Header("Emitters")]
         [SerializeField] private ParticleSystem mainParticleSystem;
         [SerializeField] private ParticleSystem[] childParticleSystems;
         [SerializeField] private ParticleSystem[] ghostVariantEmitters;
-        [SerializeField] private ParticleSystem soulEmbers;
         [SerializeField] private ParticleSystem soulBurst;
         [SerializeField] private ParticleSystem soulWisps;
 
         public float Duration => this.duration;
         public bool UseBloodRed { get => this.useBloodRed; set => this.useBloodRed = value; }
+        public int SkullsPerVariant { get => this.skullsPerVariant; set => this.skullsPerVariant = Mathf.Max(1, value); }
+        public int BloodWispsCount { get => this.bloodWispsCount; set => this.bloodWispsCount = Mathf.Max(0, value); }
 
         public override string GetName() => "GhostDefeatVfx";
 
@@ -43,13 +52,13 @@ namespace SG03
 
         protected virtual void LoadChildParticleSystems()
         {
-            if (this.childParticleSystems != null && this.childParticleSystems.Length > 0) return;
+            if (this.childParticleSystems != null && this.childParticleSystems.Length > 0 && !System.Array.Exists(this.childParticleSystems, ps => ps == null)) return;
             this.childParticleSystems = this.GetComponentsInChildren<ParticleSystem>(true);
         }
 
         protected virtual void LoadGhostVariantEmitters()
         {
-            if (this.ghostVariantEmitters != null && this.ghostVariantEmitters.Length > 0) return;
+            if (this.ghostVariantEmitters != null && this.ghostVariantEmitters.Length > 0 && !System.Array.Exists(this.ghostVariantEmitters, ps => ps == null)) return;
             var list = new System.Collections.Generic.List<ParticleSystem>();
             for (int i = 1; i <= 4; i++)
             {
@@ -65,16 +74,8 @@ namespace SG03
 
         protected virtual void LoadSpecializedEmitters()
         {
-            this.LoadSoulEmbers();
             this.LoadSoulBurst();
             this.LoadSoulWisps();
-        }
-
-        private void LoadSoulEmbers()
-        {
-            if (this.soulEmbers != null) return;
-            Transform embers = this.transform.Find("SoulEmbers");
-            if (embers != null) this.soulEmbers = embers.GetComponent<ParticleSystem>();
         }
 
         private void LoadSoulBurst()
@@ -99,22 +100,8 @@ namespace SG03
         public void Play(bool bloodRed)
         {
             this.gameObject.SetActive(true);
-            this.EnsureComponentsLoaded();
             this.ConfigureDefeatEmitters(bloodRed);
             this.RestartEmitters();
-        }
-
-        private void EnsureComponentsLoaded()
-        {
-            if (this.mainParticleSystem == null || this.childParticleSystems == null || this.childParticleSystems.Length == 0)
-            {
-                this.LoadComponents();
-            }
-
-            if (this.ghostVariantEmitters == null || this.ghostVariantEmitters.Length == 0)
-            {
-                this.LoadGhostVariantEmitters();
-            }
         }
 
         private void ConfigureDefeatEmitters(bool bloodRed)
@@ -153,34 +140,29 @@ namespace SG03
                     var emission = ps.emission;
                     emission.enabled = true;
                     emission.rateOverTime = 0f;
-                    emission.SetBursts(new ParticleSystem.Burst[]
+
+                    int initialSkulls = Mathf.Max(1, Mathf.CeilToInt(this.skullsPerVariant * 0.65f));
+                    int secondarySkulls = this.skullsPerVariant - initialSkulls;
+                    if (secondarySkulls > 0)
                     {
-                        new ParticleSystem.Burst(0.0f, 2),
-                        new ParticleSystem.Burst(0.18f, 1)
-                    });
+                        emission.SetBursts(new ParticleSystem.Burst[]
+                        {
+                            new ParticleSystem.Burst(0.0f, (short)initialSkulls),
+                            new ParticleSystem.Burst(0.18f, (short)secondarySkulls)
+                        });
+                    }
+                    else
+                    {
+                        emission.SetBursts(new ParticleSystem.Burst[]
+                        {
+                            new ParticleSystem.Burst(0.0f, (short)initialSkulls)
+                        });
+                    }
                     ps.gameObject.SetActive(true);
                 }
             }
 
-            if (this.soulEmbers != null)
-            {
-                var embersShape = this.soulEmbers.shape;
-                embersShape.shapeType = ParticleSystemShapeType.Box;
-                embersShape.scale = this.cardSurfaceBoxScale;
 
-                var embersMain = this.soulEmbers.main;
-                embersMain.startColor = bloodRed ? new Color(1f, 0.08f, 0.08f, 1f) : new Color(0.4f, 0.95f, 1f, 0.9f);
-                embersMain.startLifetime = new ParticleSystem.MinMaxCurve(1.0f, 1.5f);
-                embersMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.4f);
-
-                var embersEmission = this.soulEmbers.emission;
-                embersEmission.rateOverTime = 0f;
-                embersEmission.SetBursts(new ParticleSystem.Burst[]
-                {
-                    new ParticleSystem.Burst(0.0f, 25),
-                    new ParticleSystem.Burst(0.15f, 12)
-                });
-            }
 
             if (this.soulBurst != null)
             {
@@ -212,7 +194,7 @@ namespace SG03
 
                 var wispsEmission = this.soulWisps.emission;
                 wispsEmission.rateOverTime = 0f;
-                wispsEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 14) });
+                wispsEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, (short)this.bloodWispsCount) });
                 this.soulWisps.gameObject.SetActive(true);
             }
         }

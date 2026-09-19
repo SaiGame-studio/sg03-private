@@ -1587,6 +1587,79 @@ Material:
     - _UnderlayColor: {r: 0.9056604, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []
   m_AllowLocking: 1
+--- !u!1001 &399658139
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 694843606}
+    m_Modifications:
+    - target: {fileID: 706801474468868621, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_Name
+      value: GhostDefeatVfx
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+--- !u!114 &399658140 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8825830958166201126, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+  m_PrefabInstance: {fileID: 399658139}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 71879f620e36b954f952c125c4d94f5e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SG03.GhostDefeatVfxCtrl
+--- !u!4 &399658141 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+  m_PrefabInstance: {fileID: 399658139}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -2349,6 +2422,8 @@ Transform:
   - {fileID: 2104000012}
   - {fileID: 192681716}
   - {fileID: 1509573955}
+  - {fileID: 399658141}
+  - {fileID: 1517487185}
   m_Father: {fileID: 2127346364}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &694843607
@@ -5645,6 +5720,83 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3482978470714320713, guid: 5965a35c57fe81e49ab8544bae68a77b, type: 3}
   m_PrefabInstance: {fileID: 1509573953}
   m_PrefabAsset: {fileID: 0}
+--- !u!1001 &1517487183
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 694843606}
+    m_Modifications:
+    - target: {fileID: 706801474468868621, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_Name
+      value: GhostDamageVfx
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6587813230360242662, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: spawner
+      value: 
+      objectReference: {fileID: 2127346365}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+--- !u!114 &1517487184 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2744189064399042877, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+  m_PrefabInstance: {fileID: 1517487183}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9024db822dd373242a35de40e08ef06e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::SG03.GhostDamageVfxCtrl
+--- !u!4 &1517487185 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+  m_PrefabInstance: {fileID: 1517487183}
+  m_PrefabAsset: {fileID: 0}
 --- !u!21 &1524242641
 Material:
   serializedVersion: 8
@@ -8749,7 +8901,12 @@ MonoBehaviour:
   spawnCount: 1
   poolHolder: {fileID: 694843606}
   poolPrefabs: {fileID: 694843607}
-  inPoolObjs: []
+  inPoolObjs:
+  - {fileID: 2104000014}
+  - {fileID: 192681715}
+  - {fileID: 1509573954}
+  - {fileID: 399658140}
+  - {fileID: 1517487184}
 --- !u!1001 &2141663910
 PrefabInstance:
   m_ObjectHideFlags: 0

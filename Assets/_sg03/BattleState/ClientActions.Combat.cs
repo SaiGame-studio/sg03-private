@@ -106,7 +106,8 @@ namespace SG03
                 return instance;
             }
 
-            return Object.Instantiate(this.ghostDamageVfxPrefab, position, rotation);
+            Debug.LogError("[ClientActions] ObjectPool reference is null when spawning GhostDamageVfx!");
+            return null;
         }
 
         private IEnumerator PlayGhostDefeatRoutine(Card3DCtrl card)
@@ -139,7 +140,8 @@ namespace SG03
                 return instance;
             }
 
-            return Object.Instantiate(this.ghostDefeatVfxPrefab, position, rotation);
+            Debug.LogError("[ClientActions] ObjectPool reference is null when spawning GhostDefeatVfx!");
+            return null;
         }
 
         private IEnumerator PlayPositionGhostDefeatRoutine(Vector3 spawnPosition, Quaternion rotation = default, bool bloodRed = true)
@@ -178,25 +180,19 @@ namespace SG03
                 ? this.cardSpawning.GetOmegaVoidTopCard()
                 : this.cardSpawning.GetAlphaVoidTopCard();
 
-            Coroutine sourceRoutine = null;
-            Coroutine voidRoutine = null;
-
             if (sourceAnchor != null && sourceTop != null)
             {
                 Vector3 pos = sourceTop.transform.position + Vector3.up * 0.15f;
                 Quaternion rot = Quaternion.Euler(0f, sourceAnchor.rotation.eulerAngles.y, 0f);
-                sourceRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
+                yield return this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
             }
 
             if (voidAnchor != null && voidTop != null)
             {
                 Vector3 pos = voidTop.transform.position + Vector3.up * 0.15f;
                 Quaternion rot = Quaternion.Euler(0f, voidAnchor.rotation.eulerAngles.y, 0f);
-                voidRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
+                yield return this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
             }
-
-            if (sourceRoutine != null) yield return sourceRoutine;
-            if (voidRoutine != null) yield return voidRoutine;
         }
 
         private Coroutine ExecuteCardGuarded(string[] parameters)

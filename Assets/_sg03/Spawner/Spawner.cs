@@ -17,6 +17,37 @@ public abstract class Spawner<T> : SaiBehaviour where T : PoolObj
         base.LoadComponents();
         this.LoadPoolHolder();
         this.LoadPoolPrefabs();
+        this.LoadInPoolObjs();
+    }
+
+    protected virtual void LoadInPoolObjs()
+    {
+        if (this.poolHolder == null) return;
+        this.inPoolObjs.Clear();
+        foreach (Transform child in this.poolHolder)
+        {
+            T poolObj = child.GetComponent<T>();
+            if (poolObj != null)
+            {
+                this.inPoolObjs.Add(poolObj);
+                child.gameObject.SetActive(false);
+            }
+        }
+        Debug.Log(this.transform.name + ": LoadInPoolObjs (" + this.inPoolObjs.Count + ")", this.gameObject);
+    }
+
+    protected override void Awake()
+    {
+        base.Awake();
+        this.InitPool();
+    }
+
+    protected virtual void InitPool()
+    {
+        if (this.inPoolObjs.Count == 0 && this.poolHolder != null)
+        {
+            this.LoadInPoolObjs();
+        }
     }
 
     protected virtual void LoadPoolHolder()

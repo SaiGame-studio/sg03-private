@@ -818,7 +818,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5011120335786061610}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -1367,6 +1367,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SG03.Card3DCtrl
   despawn: {fileID: 56747626888172300}
+  cardNameUiPrefab: {fileID: 0}
+  cardNameUiInstance: {fileID: 0}
   card: {fileID: 1279015152172670498}
   loader: {fileID: 7980353759426569992}
   movement: {fileID: 4719509819920680533}
