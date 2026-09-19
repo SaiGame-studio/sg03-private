@@ -27,7 +27,7 @@ namespace SG03
 
         [Header("Blood Wisp Settings")]
         [Tooltip("Total count of blood wisp particles")]
-        [SerializeField, Min(0)] private int bloodWispsCount = 70;
+        [SerializeField, Min(0)] private int bloodWispsCount = 40;
         [Tooltip("Min and Max lifetime of blood wisps (seconds, shorter than skulls)")]
         [SerializeField] private Vector2 wispLifetime = new Vector2(0.25f, 0.4f);
         [Tooltip("Initial upward burst speed of blood wisps (slower than skulls so they don't fly as high)")]
@@ -35,7 +35,7 @@ namespace SG03
         [Tooltip("Gravity multiplier pulling blood wisps back down")]
         [SerializeField, Min(0f)] private float wispGravity = 1.1f;
         [Tooltip("Min and Max particle size of blood wisps")]
-        [SerializeField] private Vector2 wispSize = new Vector2(0.5f, 0.9f);
+        [SerializeField] private Vector2 wispSize = new Vector2(0.2f, 0.7f);
         [Tooltip("Time window over which blood wisps randomly emerge from the card (seconds)")]
         [SerializeField, Min(0f)] private float wispEmergenceWindow = 0.18f;
 

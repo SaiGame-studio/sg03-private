@@ -12,7 +12,6 @@ namespace SG03
     {
         [Header("VFX Settings")]
         [SerializeField] private float duration = 2.0f;
-        [SerializeField] private bool useBloodRed = true;
         [SerializeField] private Vector3 cardSurfaceBoxScale = new Vector3(7.0f, 0.2f, 10.0f);
 
         [Header("Skull Settings")]
@@ -26,16 +25,17 @@ namespace SG03
         [SerializeField, Min(0f)] private float skullEmergenceWindow = 0.45f;
 
         [Header("Blood Wisp Settings")]
+        [SerializeField] private bool useBloodRed = true;
         [Tooltip("Total count of blood wisp particles")]
-        [SerializeField, Min(0)] private int bloodWispsCount = 70;
+        [SerializeField, Min(0)] private int bloodWispsCount = 40;
         [Tooltip("Min and Max lifetime of blood wisps (seconds, shorter than skulls)")]
         [SerializeField] private Vector2 wispLifetime = new Vector2(0.5f, 0.8f);
         [Tooltip("Upward ascent velocity of blood wisps (slower than skulls so they don't fly as high)")]
         [SerializeField] private Vector2 wispAscentSpeed = new Vector2(0.7f, 1.2f);
         [Tooltip("Min and Max particle size of blood wisps")]
-        [SerializeField] private Vector2 wispSize = new Vector2(0.6f, 1.1f);
+        [SerializeField] private Vector2 wispSize = new Vector2(0.2f, 0.7f);
         [Tooltip("Time window over which blood wisps randomly emerge from the card (seconds)")]
-        [SerializeField, Min(0f)] private float wispEmergenceWindow = 0.55f;
+        [SerializeField, Min(0f)] private float wispEmergenceWindow = 0.1f;
 
         [Header("Emitters")]
         [SerializeField] private ParticleSystem mainParticleSystem;

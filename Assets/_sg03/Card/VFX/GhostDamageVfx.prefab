@@ -4941,11 +4941,11 @@ MonoBehaviour:
   skullPopSpeed: {x: 3, y: 4}
   skullGravity: 0.95
   skullEmergenceWindow: 0.14
-  bloodWispsCount: 70
+  bloodWispsCount: 40
   wispLifetime: {x: 0.25, y: 0.4}
   wispPopSpeed: {x: 1.5, y: 2.3}
   wispGravity: 1.1
-  wispSize: {x: 0.5, y: 0.9}
+  wispSize: {x: 0.2, y: 0.7}
   wispEmergenceWindow: 0.18
   mainParticleSystem: {fileID: 945159262379126449}
   childParticleSystems:

@@ -55,17 +55,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SG03.GhostDefeatVfxCtrl
   despawn: {fileID: 6587813230360242662}
   duration: 2
-  useBloodRed: 1
   cardSurfaceBoxScale: {x: 7, y: 0.2, z: 10}
   skullsPerVariant: 4
   skullLifetime: {x: 1.3, y: 1.6}
   skullAscentSpeed: {x: 1.6, y: 2.3}
   skullEmergenceWindow: 0.45
-  bloodWispsCount: 70
+  useBloodRed: 1
+  bloodWispsCount: 40
   wispLifetime: {x: 0.5, y: 0.8}
   wispAscentSpeed: {x: 0.7, y: 1.2}
-  wispSize: {x: 0.6, y: 1.1}
-  wispEmergenceWindow: 0.55
+  wispSize: {x: 0.2, y: 0.7}
+  wispEmergenceWindow: 0.1
   mainParticleSystem: {fileID: 945159262379126449}
   childParticleSystems:
   - {fileID: 945159262379126449}
@@ -19696,7 +19696,7 @@ ParticleSystemRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 4
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
