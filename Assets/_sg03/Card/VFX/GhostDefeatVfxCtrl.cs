@@ -25,10 +25,10 @@ namespace SG03
         [SerializeField, Min(0f)] private float skullEmergenceWindow = 0.45f;
 
         [Header("Blood Wisp Settings")]
-        [SerializeField] private bool enableBloodWisps = false;
+        [SerializeField] private bool enableBloodWisps = true;
         [SerializeField] private bool useBloodRed = true;
         [Tooltip("Total count of blood wisp particles")]
-        [SerializeField, Min(0)] private int bloodWispsCount = 40;
+        [SerializeField, Min(0)] private int bloodWispsCount = 7;
         [Tooltip("Min and Max lifetime of blood wisps (seconds, shorter than skulls)")]
         [SerializeField] private Vector2 wispLifetime = new Vector2(0.5f, 0.8f);
         [Tooltip("Upward ascent velocity of blood wisps (slower than skulls so they don't fly as high)")]

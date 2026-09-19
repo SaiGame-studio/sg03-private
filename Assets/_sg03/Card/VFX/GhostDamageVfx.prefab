@@ -9961,8 +9961,8 @@ MonoBehaviour:
   skullPopSpeed: {x: 3, y: 4}
   skullGravity: 0.95
   skullEmergenceWindow: 0.14
-  enableBloodWisps: 0
-  bloodWispsCount: 40
+  enableBloodWisps: 1
+  bloodWispsCount: 7
   wispLifetime: {x: 0.25, y: 0.4}
   wispPopSpeed: {x: 1.5, y: 2.3}
   wispGravity: 1.1

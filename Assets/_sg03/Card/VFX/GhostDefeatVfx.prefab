@@ -61,15 +61,15 @@ MonoBehaviour:
   skullLifetime: {x: 1.3, y: 1.6}
   skullAscentSpeed: {x: 1.6, y: 2.3}
   skullEmergenceWindow: 0.45
-  enableBloodWisps: 0
+  enableBloodWisps: 1
   useBloodRed: 1
-  bloodWispsCount: 40
+  bloodWispsCount: 7
   wispLifetime: {x: 0.5, y: 0.8}
   wispAscentSpeed: {x: 0.7, y: 1.2}
   wispSize: {x: 0.2, y: 0.7}
   wispEmergenceWindow: 0.1
   enableBloodMist: 1
-  bloodMistCount: 18
+  bloodMistCount: 9
   mistLifetime: {x: 1.6, y: 2.2}
   mistStartSize: {x: 1, y: 2.5}
   mistRiseSpeed: {x: 0.6, y: 1.2}
