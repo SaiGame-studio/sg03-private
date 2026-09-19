@@ -91,11 +91,20 @@ public abstract class Spawner<T> : SaiBehaviour where T : PoolObj
 
     protected virtual T GetObjFromPool(T prefab)
     {
-        foreach (T inPoolObj in this.inPoolObjs )
+        if (prefab == null) return null;
+
+        for (int i = this.inPoolObjs.Count - 1; i >= 0; i--)
         {
+            T inPoolObj = this.inPoolObjs[i];
+            if (inPoolObj == null)
+            {
+                this.inPoolObjs.RemoveAt(i);
+                continue;
+            }
+
             if (prefab.GetName() == inPoolObj.GetName())
             {
-                this.RemoveObjectFromPool(inPoolObj);
+                this.inPoolObjs.RemoveAt(i);
                 return inPoolObj;
             }
         }

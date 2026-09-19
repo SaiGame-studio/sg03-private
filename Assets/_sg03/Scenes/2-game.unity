@@ -8816,13 +8816,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f290d7cbba54e77b456e3879b52ac91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::ObjectPool
-  spawnCount: 11
+  spawnCount: 0
   poolHolder: {fileID: 694843606}
   poolPrefabs: {fileID: 694843607}
-  inPoolObjs:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  inPoolObjs: []
 --- !u!1001 &2141663910
 PrefabInstance:
   m_ObjectHideFlags: 0
