@@ -247,29 +247,39 @@ namespace SG03
         {
             if (parameters == null || parameters.Length == 0) return null;
             string attackerId = null;
+            int? damage = null;
             foreach (string p in parameters)
             {
                 string[] kv = p.Split('=');
                 if (kv.Length == 2)
                 {
-                    string key = kv[0].Trim().ToLower();
+                    string key = kv[0].Trim().ToLowerInvariant();
                     string value = kv[1].Trim();
                     if (key == "attacker_card_id" || key == "attacker") attackerId = value;
+                    else if (key == "damage" || key == "atk" || key == "final_atk")
+                    {
+                        if (int.TryParse(value, out int parsed)) damage = parsed;
+                    }
                 }
             }
             if (string.IsNullOrEmpty(attackerId) && !parameters[0].Contains("="))
             {
                 attackerId = parameters[0].Trim();
+                if (parameters.Length > 1 && !parameters[1].Contains("=") && int.TryParse(parameters[1].Trim(), out int parsed))
+                {
+                    damage = parsed;
+                }
             }
 
             if (string.IsNullOrEmpty(attackerId)) return null;
             Card3DCtrl attacker = this.cardSpawning?.FindCardById(attackerId);
             if (attacker == null || this.deskPosition == null) return null;
-            
-            return this.StartCoroutine(this.AlphaAttackOmegaHpRoutine(attacker));
+
+            int attackDamage = damage ?? attacker.GetDamagePreviewAttack();
+            return this.StartCoroutine(this.AlphaAttackOmegaHpRoutine(attacker, attackDamage));
         }
 
-        private IEnumerator AlphaAttackOmegaHpRoutine(Card3DCtrl attacker)
+        private IEnumerator AlphaAttackOmegaHpRoutine(Card3DCtrl attacker, int attackDamage)
         {
             Coroutine ghostRoutine = null;
             if (attacker.IsCharacter())
@@ -277,14 +287,20 @@ namespace SG03
                 attacker.AttackLunge(this.deskPosition.OmegaTheSource.position);
                 yield return new WaitForSeconds(0.15f);
                 this.cardSpawning?.ShakeOmegaSourceAndVoidCards();
-                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.omega));
+                if (attackDamage > 0)
+                {
+                    ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.omega));
+                }
             }
             else
             {
                 attacker.AbilityActive();
                 yield return new WaitForSeconds(0.15f);
                 this.cardSpawning?.ShakeOmegaSourceAndVoidCards();
-                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.omega));
+                if (attackDamage > 0)
+                {
+                    ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.omega));
+                }
             }
 
             yield return this.StartCoroutine(this.WaitForCard(attacker));
@@ -295,29 +311,39 @@ namespace SG03
         {
             if (parameters == null || parameters.Length == 0) return null;
             string attackerId = null;
+            int? damage = null;
             foreach (string p in parameters)
             {
                 string[] kv = p.Split('=');
                 if (kv.Length == 2)
                 {
-                    string key = kv[0].Trim().ToLower();
+                    string key = kv[0].Trim().ToLowerInvariant();
                     string value = kv[1].Trim();
                     if (key == "attacker_card_id" || key == "attacker") attackerId = value;
+                    else if (key == "damage" || key == "atk" || key == "final_atk")
+                    {
+                        if (int.TryParse(value, out int parsed)) damage = parsed;
+                    }
                 }
             }
             if (string.IsNullOrEmpty(attackerId) && !parameters[0].Contains("="))
             {
                 attackerId = parameters[0].Trim();
+                if (parameters.Length > 1 && !parameters[1].Contains("=") && int.TryParse(parameters[1].Trim(), out int parsed))
+                {
+                    damage = parsed;
+                }
             }
 
             if (string.IsNullOrEmpty(attackerId)) return null;
             Card3DCtrl attacker = this.cardSpawning?.FindCardById(attackerId);
             if (attacker == null || this.deskPosition == null) return null;
-            
-            return this.StartCoroutine(this.OmegaAttackAlphaHpRoutine(attacker));
+
+            int attackDamage = damage ?? attacker.GetDamagePreviewAttack();
+            return this.StartCoroutine(this.OmegaAttackAlphaHpRoutine(attacker, attackDamage));
         }
 
-        private IEnumerator OmegaAttackAlphaHpRoutine(Card3DCtrl attacker)
+        private IEnumerator OmegaAttackAlphaHpRoutine(Card3DCtrl attacker, int attackDamage)
         {
             Coroutine ghostRoutine = null;
             if (attacker.IsCharacter())
@@ -325,14 +351,20 @@ namespace SG03
                 attacker.AttackBackstepLunge(this.deskPosition.AlphaTheSource.position);
                 yield return new WaitForSeconds(0.27f);
                 this.cardSpawning?.ShakeAlphaSourceAndVoidCards();
-                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.alpha));
+                if (attackDamage > 0)
+                {
+                    ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.alpha));
+                }
             }
             else
             {
                 attacker.AbilityActive();
                 yield return new WaitForSeconds(0.15f);
                 this.cardSpawning?.ShakeAlphaSourceAndVoidCards();
-                ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.alpha));
+                if (attackDamage > 0)
+                {
+                    ghostRoutine = this.StartCoroutine(this.PlayHpDamageGhostEffectsRoutine(Owner.alpha));
+                }
             }
 
             yield return this.StartCoroutine(this.WaitForCard(attacker));
