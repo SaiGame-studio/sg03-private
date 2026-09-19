@@ -58,7 +58,14 @@ MonoBehaviour:
   useBloodRed: 1
   cardSurfaceBoxScale: {x: 7, y: 0.2, z: 10}
   skullsPerVariant: 4
+  skullLifetime: {x: 1.3, y: 1.6}
+  skullAscentSpeed: {x: 1.6, y: 2.3}
+  skullEmergenceWindow: 0.45
   bloodWispsCount: 70
+  wispLifetime: {x: 0.5, y: 0.8}
+  wispAscentSpeed: {x: 0.7, y: 1.2}
+  wispSize: {x: 0.6, y: 1.1}
+  wispEmergenceWindow: 0.55
   mainParticleSystem: {fileID: 945159262379126449}
   childParticleSystems:
   - {fileID: 945159262379126449}
@@ -19668,7 +19675,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: dae31764fd28a30449d64a9f1ff21487, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19689,7 +19696,7 @@ ParticleSystemRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 4
   m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0
@@ -29416,7 +29423,7 @@ ParticleSystemRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 10301, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: dae31764fd28a30449d64a9f1ff21487, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -29437,7 +29444,7 @@ ParticleSystemRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_MaskInteraction: 0
   m_RenderMode: 0
   m_MeshDistribution: 0

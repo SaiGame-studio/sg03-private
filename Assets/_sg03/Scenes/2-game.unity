@@ -1599,6 +1599,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: GhostDefeatVfx
       objectReference: {fileID: 0}
+    - target: {fileID: 3181402963335824948, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: m_SortingOrder
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1638,6 +1642,10 @@ PrefabInstance:
     - target: {fileID: 3782577100775778724, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8825830958166201126, guid: 9f836b7176f98014a832388b0e2118f8, type: 3}
+      propertyPath: bloodWispsCount
+      value: 40
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -5731,6 +5739,10 @@ PrefabInstance:
     - target: {fileID: 706801474468868621, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
       propertyPath: m_Name
       value: GhostDamageVfx
+      objectReference: {fileID: 0}
+    - target: {fileID: 2744189064399042877, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
+      propertyPath: bloodWispsCount
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 3782577100775778724, guid: c745460a44a2b26408c4c4fb6b36c829, type: 3}
       propertyPath: m_LocalPosition.x

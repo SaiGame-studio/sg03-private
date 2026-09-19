@@ -15,11 +15,27 @@ namespace SG03
         [SerializeField] private bool useBloodRed = true;
         [SerializeField] private Vector3 cardSurfaceBoxScale = new Vector3(7.0f, 0.2f, 10.0f);
 
-        [Header("Particle Counts")]
+        [Header("Skull Settings")]
         [Tooltip("Number of skulls emitted per skull variant (there are 4 variants, so total skulls = count * 4)")]
         [SerializeField, Min(1)] private int skullsPerVariant = 4;
+        [Tooltip("Min and Max lifetime of skull particles (seconds)")]
+        [SerializeField] private Vector2 skullLifetime = new Vector2(1.3f, 1.6f);
+        [Tooltip("Upward ascent velocity of skulls (Y axis in world space)")]
+        [SerializeField] private Vector2 skullAscentSpeed = new Vector2(1.6f, 2.3f);
+        [Tooltip("Time window over which skulls randomly emerge from the card (seconds)")]
+        [SerializeField, Min(0f)] private float skullEmergenceWindow = 0.45f;
+
+        [Header("Blood Wisp Settings")]
         [Tooltip("Total count of blood wisp particles")]
         [SerializeField, Min(0)] private int bloodWispsCount = 70;
+        [Tooltip("Min and Max lifetime of blood wisps (seconds, shorter than skulls)")]
+        [SerializeField] private Vector2 wispLifetime = new Vector2(0.5f, 0.8f);
+        [Tooltip("Upward ascent velocity of blood wisps (slower than skulls so they don't fly as high)")]
+        [SerializeField] private Vector2 wispAscentSpeed = new Vector2(0.7f, 1.2f);
+        [Tooltip("Min and Max particle size of blood wisps")]
+        [SerializeField] private Vector2 wispSize = new Vector2(0.6f, 1.1f);
+        [Tooltip("Time window over which blood wisps randomly emerge from the card (seconds)")]
+        [SerializeField, Min(0f)] private float wispEmergenceWindow = 0.55f;
 
         [Header("Emitters")]
         [SerializeField] private ParticleSystem mainParticleSystem;
@@ -31,7 +47,15 @@ namespace SG03
         public float Duration => this.duration;
         public bool UseBloodRed { get => this.useBloodRed; set => this.useBloodRed = value; }
         public int SkullsPerVariant { get => this.skullsPerVariant; set => this.skullsPerVariant = Mathf.Max(1, value); }
+        public Vector2 SkullLifetime { get => this.skullLifetime; set => this.skullLifetime = value; }
+        public Vector2 SkullAscentSpeed { get => this.skullAscentSpeed; set => this.skullAscentSpeed = value; }
+        public float SkullEmergenceWindow { get => this.skullEmergenceWindow; set => this.skullEmergenceWindow = Mathf.Max(0f, value); }
+
         public int BloodWispsCount { get => this.bloodWispsCount; set => this.bloodWispsCount = Mathf.Max(0, value); }
+        public Vector2 WispLifetime { get => this.wispLifetime; set => this.wispLifetime = value; }
+        public Vector2 WispAscentSpeed { get => this.wispAscentSpeed; set => this.wispAscentSpeed = value; }
+        public Vector2 WispSize { get => this.wispSize; set => this.wispSize = value; }
+        public float WispEmergenceWindow { get => this.wispEmergenceWindow; set => this.wispEmergenceWindow = Mathf.Max(0f, value); }
 
         public override string GetName() => "GhostDefeatVfx";
 
@@ -126,7 +150,7 @@ namespace SG03
 
                     var main = ps.main;
                     main.startColor = skullColor;
-                    main.startLifetime = new ParticleSystem.MinMaxCurve(1.3f, 1.6f);
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(this.skullLifetime.x, this.skullLifetime.y);
                     main.startSize = new ParticleSystem.MinMaxCurve(2.8f, 3.8f);
                     main.startSpeed = new ParticleSystem.MinMaxCurve(0.4f, 0.8f);
                     main.gravityModifier = 0f;
@@ -136,7 +160,7 @@ namespace SG03
                     vol.enabled = true;
                     vol.space = ParticleSystemSimulationSpace.World;
                     vol.x = new ParticleSystem.MinMaxCurve(-0.25f, 0.25f);
-                    vol.y = new ParticleSystem.MinMaxCurve(1.6f, 2.3f);
+                    vol.y = new ParticleSystem.MinMaxCurve(this.skullAscentSpeed.x, this.skullAscentSpeed.y);
                     vol.z = new ParticleSystem.MinMaxCurve(-0.25f, 0.25f);
 
                     var col = ps.colorOverLifetime;
@@ -146,10 +170,7 @@ namespace SG03
                     var emission = ps.emission;
                     emission.enabled = true;
                     emission.rateOverTime = 0f;
-                    emission.SetBursts(new ParticleSystem.Burst[]
-                    {
-                        new ParticleSystem.Burst(0.0f, (short)this.skullsPerVariant)
-                    });
+                    emission.SetBursts(this.BuildRandomSkullBursts(this.skullsPerVariant, this.skullEmergenceWindow));
                     ps.gameObject.SetActive(true);
                 }
             }
@@ -175,11 +196,11 @@ namespace SG03
                 wispsShape.rotation = new Vector3(-90f, 0f, 0f);
 
                 var wispsMain = this.soulWisps.main;
-                Color wispColor = bloodRed ? new Color(1f, 0.05f, 0.05f, 0.95f) : new Color(0.4f, 0.95f, 1f, 0.9f);
+                Color wispColor = bloodRed ? new Color(1f, 0.05f, 0.05f, 1.0f) : new Color(0.4f, 0.95f, 1f, 0.95f);
                 wispsMain.startColor = wispColor;
-                wispsMain.startLifetime = new ParticleSystem.MinMaxCurve(1.1f, 1.5f);
-                wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
-                wispsMain.startSpeed = new ParticleSystem.MinMaxCurve(0.5f, 1.0f);
+                wispsMain.startLifetime = new ParticleSystem.MinMaxCurve(this.wispLifetime.x, this.wispLifetime.y);
+                wispsMain.startSize = new ParticleSystem.MinMaxCurve(this.wispSize.x, this.wispSize.y);
+                wispsMain.startSpeed = new ParticleSystem.MinMaxCurve(0.4f, 0.8f);
                 wispsMain.gravityModifier = 0f;
                 wispsMain.simulationSpace = ParticleSystemSimulationSpace.World;
 
@@ -187,7 +208,7 @@ namespace SG03
                 wispsVol.enabled = true;
                 wispsVol.space = ParticleSystemSimulationSpace.World;
                 wispsVol.x = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
-                wispsVol.y = new ParticleSystem.MinMaxCurve(1.6f, 2.4f);
+                wispsVol.y = new ParticleSystem.MinMaxCurve(this.wispAscentSpeed.x, this.wispAscentSpeed.y);
                 wispsVol.z = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
 
                 var wispsCol = this.soulWisps.colorOverLifetime;
@@ -196,9 +217,50 @@ namespace SG03
 
                 var wispsEmission = this.soulWisps.emission;
                 wispsEmission.rateOverTime = 0f;
-                wispsEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, (short)this.bloodWispsCount) });
+                wispsEmission.SetBursts(this.BuildRandomWispBursts(this.bloodWispsCount, this.wispEmergenceWindow));
                 this.soulWisps.gameObject.SetActive(true);
             }
+        }
+
+        private ParticleSystem.Burst[] BuildRandomSkullBursts(int totalSkulls, float windowDuration)
+        {
+            int burstCount = Mathf.Clamp(totalSkulls, 1, 8);
+            var bursts = new ParticleSystem.Burst[burstCount];
+            float[] times = new float[burstCount];
+            for (int i = 0; i < burstCount; i++)
+            {
+                times[i] = Random.Range(0.0f, windowDuration);
+            }
+            System.Array.Sort(times);
+            int remaining = totalSkulls;
+            for (int i = 0; i < burstCount; i++)
+            {
+                int count = (i == burstCount - 1) ? remaining : Mathf.Max(1, remaining / (burstCount - i));
+                remaining -= count;
+                bursts[i] = new ParticleSystem.Burst(times[i], (short)count, (short)count);
+            }
+            return bursts;
+        }
+
+        private ParticleSystem.Burst[] BuildRandomWispBursts(int totalWisps, float windowDuration)
+        {
+            if (totalWisps <= 0) return new ParticleSystem.Burst[0];
+            int burstCount = Mathf.Clamp(totalWisps / 9, 3, 8);
+            var bursts = new ParticleSystem.Burst[burstCount];
+            float[] times = new float[burstCount];
+            for (int i = 0; i < burstCount; i++)
+            {
+                times[i] = Random.Range(0.0f, windowDuration);
+            }
+            System.Array.Sort(times);
+            int remaining = totalWisps;
+            for (int i = 0; i < burstCount; i++)
+            {
+                int count = (i == burstCount - 1) ? remaining : Mathf.Max(1, remaining / (burstCount - i));
+                remaining -= count;
+                bursts[i] = new ParticleSystem.Burst(times[i], (short)count, (short)count);
+            }
+            return bursts;
         }
 
         private ParticleSystem.MinMaxGradient BuildFadeGradient(Color baseColor)
