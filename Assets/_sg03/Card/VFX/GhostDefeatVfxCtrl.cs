@@ -15,8 +15,11 @@ namespace SG03
         [SerializeField] private Vector3 cardSurfaceBoxScale = new Vector3(7.0f, 0.2f, 10.0f);
         [SerializeField] private ParticleSystem mainParticleSystem;
         [SerializeField] private ParticleSystem[] childParticleSystems;
+        [SerializeField] private ParticleSystem[] ghostVariantEmitters;
         [SerializeField] private ParticleSystem soulEmbers;
         [SerializeField] private ParticleSystem soulBurst;
+        [SerializeField] private ParticleSystem soulMist;
+        [SerializeField] private ParticleSystem soulWisps;
 
         public float Duration => this.duration;
         public float DamageDuration => this.damageDuration;
@@ -28,6 +31,7 @@ namespace SG03
             base.LoadComponents();
             this.LoadMainParticleSystem();
             this.LoadChildParticleSystems();
+            this.LoadGhostVariantEmitters();
             this.LoadSpecializedEmitters();
         }
 
@@ -43,10 +47,28 @@ namespace SG03
             this.childParticleSystems = this.GetComponentsInChildren<ParticleSystem>(true);
         }
 
+        protected virtual void LoadGhostVariantEmitters()
+        {
+            if (this.ghostVariantEmitters != null && this.ghostVariantEmitters.Length > 0) return;
+            var list = new System.Collections.Generic.List<ParticleSystem>();
+            for (int i = 1; i <= 4; i++)
+            {
+                Transform t = this.transform.Find($"Ghost_Variant{i}");
+                if (t != null)
+                {
+                    var ps = t.GetComponent<ParticleSystem>();
+                    if (ps != null) list.Add(ps);
+                }
+            }
+            this.ghostVariantEmitters = list.ToArray();
+        }
+
         protected virtual void LoadSpecializedEmitters()
         {
             this.LoadSoulEmbers();
             this.LoadSoulBurst();
+            this.LoadSoulMist();
+            this.LoadSoulWisps();
         }
 
         private void LoadSoulEmbers()
@@ -61,6 +83,20 @@ namespace SG03
             if (this.soulBurst != null) return;
             Transform burst = this.transform.Find("SoulBurst");
             if (burst != null) this.soulBurst = burst.GetComponent<ParticleSystem>();
+        }
+
+        private void LoadSoulMist()
+        {
+            if (this.soulMist != null) return;
+            Transform mist = this.transform.Find("SoulMist");
+            if (mist != null) this.soulMist = mist.GetComponent<ParticleSystem>();
+        }
+
+        private void LoadSoulWisps()
+        {
+            if (this.soulWisps != null) return;
+            Transform wisps = this.transform.Find("SoulWisps");
+            if (wisps != null) this.soulWisps = wisps.GetComponent<ParticleSystem>();
         }
 
         /// <summary>
@@ -97,17 +133,35 @@ namespace SG03
         {
             if (this.mainParticleSystem != null)
             {
-                var shape = this.mainParticleSystem.shape;
-                shape.shapeType = ParticleSystemShapeType.Box;
-                shape.scale = this.cardSurfaceBoxScale;
+                var mainEmission = this.mainParticleSystem.emission;
+                mainEmission.enabled = false;
+            }
 
-                var main = this.mainParticleSystem.main;
-                main.startLifetime = new ParticleSystem.MinMaxCurve(1.2f, 1.8f);
-                main.startSize = new ParticleSystem.MinMaxCurve(0.7f, 1.3f);
+            if (this.ghostVariantEmitters != null)
+            {
+                foreach (var ps in this.ghostVariantEmitters)
+                {
+                    if (ps == null) continue;
+                    var shape = ps.shape;
+                    shape.shapeType = ParticleSystemShapeType.Box;
+                    shape.scale = this.cardSurfaceBoxScale;
 
-                var emission = this.mainParticleSystem.emission;
-                emission.rateOverTime = 40f;
-                emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 25) });
+                    var main = ps.main;
+                    main.startColor = Color.white;
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(1.5f, 2.0f);
+                    main.startSize = new ParticleSystem.MinMaxCurve(2.8f, 3.8f);
+                    main.startSpeed = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
+
+                    var vol = ps.velocityOverLifetime;
+                    vol.enabled = true;
+                    vol.y = new ParticleSystem.MinMaxCurve(0.6f, 1.1f);
+
+                    var emission = ps.emission;
+                    emission.enabled = true;
+                    emission.rateOverTime = 3f;
+                    emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 2) });
+                    ps.gameObject.SetActive(true);
+                }
             }
 
             if (this.soulEmbers != null)
@@ -118,11 +172,11 @@ namespace SG03
 
                 var embersMain = this.soulEmbers.main;
                 embersMain.startLifetime = new ParticleSystem.MinMaxCurve(1.0f, 1.7f);
-                embersMain.startSize = new ParticleSystem.MinMaxCurve(0.08f, 0.22f);
+                embersMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.4f);
 
                 var embersEmission = this.soulEmbers.emission;
-                embersEmission.rateOverTime = 60f;
-                embersEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 35) });
+                embersEmission.rateOverTime = 40f;
+                embersEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 25) });
             }
 
             if (this.soulBurst != null)
@@ -133,23 +187,71 @@ namespace SG03
 
                 this.soulBurst.gameObject.SetActive(true);
             }
+
+            if (this.soulMist != null)
+            {
+                var mistShape = this.soulMist.shape;
+                mistShape.shapeType = ParticleSystemShapeType.Box;
+                mistShape.scale = this.cardSurfaceBoxScale;
+
+                var mistMain = this.soulMist.main;
+                mistMain.startSize = new ParticleSystem.MinMaxCurve(2.5f, 4.5f);
+
+                var mistEmission = this.soulMist.emission;
+                mistEmission.rateOverTime = 25f;
+                mistEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 18) });
+                this.soulMist.gameObject.SetActive(true);
+            }
+
+            if (this.soulWisps != null)
+            {
+                var wispsShape = this.soulWisps.shape;
+                wispsShape.shapeType = ParticleSystemShapeType.Box;
+                wispsShape.scale = this.cardSurfaceBoxScale;
+
+                var wispsMain = this.soulWisps.main;
+                wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
+
+                var wispsEmission = this.soulWisps.emission;
+                wispsEmission.rateOverTime = 30f;
+                wispsEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 15) });
+                this.soulWisps.gameObject.SetActive(true);
+            }
         }
 
         private void ConfigureDamageEmitters(float customDuration)
         {
             if (this.mainParticleSystem != null)
             {
-                var shape = this.mainParticleSystem.shape;
-                shape.shapeType = ParticleSystemShapeType.Box;
-                shape.scale = this.cardSurfaceBoxScale;
+                var mainEmission = this.mainParticleSystem.emission;
+                mainEmission.enabled = false;
+            }
 
-                var main = this.mainParticleSystem.main;
-                main.startLifetime = new ParticleSystem.MinMaxCurve(0.4f, Mathf.Min(0.6f, customDuration));
-                main.startSize = new ParticleSystem.MinMaxCurve(0.35f, 0.65f);
+            if (this.ghostVariantEmitters != null)
+            {
+                foreach (var ps in this.ghostVariantEmitters)
+                {
+                    if (ps == null) continue;
+                    var shape = ps.shape;
+                    shape.shapeType = ParticleSystemShapeType.Box;
+                    shape.scale = this.cardSurfaceBoxScale;
 
-                var emission = this.mainParticleSystem.emission;
-                emission.rateOverTime = 12f;
-                emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 6) });
+                    var main = ps.main;
+                    main.startColor = new Color(1f, 1f, 1f, 0.95f);
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(0.5f, Mathf.Min(0.7f, customDuration));
+                    main.startSize = new ParticleSystem.MinMaxCurve(2.0f, 2.8f);
+                    main.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.45f);
+
+                    var vol = ps.velocityOverLifetime;
+                    vol.enabled = true;
+                    vol.y = new ParticleSystem.MinMaxCurve(0.5f, 0.9f);
+
+                    var emission = ps.emission;
+                    emission.enabled = true;
+                    emission.rateOverTime = 1f;
+                    emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 1) });
+                    ps.gameObject.SetActive(true);
+                }
             }
 
             if (this.soulEmbers != null)
@@ -160,7 +262,7 @@ namespace SG03
 
                 var embersMain = this.soulEmbers.main;
                 embersMain.startLifetime = new ParticleSystem.MinMaxCurve(0.3f, Mathf.Min(0.5f, customDuration));
-                embersMain.startSize = new ParticleSystem.MinMaxCurve(0.05f, 0.12f);
+                embersMain.startSize = new ParticleSystem.MinMaxCurve(0.12f, 0.25f);
 
                 var embersEmission = this.soulEmbers.emission;
                 embersEmission.rateOverTime = 16f;
@@ -170,6 +272,36 @@ namespace SG03
             if (this.soulBurst != null)
             {
                 this.soulBurst.gameObject.SetActive(false);
+            }
+
+            if (this.soulMist != null)
+            {
+                var mistShape = this.soulMist.shape;
+                mistShape.shapeType = ParticleSystemShapeType.Box;
+                mistShape.scale = this.cardSurfaceBoxScale;
+
+                var mistMain = this.soulMist.main;
+                mistMain.startSize = new ParticleSystem.MinMaxCurve(1.5f, 3.0f);
+
+                var mistEmission = this.soulMist.emission;
+                mistEmission.rateOverTime = 10f;
+                mistEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 8) });
+                this.soulMist.gameObject.SetActive(true);
+            }
+
+            if (this.soulWisps != null)
+            {
+                var wispsShape = this.soulWisps.shape;
+                wispsShape.shapeType = ParticleSystemShapeType.Box;
+                wispsShape.scale = this.cardSurfaceBoxScale;
+
+                var wispsMain = this.soulWisps.main;
+                wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.35f);
+
+                var wispsEmission = this.soulWisps.emission;
+                wispsEmission.rateOverTime = 12f;
+                wispsEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 5) });
+                this.soulWisps.gameObject.SetActive(true);
             }
         }
 
