@@ -25,6 +25,7 @@ namespace SG03
         [SerializeField, Min(0f)] private float skullEmergenceWindow = 0.45f;
 
         [Header("Blood Wisp Settings")]
+        [SerializeField] private bool enableBloodWisps = false;
         [SerializeField] private bool useBloodRed = true;
         [Tooltip("Total count of blood wisp particles")]
         [SerializeField, Min(0)] private int bloodWispsCount = 40;
@@ -37,14 +38,33 @@ namespace SG03
         [Tooltip("Time window over which blood wisps randomly emerge from the card (seconds)")]
         [SerializeField, Min(0f)] private float wispEmergenceWindow = 0.1f;
 
+        [Header("Blood Mist Settings")]
+        [SerializeField] private bool enableBloodMist = true;
+        [Tooltip("Total count of blood mist particles")]
+        [SerializeField, Min(0)] private int bloodMistCount = 14;
+        [Tooltip("Min and Max lifetime of blood mist (seconds)")]
+        [SerializeField] private Vector2 mistLifetime = new Vector2(1.3f, 1.7f);
+        [Tooltip("Min and Max start size of blood mist particles (broad, wide puffs)")]
+        [SerializeField] private Vector2 mistStartSize = new Vector2(4.5f, 6.5f);
+        [Tooltip("Gentle upward ascent velocity of blood mist (bay len 1 chut)")]
+        [SerializeField] private Vector2 mistRiseSpeed = new Vector2(0.6f, 1.2f);
+        [Tooltip("Horizontal outward diffusion speed along X axis (phat trien rong ra o truc x)")]
+        [SerializeField, Min(0f)] private float mistSpreadSpeed = 3.2f;
+        [Tooltip("Peak opacity of mist (ro rang va mo ao)")]
+        [SerializeField, Range(0.05f, 1f)] private float mistMaxAlpha = 0.52f;
+        [Tooltip("Time window over which mist particles randomly emerge (seconds)")]
+        [SerializeField, Min(0f)] private float mistEmergenceWindow = 0.35f;
+
         [Header("Emitters")]
         [SerializeField] private ParticleSystem mainParticleSystem;
         [SerializeField] private ParticleSystem[] childParticleSystems;
         [SerializeField] private ParticleSystem[] ghostVariantEmitters;
         [SerializeField] private ParticleSystem soulBurst;
         [SerializeField] private ParticleSystem soulWisps;
+        [SerializeField] private ParticleSystem bloodMist;
 
         public float Duration => this.duration;
+        public bool EnableBloodWisps { get => this.enableBloodWisps; set => this.enableBloodWisps = value; }
         public bool UseBloodRed { get => this.useBloodRed; set => this.useBloodRed = value; }
         public int SkullsPerVariant { get => this.skullsPerVariant; set => this.skullsPerVariant = Mathf.Max(1, value); }
         public Vector2 SkullLifetime { get => this.skullLifetime; set => this.skullLifetime = value; }
@@ -56,6 +76,16 @@ namespace SG03
         public Vector2 WispAscentSpeed { get => this.wispAscentSpeed; set => this.wispAscentSpeed = value; }
         public Vector2 WispSize { get => this.wispSize; set => this.wispSize = value; }
         public float WispEmergenceWindow { get => this.wispEmergenceWindow; set => this.wispEmergenceWindow = Mathf.Max(0f, value); }
+
+        public bool EnableBloodMist { get => this.enableBloodMist; set => this.enableBloodMist = value; }
+        public int BloodMistCount { get => this.bloodMistCount; set => this.bloodMistCount = Mathf.Max(0, value); }
+        public Vector2 MistLifetime { get => this.mistLifetime; set => this.mistLifetime = value; }
+        public Vector2 MistStartSize { get => this.mistStartSize; set => this.mistStartSize = value; }
+        public Vector2 MistRiseSpeed { get => this.mistRiseSpeed; set => this.mistRiseSpeed = value; }
+        public float MistSpreadSpeed { get => this.mistSpreadSpeed; set => this.mistSpreadSpeed = Mathf.Max(0f, value); }
+        public float MistMaxAlpha { get => this.mistMaxAlpha; set => this.mistMaxAlpha = Mathf.Clamp01(value); }
+        public float MistEmergenceWindow { get => this.mistEmergenceWindow; set => this.mistEmergenceWindow = Mathf.Max(0f, value); }
+        public ParticleSystem BloodMist => this.bloodMist;
 
         public override string GetName() => "GhostDefeatVfx";
 
@@ -100,6 +130,7 @@ namespace SG03
         {
             this.LoadSoulBurst();
             this.LoadSoulWisps();
+            this.LoadBloodMist();
         }
 
         private void LoadSoulBurst()
@@ -114,6 +145,13 @@ namespace SG03
             if (this.soulWisps != null) return;
             Transform wisps = this.transform.Find("SoulWisps");
             if (wisps != null) this.soulWisps = wisps.GetComponent<ParticleSystem>();
+        }
+
+        private void LoadBloodMist()
+        {
+            if (this.bloodMist != null) return;
+            Transform mist = this.transform.Find("BloodMist");
+            if (mist != null) this.bloodMist = mist.GetComponent<ParticleSystem>();
         }
 
         /// <summary>
@@ -190,36 +228,140 @@ namespace SG03
 
             if (this.soulWisps != null)
             {
-                var wispsShape = this.soulWisps.shape;
-                wispsShape.shapeType = ParticleSystemShapeType.Box;
-                wispsShape.scale = new Vector3(this.cardSurfaceBoxScale.x, this.cardSurfaceBoxScale.z, this.cardSurfaceBoxScale.y);
-                wispsShape.rotation = new Vector3(-90f, 0f, 0f);
+                if (!this.enableBloodWisps)
+                {
+                    this.soulWisps.gameObject.SetActive(false);
+                }
+                else
+                {
+                    var wispsShape = this.soulWisps.shape;
+                    wispsShape.shapeType = ParticleSystemShapeType.Box;
+                    wispsShape.scale = new Vector3(this.cardSurfaceBoxScale.x, this.cardSurfaceBoxScale.z, this.cardSurfaceBoxScale.y);
+                    wispsShape.rotation = new Vector3(-90f, 0f, 0f);
 
-                var wispsMain = this.soulWisps.main;
-                Color wispColor = bloodRed ? new Color(1f, 0.05f, 0.05f, 1.0f) : new Color(0.4f, 0.95f, 1f, 0.95f);
-                wispsMain.startColor = wispColor;
-                wispsMain.startLifetime = new ParticleSystem.MinMaxCurve(this.wispLifetime.x, this.wispLifetime.y);
-                wispsMain.startSize = new ParticleSystem.MinMaxCurve(this.wispSize.x, this.wispSize.y);
-                wispsMain.startSpeed = new ParticleSystem.MinMaxCurve(0.4f, 0.8f);
-                wispsMain.gravityModifier = 0f;
-                wispsMain.simulationSpace = ParticleSystemSimulationSpace.World;
+                    var wispsMain = this.soulWisps.main;
+                    Color wispColor = bloodRed ? new Color(1f, 0.05f, 0.05f, 1.0f) : new Color(0.4f, 0.95f, 1f, 0.95f);
+                    wispsMain.startColor = wispColor;
+                    wispsMain.startLifetime = new ParticleSystem.MinMaxCurve(this.wispLifetime.x, this.wispLifetime.y);
+                    wispsMain.startSize = new ParticleSystem.MinMaxCurve(this.wispSize.x, this.wispSize.y);
+                    wispsMain.startSpeed = new ParticleSystem.MinMaxCurve(0.4f, 0.8f);
+                    wispsMain.gravityModifier = 0f;
+                    wispsMain.simulationSpace = ParticleSystemSimulationSpace.World;
 
-                var wispsVol = this.soulWisps.velocityOverLifetime;
-                wispsVol.enabled = true;
-                wispsVol.space = ParticleSystemSimulationSpace.World;
-                wispsVol.x = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
-                wispsVol.y = new ParticleSystem.MinMaxCurve(this.wispAscentSpeed.x, this.wispAscentSpeed.y);
-                wispsVol.z = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
+                    var wispsVol = this.soulWisps.velocityOverLifetime;
+                    wispsVol.enabled = true;
+                    wispsVol.space = ParticleSystemSimulationSpace.World;
+                    wispsVol.x = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
+                    wispsVol.y = new ParticleSystem.MinMaxCurve(this.wispAscentSpeed.x, this.wispAscentSpeed.y);
+                    wispsVol.z = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
 
-                var wispsCol = this.soulWisps.colorOverLifetime;
-                wispsCol.enabled = true;
-                wispsCol.color = this.BuildFadeGradient(wispColor);
+                    var wispsCol = this.soulWisps.colorOverLifetime;
+                    wispsCol.enabled = true;
+                    wispsCol.color = this.BuildFadeGradient(wispColor);
 
-                var wispsEmission = this.soulWisps.emission;
-                wispsEmission.rateOverTime = 0f;
-                wispsEmission.SetBursts(this.BuildRandomWispBursts(this.bloodWispsCount, this.wispEmergenceWindow));
-                this.soulWisps.gameObject.SetActive(true);
+                    var wispsEmission = this.soulWisps.emission;
+                    wispsEmission.rateOverTime = 0f;
+                    wispsEmission.SetBursts(this.BuildRandomWispBursts(this.bloodWispsCount, this.wispEmergenceWindow));
+                    this.soulWisps.gameObject.SetActive(true);
+                }
             }
+
+            this.ConfigureBloodMist(bloodRed);
+        }
+
+        private void ConfigureBloodMist(bool bloodRed)
+        {
+            if (this.bloodMist == null) return;
+            if (!this.enableBloodMist)
+            {
+                this.bloodMist.gameObject.SetActive(false);
+                return;
+            }
+
+            var mistShape = this.bloodMist.shape;
+            mistShape.shapeType = ParticleSystemShapeType.Box;
+            mistShape.scale = new Vector3(this.cardSurfaceBoxScale.x * 0.8f, this.cardSurfaceBoxScale.z * 0.8f, this.cardSurfaceBoxScale.y);
+            mistShape.rotation = new Vector3(-90f, 0f, 0f);
+
+            var mistMain = this.bloodMist.main;
+            Color mistColor = bloodRed ? new Color(0.85f, 0.08f, 0.08f, 1f) : new Color(0.45f, 0.85f, 1f, 1f);
+            mistMain.startColor = mistColor;
+            mistMain.startLifetime = new ParticleSystem.MinMaxCurve(this.mistLifetime.x, this.mistLifetime.y);
+            mistMain.startSize = new ParticleSystem.MinMaxCurve(this.mistStartSize.x, this.mistStartSize.y);
+            mistMain.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.5f);
+            mistMain.startRotation = new ParticleSystem.MinMaxCurve(0f, Mathf.PI * 2f);
+            mistMain.gravityModifier = 0f;
+            mistMain.simulationSpace = ParticleSystemSimulationSpace.World;
+
+            var mistVol = this.bloodMist.velocityOverLifetime;
+            mistVol.enabled = true;
+            mistVol.space = ParticleSystemSimulationSpace.World;
+            mistVol.x = new ParticleSystem.MinMaxCurve(-this.mistSpreadSpeed, this.mistSpreadSpeed);
+            mistVol.y = new ParticleSystem.MinMaxCurve(this.mistRiseSpeed.x, this.mistRiseSpeed.y);
+            mistVol.z = new ParticleSystem.MinMaxCurve(-0.35f, 0.35f);
+
+            var mistSol = this.bloodMist.sizeOverLifetime;
+            mistSol.enabled = true;
+            mistSol.separateAxes = true;
+
+            AnimationCurve sizeXCurve = new AnimationCurve();
+            sizeXCurve.AddKey(0f, 0.8f);
+            sizeXCurve.AddKey(0.4f, 2.0f);
+            sizeXCurve.AddKey(1f, 3.5f);
+            mistSol.x = new ParticleSystem.MinMaxCurve(1f, sizeXCurve);
+
+            AnimationCurve sizeYCurve = new AnimationCurve();
+            sizeYCurve.AddKey(0f, 0.7f);
+            sizeYCurve.AddKey(0.4f, 1.3f);
+            sizeYCurve.AddKey(1f, 1.8f);
+            mistSol.y = new ParticleSystem.MinMaxCurve(1f, sizeYCurve);
+            mistSol.z = new ParticleSystem.MinMaxCurve(1f, sizeYCurve);
+
+            var mistCol = this.bloodMist.colorOverLifetime;
+            mistCol.enabled = true;
+            mistCol.color = this.BuildMistFadeGradient(mistColor, this.mistMaxAlpha);
+
+            var mistEmission = this.bloodMist.emission;
+            mistEmission.rateOverTime = 0f;
+            mistEmission.SetBursts(this.BuildRandomBursts(this.bloodMistCount, this.mistEmergenceWindow));
+            this.bloodMist.gameObject.SetActive(true);
+        }
+
+        private ParticleSystem.MinMaxGradient BuildMistFadeGradient(Color baseColor, float peakAlpha)
+        {
+            var grad = new Gradient();
+            grad.SetKeys(
+                new GradientColorKey[] { new GradientColorKey(baseColor, 0f), new GradientColorKey(baseColor, 1f) },
+                new GradientAlphaKey[]
+                {
+                    new GradientAlphaKey(0.0f, 0.0f),
+                    new GradientAlphaKey(peakAlpha, 0.18f),
+                    new GradientAlphaKey(peakAlpha * 0.85f, 0.65f),
+                    new GradientAlphaKey(0.0f, 1.0f)
+                }
+            );
+            return new ParticleSystem.MinMaxGradient(grad);
+        }
+
+        private ParticleSystem.Burst[] BuildRandomBursts(int totalCount, float windowDuration)
+        {
+            if (totalCount <= 0) return new ParticleSystem.Burst[0];
+            int burstCount = Mathf.Clamp(totalCount / 3, 2, 6);
+            var bursts = new ParticleSystem.Burst[burstCount];
+            float[] times = new float[burstCount];
+            for (int i = 0; i < burstCount; i++)
+            {
+                times[i] = Random.Range(0.0f, windowDuration);
+            }
+            System.Array.Sort(times);
+            int remaining = totalCount;
+            for (int i = 0; i < burstCount; i++)
+            {
+                int count = (i == burstCount - 1) ? remaining : Mathf.Max(1, remaining / (burstCount - i));
+                remaining -= count;
+                bursts[i] = new ParticleSystem.Burst(times[i], (short)count, (short)count);
+            }
+            return bursts;
         }
 
         private ParticleSystem.Burst[] BuildRandomSkullBursts(int totalSkulls, float windowDuration)

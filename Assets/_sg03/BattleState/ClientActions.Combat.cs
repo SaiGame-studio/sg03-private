@@ -180,19 +180,33 @@ namespace SG03
                 ? this.cardSpawning.GetOmegaVoidTopCard()
                 : this.cardSpawning.GetAlphaVoidTopCard();
 
-            if (sourceAnchor != null && sourceTop != null)
+            bool hasSource = sourceAnchor != null && sourceTop != null;
+            bool hasVoid = voidAnchor != null && voidTop != null;
+
+            Coroutine sourceRoutine = null;
+            Coroutine voidRoutine = null;
+
+            if (hasSource)
             {
                 Vector3 pos = sourceTop.transform.position + Vector3.up * 0.15f;
                 Quaternion rot = Quaternion.Euler(0f, sourceAnchor.rotation.eulerAngles.y, 0f);
-                yield return this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
+                sourceRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
             }
 
-            if (voidAnchor != null && voidTop != null)
+            if (hasVoid)
             {
+                if (hasSource)
+                {
+                    yield return new WaitForSeconds(0.05f);
+                }
+
                 Vector3 pos = voidTop.transform.position + Vector3.up * 0.15f;
                 Quaternion rot = Quaternion.Euler(0f, voidAnchor.rotation.eulerAngles.y, 0f);
-                yield return this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
+                voidRoutine = this.StartCoroutine(this.PlayPositionGhostDefeatRoutine(pos, rot, true));
             }
+
+            if (sourceRoutine != null) yield return sourceRoutine;
+            if (voidRoutine != null) yield return voidRoutine;
         }
 
         private Coroutine ExecuteCardGuarded(string[] parameters)

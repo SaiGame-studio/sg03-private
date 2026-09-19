@@ -8907,6 +8907,12 @@ MonoBehaviour:
   - {fileID: 1509573954}
   - {fileID: 399658140}
   - {fileID: 1517487184}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1001 &2141663910
 PrefabInstance:
   m_ObjectHideFlags: 0
