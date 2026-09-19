@@ -76,16 +76,16 @@ namespace SG03
             }
         }
 
-        private IEnumerator PlayGhostDamageRoutine(Card3DCtrl card, float duration = 0.7f)
+        private IEnumerator PlayGhostDamageRoutine(Card3DCtrl card, float duration = 0.65f)
         {
             if (card == null) yield break;
 
             Vector3 spawnPosition = card.transform.position + Vector3.up * 0.15f;
-            GhostDefeatVfxCtrl ghostVfx = this.SpawnGhostDefeatVfx(spawnPosition);
+            GhostDamageVfxCtrl ghostVfx = this.SpawnGhostDamageVfx(spawnPosition);
 
             if (ghostVfx != null)
             {
-                ghostVfx.PlayDamage(duration);
+                ghostVfx.Play(duration);
                 yield return new WaitForSeconds(duration);
                 ghostVfx.ReturnToPool();
             }
@@ -93,6 +93,20 @@ namespace SG03
             {
                 yield return new WaitForSeconds(duration);
             }
+        }
+
+        private GhostDamageVfxCtrl SpawnGhostDamageVfx(Vector3 position, Quaternion rotation = default)
+        {
+            if (this.ghostDamageVfxPrefab == null) return null;
+
+            if (this.objectPool != null)
+            {
+                GhostDamageVfxCtrl instance = this.objectPool.Spawn(this.ghostDamageVfxPrefab, position);
+                if (instance != null) instance.transform.rotation = rotation;
+                return instance;
+            }
+
+            return Object.Instantiate(this.ghostDamageVfxPrefab, position, rotation);
         }
 
         private IEnumerator PlayGhostDefeatRoutine(Card3DCtrl card)

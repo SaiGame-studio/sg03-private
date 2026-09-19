@@ -19,6 +19,7 @@ namespace SG03
         [SerializeField] private DeskPositionCtrl deskPosition;
         [SerializeField] private BattleStateCtrl battleStateCtrl;
         [SerializeField] private GhostDefeatVfxCtrl ghostDefeatVfxPrefab;
+        [SerializeField] private GhostDamageVfxCtrl ghostDamageVfxPrefab;
         [SerializeField] private ObjectPool objectPool;
         [SerializeField] private float omegaFrontLinePostDelay = 0.1f;
         [SerializeField, Min(1f)] private float resumeMoveSpeedMultiplier = 2f;
@@ -93,6 +94,7 @@ namespace SG03
             this.LoadBattleStateCtrl();
             this.LoadObjectPool();
             this.LoadGhostDefeatVfxPrefab();
+            this.LoadGhostDamageVfxPrefab();
         }
 
         protected virtual void LoadObjectPool()
@@ -108,6 +110,15 @@ namespace SG03
             if (this.objectPool != null && this.objectPool.PoolPrefabs != null)
             {
                 this.ghostDefeatVfxPrefab = this.objectPool.PoolPrefabs.GetByName("GhostDefeatVfx") as GhostDefeatVfxCtrl;
+            }
+        }
+
+        protected virtual void LoadGhostDamageVfxPrefab()
+        {
+            if (this.ghostDamageVfxPrefab != null) return;
+            if (this.objectPool != null && this.objectPool.PoolPrefabs != null)
+            {
+                this.ghostDamageVfxPrefab = this.objectPool.PoolPrefabs.GetByName("GhostDamageVfx") as GhostDamageVfxCtrl;
             }
         }
 

@@ -3,28 +3,25 @@ using UnityEngine;
 namespace SG03
 {
     /// <summary>
-    /// Controls the ghostly spirit particle system visual effect that rises
-    /// from across the surface of a character card when it is defeated or HP is attacked.
-    /// Features smooth height-based alpha fading so all skulls completely dissolve before completion.
+    /// Controls the swift, lightweight ghost particle effect emitted when a card takes damage.
     /// </summary>
-    [AddComponentMenu("SG03/VFX/Ghost Defeat VFX Ctrl")]
-    public class GhostDefeatVfxCtrl : PoolObj
+    [AddComponentMenu("SG03/VFX/Ghost Damage VFX Ctrl")]
+    public class GhostDamageVfxCtrl : PoolObj
     {
         [Header("VFX Settings")]
-        [SerializeField] private float duration = 2.0f;
-        [SerializeField] private bool useBloodRed = true;
+        [SerializeField] private float duration = 0.65f;
+        [SerializeField] private bool useBloodRed = false;
         [SerializeField] private Vector3 cardSurfaceBoxScale = new Vector3(7.0f, 0.2f, 10.0f);
         [SerializeField] private ParticleSystem mainParticleSystem;
         [SerializeField] private ParticleSystem[] childParticleSystems;
         [SerializeField] private ParticleSystem[] ghostVariantEmitters;
         [SerializeField] private ParticleSystem soulEmbers;
-        [SerializeField] private ParticleSystem soulBurst;
         [SerializeField] private ParticleSystem soulWisps;
 
         public float Duration => this.duration;
         public bool UseBloodRed { get => this.useBloodRed; set => this.useBloodRed = value; }
 
-        public override string GetName() => "GhostDefeatVfx";
+        public override string GetName() => "GhostDamageVfx";
 
         protected override void LoadComponents()
         {
@@ -66,7 +63,6 @@ namespace SG03
         protected virtual void LoadSpecializedEmitters()
         {
             this.LoadSoulEmbers();
-            this.LoadSoulBurst();
             this.LoadSoulWisps();
         }
 
@@ -77,13 +73,6 @@ namespace SG03
             if (embers != null) this.soulEmbers = embers.GetComponent<ParticleSystem>();
         }
 
-        private void LoadSoulBurst()
-        {
-            if (this.soulBurst != null) return;
-            Transform burst = this.transform.Find("SoulBurst");
-            if (burst != null) this.soulBurst = burst.GetComponent<ParticleSystem>();
-        }
-
         private void LoadSoulWisps()
         {
             if (this.soulWisps != null) return;
@@ -92,15 +81,15 @@ namespace SG03
         }
 
         /// <summary>
-        /// Activates a dense, full ghostly departure effect spread across the card surface on defeat.
+        /// Plays a fast, light ghost skull impact effect on taking damage.
         /// </summary>
-        public void Play() => this.Play(this.useBloodRed);
+        public void Play(float customDuration = 0.65f) => this.Play(customDuration, this.useBloodRed);
 
-        public void Play(bool bloodRed)
+        public void Play(float customDuration, bool bloodRed)
         {
             this.gameObject.SetActive(true);
             this.EnsureComponentsLoaded();
-            this.ConfigureDefeatEmitters(bloodRed);
+            this.ConfigureEmitters(customDuration, bloodRed);
             this.RestartEmitters();
         }
 
@@ -117,7 +106,7 @@ namespace SG03
             }
         }
 
-        private void ConfigureDefeatEmitters(bool bloodRed)
+        private void ConfigureEmitters(float customDuration, bool bloodRed)
         {
             bool hasVariants = this.ghostVariantEmitters != null && this.ghostVariantEmitters.Length > 0;
             if (this.mainParticleSystem != null)
@@ -126,7 +115,7 @@ namespace SG03
                 mainEmission.enabled = !hasVariants;
             }
 
-            Color skullColor = bloodRed ? new Color(1f, 0.95f, 0.95f, 1f) : Color.white;
+            Color skullColor = bloodRed ? new Color(1f, 0.95f, 0.95f, 0.95f) : new Color(1f, 1f, 1f, 0.95f);
             if (hasVariants)
             {
                 foreach (var ps in this.ghostVariantEmitters)
@@ -138,13 +127,13 @@ namespace SG03
 
                     var main = ps.main;
                     main.startColor = skullColor;
-                    main.startLifetime = new ParticleSystem.MinMaxCurve(1.4f, 1.7f);
-                    main.startSize = new ParticleSystem.MinMaxCurve(2.8f, 3.8f);
+                    main.startLifetime = new ParticleSystem.MinMaxCurve(0.4f, Mathf.Min(0.55f, customDuration));
+                    main.startSize = new ParticleSystem.MinMaxCurve(1.8f, 2.4f);
                     main.startSpeed = new ParticleSystem.MinMaxCurve(0.2f, 0.45f);
 
                     var vol = ps.velocityOverLifetime;
                     vol.enabled = true;
-                    vol.y = new ParticleSystem.MinMaxCurve(0.8f, 1.25f);
+                    vol.y = new ParticleSystem.MinMaxCurve(0.5f, 0.9f);
 
                     var col = ps.colorOverLifetime;
                     col.enabled = true;
@@ -153,11 +142,7 @@ namespace SG03
                     var emission = ps.emission;
                     emission.enabled = true;
                     emission.rateOverTime = 0f;
-                    emission.SetBursts(new ParticleSystem.Burst[]
-                    {
-                        new ParticleSystem.Burst(0.0f, 2),
-                        new ParticleSystem.Burst(0.18f, 1)
-                    });
+                    emission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 1) });
                     ps.gameObject.SetActive(true);
                 }
             }
@@ -169,29 +154,14 @@ namespace SG03
                 embersShape.scale = this.cardSurfaceBoxScale;
 
                 var embersMain = this.soulEmbers.main;
-                embersMain.startColor = bloodRed ? new Color(1f, 0.08f, 0.08f, 1f) : new Color(0.4f, 0.95f, 1f, 0.9f);
-                embersMain.startLifetime = new ParticleSystem.MinMaxCurve(1.0f, 1.5f);
-                embersMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.4f);
+                Color emberColor = bloodRed ? new Color(1f, 0.1f, 0.1f, 1f) : new Color(0.4f, 0.95f, 1f, 0.9f);
+                embersMain.startColor = emberColor;
+                embersMain.startLifetime = new ParticleSystem.MinMaxCurve(0.3f, Mathf.Min(0.5f, customDuration));
+                embersMain.startSize = new ParticleSystem.MinMaxCurve(0.12f, 0.25f);
 
                 var embersEmission = this.soulEmbers.emission;
                 embersEmission.rateOverTime = 0f;
-                embersEmission.SetBursts(new ParticleSystem.Burst[]
-                {
-                    new ParticleSystem.Burst(0.0f, 25),
-                    new ParticleSystem.Burst(0.15f, 12)
-                });
-            }
-
-            if (this.soulBurst != null)
-            {
-                var burstShape = this.soulBurst.shape;
-                burstShape.shapeType = ParticleSystemShapeType.Box;
-                burstShape.scale = this.cardSurfaceBoxScale;
-
-                var burstMain = this.soulBurst.main;
-                burstMain.startColor = bloodRed ? new Color(0.9f, 0.05f, 0.05f, 0.85f) : new Color(0.6f, 0.9f, 1f, 0.8f);
-
-                this.soulBurst.gameObject.SetActive(true);
+                embersEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 6) });
             }
 
             if (this.soulWisps != null)
@@ -201,18 +171,13 @@ namespace SG03
                 wispsShape.scale = this.cardSurfaceBoxScale;
 
                 var wispsMain = this.soulWisps.main;
-                Color wispColor = bloodRed ? new Color(1f, 0.05f, 0.05f, 0.95f) : new Color(0.4f, 0.95f, 1f, 0.9f);
+                Color wispColor = bloodRed ? new Color(1f, 0.08f, 0.08f, 0.9f) : new Color(0.4f, 0.95f, 1f, 0.9f);
                 wispsMain.startColor = wispColor;
-                wispsMain.startLifetime = new ParticleSystem.MinMaxCurve(1.1f, 1.5f);
-                wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.25f, 0.55f);
-
-                var wispsCol = this.soulWisps.colorOverLifetime;
-                wispsCol.enabled = true;
-                wispsCol.color = this.BuildFadeGradient(wispColor);
+                wispsMain.startSize = new ParticleSystem.MinMaxCurve(0.18f, 0.35f);
 
                 var wispsEmission = this.soulWisps.emission;
                 wispsEmission.rateOverTime = 0f;
-                wispsEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 14) });
+                wispsEmission.SetBursts(new ParticleSystem.Burst[] { new ParticleSystem.Burst(0.0f, 4) });
                 this.soulWisps.gameObject.SetActive(true);
             }
         }
@@ -225,9 +190,8 @@ namespace SG03
                 new GradientAlphaKey[]
                 {
                     new GradientAlphaKey(0.0f, 0.0f),
-                    new GradientAlphaKey(1.0f, 0.12f),
-                    new GradientAlphaKey(1.0f, 0.55f),
-                    new GradientAlphaKey(0.25f, 0.85f),
+                    new GradientAlphaKey(1.0f, 0.15f),
+                    new GradientAlphaKey(1.0f, 0.5f),
                     new GradientAlphaKey(0.0f, 1.0f)
                 }
             );
@@ -254,19 +218,14 @@ namespace SG03
             }
         }
 
-        /// <summary>
-        /// Stops all particle emission and clears active particles.
-        /// </summary>
         public void Stop()
         {
             if (this.childParticleSystems != null && this.childParticleSystems.Length > 0)
             {
                 foreach (ParticleSystem ps in this.childParticleSystems)
                 {
-                    if (ps == null) continue;
-                    ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
+                    if (ps != null) ps.Stop(true, ParticleSystemStopBehavior.StopEmittingAndClear);
                 }
-                return;
             }
 
             if (this.mainParticleSystem != null)
@@ -275,9 +234,6 @@ namespace SG03
             }
         }
 
-        /// <summary>
-        /// Returns this object to the pool or disables it when unpooled.
-        /// </summary>
         public void ReturnToPool()
         {
             this.Stop();
